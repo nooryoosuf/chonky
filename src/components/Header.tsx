@@ -92,26 +92,25 @@ export const Header: React.FC<HeaderProps> = ({
                 <MenuIcon className="w-6 h-6" />
               </button>
 
-              {/* Chonky Wordmark Logo */}
+              {/* Chonky Official Mascot & Typography Wordmark */}
               <a
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-2.5 group select-none"
+                className="flex items-center gap-2.5 sm:gap-3 group select-none"
               >
-                <div className="w-10 h-10 rounded-2xl bg-chonky-red flex items-center justify-center text-chonky-peach font-black text-2xl tracking-tighter shadow-sm transform group-hover:scale-105 transition-all duration-300">
-                  C
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl sm:text-2xl font-black tracking-tight text-chonky-red uppercase leading-none font-sans">
-                    CHONKY
-                  </span>
-                  <span className="text-[10px] uppercase font-black tracking-widest text-chonky-muted leading-tight mt-0.5">
-                    Food Co.
-                  </span>
-                </div>
+                <img
+                  src="/chonky-icon.svg"
+                  alt="Chonky Mascot"
+                  className="h-8 sm:h-10 w-auto transform group-hover:scale-105 group-hover:-rotate-3 transition-transform duration-300"
+                />
+                <img
+                  src="/chonky-typography.svg"
+                  alt="Chonky"
+                  className="h-6 sm:h-7 w-auto"
+                />
               </a>
 
               {/* Desktop Location Selector */}
@@ -242,14 +241,18 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="relative w-4/5 max-w-xs bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-250">
             {/* Drawer Header */}
-            <div className="p-5 border-b border-chonky-border flex items-center justify-between bg-chonky-peach-light/30">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-chonky-red flex items-center justify-center text-chonky-peach font-extrabold text-lg">
-                  C
-                </div>
-                <span className="font-extrabold text-xl text-chonky-red tracking-tight">
-                  CHONKY
-                </span>
+            <div className="p-5 border-b border-chonky-border flex items-center justify-between bg-chonky-peach-light/40">
+              <div className="flex items-center gap-2.5">
+                <img
+                  src="/chonky-icon.svg"
+                  alt="Chonky Mascot"
+                  className="h-8 w-auto"
+                />
+                <img
+                  src="/chonky-typography.svg"
+                  alt="Chonky"
+                  className="h-5 w-auto"
+                />
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}

@@ -45,18 +45,17 @@ export const Footer: React.FC = () => {
           
           {/* Col 1: Brand & Identity */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-chonky-peach flex items-center justify-center text-chonky-red font-black text-2xl shadow-md">
-                C
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-black text-white tracking-tight leading-none">
-                  CHONKY
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-chonky-peach/70">
-                  Premium Food Co.
-                </span>
-              </div>
+            <div className="flex items-center gap-3">
+              <img
+                src="/chonky-icon-peach.svg"
+                alt="Chonky Mascot"
+                className="h-10 w-auto"
+              />
+              <img
+                src="/chonky-typography-peach.svg"
+                alt="Chonky"
+                className="h-7 w-auto"
+              />
             </div>
             <p className="text-xs text-chonky-peach/80 leading-relaxed font-normal">
               Freshly ground 100% Angus smash burgers, slow-fermented pizzas, and toasted submarines crafted with zero shortcuts in Malé.
