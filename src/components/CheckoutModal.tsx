@@ -488,7 +488,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60 active:scale-98"
+              className="w-full py-4 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-center gap-2 transition shadow-glow-red disabled:opacity-60 active:scale-95"
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">

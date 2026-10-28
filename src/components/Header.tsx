@@ -99,17 +99,17 @@ export const Header: React.FC<HeaderProps> = ({
                   e.preventDefault();
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-2 group"
+                className="flex items-center gap-2.5 group select-none"
               >
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-chonky-red flex items-center justify-center text-chonky-peach font-extrabold text-xl sm:text-2xl tracking-tighter shadow-sm transform group-hover:scale-105 transition">
+                <div className="w-10 h-10 rounded-2xl bg-chonky-red flex items-center justify-center text-chonky-peach font-black text-2xl tracking-tighter shadow-sm transform group-hover:scale-105 transition-all duration-300">
                   C
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xl sm:text-2xl font-black tracking-tight text-chonky-red uppercase leading-none font-sans">
                     CHONKY
                   </span>
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-chonky-muted leading-tight">
-                    Burgers & Subs
+                  <span className="text-[10px] uppercase font-black tracking-widest text-chonky-muted leading-tight mt-0.5">
+                    Food Co.
                   </span>
                 </div>
               </a>
@@ -208,22 +208,22 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Shopping Cart Button */}
               <button
                 onClick={openCart}
-                className={`relative flex items-center gap-2.5 px-3.5 py-2 rounded-full font-bold text-sm transition-all shadow-sm ${
+                className={`relative flex items-center gap-2.5 px-4 py-2.5 rounded-full font-black text-xs sm:text-sm transition-all duration-200 select-none ${
                   itemCount > 0
-                    ? 'bg-chonky-red text-white hover:bg-chonky-red-light transform active:scale-95'
-                    : 'bg-chonky-subtle text-chonky-text hover:bg-chonky-peach/60 border border-chonky-border'
+                    ? 'bg-chonky-red text-white hover:bg-chonky-red-light shadow-glow-red transform active:scale-95'
+                    : 'bg-white text-chonky-text hover:bg-chonky-peach/40 border border-chonky-border shadow-xs'
                 }`}
                 aria-label={`Shopping cart with ${itemCount} items`}
               >
                 <div className="relative">
                   <ShoppingBag className="w-4 h-4" />
                   {itemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[11px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                    <span className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                       {itemCount}
                     </span>
                   )}
                 </div>
-                <span className="hidden sm:inline">
+                <span>
                   {itemCount > 0 ? `MVR ${subtotal}` : 'Cart'}
                 </span>
               </button>

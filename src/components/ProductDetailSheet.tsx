@@ -218,7 +218,7 @@ export const ProductDetailSheet: React.FC = () => {
       <div
         ref={sheetRef}
         style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
-        className="relative w-full md:max-w-xl lg:max-w-2xl bg-white rounded-t-3xl md:rounded-3xl shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-250 transition-transform"
+        className="relative w-full md:max-w-xl lg:max-w-2xl bg-white rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-250 transition-transform font-sans"
       >
         {/* Mobile Swipe Handle */}
         <div 
@@ -483,7 +483,7 @@ export const ProductDetailSheet: React.FC = () => {
             <button
               type="button"
               onClick={handleAddToCart}
-              className="flex-1 py-3 px-5 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-bold text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-md"
+              className="flex-1 py-3.5 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
             >
               <span>
                 {editingCartItem ? 'Update Order' : 'Add to Cart'}

@@ -24,14 +24,14 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
   const getCategoryIcon = (id: CategoryId) => {
     switch (id) {
-      case 'all': return <Utensils className="w-4 h-4" />;
-      case 'burgers': return <Flame className="w-4 h-4" />;
-      case 'submarines': return <Sandwich className="w-4 h-4" />;
-      case 'pizza': return <Pizza className="w-4 h-4" />;
-      case 'sides': return <Cookie className="w-4 h-4" />;
-      case 'drinks': return <CupSoda className="w-4 h-4" />;
-      case 'deals': return <Tag className="w-4 h-4" />;
-      default: return <Utensils className="w-4 h-4" />;
+      case 'all': return <Utensils className="w-3.5 h-3.5" />;
+      case 'burgers': return <Flame className="w-3.5 h-3.5" />;
+      case 'submarines': return <Sandwich className="w-3.5 h-3.5" />;
+      case 'pizza': return <Pizza className="w-3.5 h-3.5" />;
+      case 'sides': return <Cookie className="w-3.5 h-3.5" />;
+      case 'drinks': return <CupSoda className="w-3.5 h-3.5" />;
+      case 'deals': return <Tag className="w-3.5 h-3.5" />;
+      default: return <Utensils className="w-3.5 h-3.5" />;
     }
   };
 
@@ -51,11 +51,11 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   };
 
   return (
-    <div className="sticky top-[61px] sm:top-[69px] z-30 bg-chonky-bg/95 backdrop-blur-md border-b border-chonky-border/80 shadow-xs py-3">
+    <div className="sticky top-[61px] sm:top-[69px] z-30 bg-chonky-bg/90 backdrop-blur-xl border-b border-chonky-border/70 py-2.5 sm:py-3 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div 
           ref={scrollRef}
-          className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5"
+          className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5"
         >
           {CATEGORIES.map((cat) => {
             const isSelected = activeCategory === cat.id;
@@ -63,10 +63,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               <button
                 key={cat.id}
                 onClick={() => handleCategoryClick(cat.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all shrink-0 ${
+                className={`whitespace-nowrap px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-black flex items-center gap-2 transition-all duration-200 shrink-0 select-none ${
                   isSelected
-                    ? 'bg-chonky-red text-white shadow-sm ring-1 ring-chonky-red transform scale-[1.02]'
-                    : 'bg-white text-chonky-text hover:bg-chonky-peach-light/80 border border-chonky-border/70 text-chonky-muted hover:text-chonky-text'
+                    ? 'bg-chonky-red text-white shadow-glow-red scale-[1.03]'
+                    : 'bg-white text-chonky-text hover:bg-chonky-peach-light/70 border border-chonky-border/80 text-chonky-muted hover:text-chonky-text active:scale-95'
                 }`}
               >
                 <span className={isSelected ? 'text-white' : 'text-chonky-red'}>

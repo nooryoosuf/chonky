@@ -15,7 +15,7 @@ export const CartBar: React.FC = () => {
       <div className="pointer-events-auto max-w-md mx-auto">
         <button
           onClick={openCart}
-          className="w-full py-3.5 px-5 rounded-2xl bg-chonky-red text-white font-bold text-sm shadow-sheet flex items-center justify-between active:scale-98 transition transform"
+          className="w-full py-4 px-5 rounded-[2rem] bg-chonky-red text-white font-black text-sm shadow-glow-red flex items-center justify-between active:scale-95 transition transform duration-200 border border-white/20"
           aria-label={`View cart with ${itemCount} items, total MVR ${subtotal}`}
         >
           {/* Left badge & count */}

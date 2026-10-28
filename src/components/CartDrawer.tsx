@@ -261,12 +261,12 @@ export const CartDrawer: React.FC = () => {
             {/* Checkout Action Button */}
             <button
               onClick={openCheckout}
-              className="w-full py-3.5 px-5 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-bold text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-md"
+              className="w-full py-4 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
             >
               <span>Proceed to Checkout</span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-black">MVR {total}</span>
-                <ArrowRight className="w-4 h-4" />
+              <div className="flex items-center gap-2">
+                <span className="font-black text-lg">MVR {total}</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </div>
             </button>
           </div>

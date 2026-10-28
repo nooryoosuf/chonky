@@ -13,87 +13,94 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const getBadgeStyle = (badge?: string) => {
     switch (badge) {
       case 'Bestseller':
-        return 'bg-chonky-red text-white';
+        return 'bg-gradient-to-r from-chonky-red to-[#9b1515] text-white shadow-glow-red';
       case 'Chef\'s Pick':
-        return 'bg-amber-900 text-amber-50';
+        return 'bg-gradient-to-r from-amber-700 to-amber-900 text-amber-50';
       case 'Hot':
       case 'Spicy':
-        return 'bg-rose-600 text-white';
+        return 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-sm';
       case 'New':
-        return 'bg-emerald-800 text-emerald-50';
+        return 'bg-gradient-to-r from-emerald-700 to-emerald-900 text-white shadow-sm';
       default:
-        return 'bg-chonky-peach-dark text-chonky-text';
+        return 'bg-chonky-peach text-chonky-red';
     }
   };
 
   return (
     <article
       onClick={() => openCustomizer(product)}
-      className="group relative bg-white rounded-2xl border border-chonky-border/70 overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 flex flex-col cursor-pointer hover:-translate-y-1"
+      className="group relative bg-white rounded-[1.75rem] sm:rounded-[2rem] p-3 sm:p-3.5 border border-chonky-border/70 hover:border-chonky-red/30 shadow-card hover:shadow-hover transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1.5 active:scale-[0.99] select-none"
     >
-      {/* Image Container with consistent 4:3 or 16:10 aspect ratio */}
-      <div className="relative aspect-[4/3] w-full bg-chonky-subtle overflow-hidden">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
+      <div>
+        {/* Floating Image Stage with Squircle Frame */}
+        <div className="relative aspect-[4/3] w-full rounded-[1.35rem] sm:rounded-[1.5rem] overflow-hidden bg-chonky-subtle">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover object-center transform group-hover:scale-108 transition-transform duration-700 ease-out"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
-        {/* Badge Pill */}
-        {product.badge && (
-          <div className="absolute top-2.5 left-2.5">
-            <span className={`inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs ${getBadgeStyle(product.badge)}`}>
-              {product.badge === 'Bestseller' && <Flame className="w-3 h-3" />}
-              {product.badge === 'Chef\'s Pick' && <Sparkles className="w-3 h-3" />}
-              {product.badge}
-            </span>
+          {/* Badge Pill */}
+          {product.badge && (
+            <div className="absolute top-2.5 left-2.5">
+              <span className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full backdrop-blur-xs ${getBadgeStyle(product.badge)}`}>
+                {product.badge === 'Bestseller' && <Flame className="w-3 h-3 fill-current" />}
+                {product.badge === 'Chef\'s Pick' && <Sparkles className="w-3 h-3" />}
+                {product.badge}
+              </span>
+            </div>
+          )}
+
+          {/* Prep Time Glass Pill */}
+          {product.prepTime && (
+            <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-white/10 shadow-xs">
+              <Clock className="w-2.5 h-2.5 text-chonky-peach" />
+              <span>{product.prepTime}</span>
+            </div>
+          )}
+
+          {/* Subtle Category Micro-tag */}
+          <div className="absolute top-2.5 right-2.5 bg-white/80 backdrop-blur-md text-chonky-text text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+            {product.category}
           </div>
-        )}
+        </div>
 
-        {/* Prep Time pill if present */}
-        {product.prepTime && (
-          <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
-            <Clock className="w-2.5 h-2.5" />
-            <span>{product.prepTime}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Card Content */}
-      <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between gap-3">
-        <div>
-          <h3 className="font-bold text-sm sm:text-base text-chonky-text group-hover:text-chonky-red transition-colors line-clamp-1">
+        {/* Content Box */}
+        <div className="pt-3.5 pb-1 px-1 space-y-1.5">
+          <h3 className="font-extrabold text-sm sm:text-base text-chonky-text group-hover:text-chonky-red transition-colors line-clamp-1 font-sans">
             {product.name}
           </h3>
-          <p className="mt-1 text-xs text-chonky-muted line-clamp-2 leading-relaxed">
+          <p className="text-xs text-chonky-muted line-clamp-2 leading-relaxed font-normal">
             {product.description}
           </p>
         </div>
+      </div>
 
-        {/* Bottom Price & Customize Button */}
-        <div className="flex items-center justify-between pt-1 border-t border-chonky-border/40">
-          <div className="flex flex-col">
-            <span className="text-[10px] uppercase font-bold text-chonky-muted tracking-wider">
-              Price
-            </span>
-            <span className="text-base sm:text-lg font-black text-chonky-red tracking-tight leading-none">
-              MVR {product.basePrice}
-            </span>
-          </div>
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              openCustomizer(product);
-            }}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-chonky-subtle hover:bg-chonky-red text-chonky-text hover:text-white border border-chonky-border hover:border-chonky-red flex items-center justify-center transition-all duration-200 transform group-hover:bg-chonky-red group-hover:text-white group-hover:border-chonky-red shadow-xs active:scale-95"
-            aria-label={`Customize and add ${product.name}`}
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-          </button>
+      {/* Bottom Price & Add Action Row */}
+      <div className="pt-3 px-1 mt-2 border-t border-chonky-border/50 flex items-center justify-between">
+        <div>
+          <span className="text-[10px] uppercase font-bold text-chonky-muted tracking-wider block leading-none">
+            MVR
+          </span>
+          <span className="text-lg sm:text-xl font-black text-chonky-red tracking-tight leading-tight">
+            {product.basePrice}
+          </span>
         </div>
+
+        {/* Tactile Circular Plus Action Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            openCustomizer(product);
+          }}
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-chonky-peach-light group-hover:bg-chonky-red text-chonky-text group-hover:text-white border border-chonky-border group-hover:border-chonky-red flex items-center justify-center transition-all duration-300 transform group-hover:scale-105 active:scale-90 shadow-xs group-hover:shadow-glow-red"
+          aria-label={`Customize and add ${product.name}`}
+        >
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+        </button>
       </div>
     </article>
   );
