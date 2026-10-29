@@ -118,7 +118,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           }}
         />
 
-        <div className="relative w-full max-w-lg bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
+        <div className="relative w-full max-w-lg bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
           {/* Header */}
           <div className="p-6 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 text-center border-b border-emerald-100 dark:border-emerald-900/40 relative">
             <div className="w-14 h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
@@ -153,7 +153,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
               <h4 className="font-bold text-chonky-text dark:text-white mb-2 text-xs uppercase tracking-wider text-chonky-muted dark:text-gray-400">
                 Order Items ({completedOrder.items.length})
               </h4>
-              <div className="space-y-2 border border-chonky-border dark:border-white/10 rounded-2xl p-3 bg-white dark:bg-[#1A1111]">
+              <div className="space-y-2 border border-chonky-border dark:border-white/10 rounded-2xl p-3 bg-white dark:bg-[#0D0707]">
                 {completedOrder.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center text-xs py-1 border-b border-chonky-border/40 dark:border-white/10 last:border-b-0">
                     <span className="font-medium text-chonky-text dark:text-gray-200">
@@ -192,7 +192,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           </div>
 
           {/* Footer Actions */}
-          <div className="p-5 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#130909] flex items-center gap-3">
+          <div className="p-5 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#0A0505] flex items-center gap-3">
             <button
               onClick={handleCopySummary}
               className="flex-1 py-3 px-4 rounded-full border border-chonky-border dark:border-white/10 hover:bg-chonky-subtle dark:hover:bg-white/5 text-chonky-text dark:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition"
@@ -224,7 +224,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
         onClick={closeCheckout}
       />
 
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-250 max-h-[92vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
+      <div className="relative w-full max-w-xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-250 max-h-[92vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
           <div className="flex items-center gap-2">
@@ -262,7 +262,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                 onClick={() => setOrderType('delivery')}
                 className={`py-2 text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition ${
                   orderType === 'delivery'
-                    ? 'bg-white dark:bg-[#251515] text-chonky-red dark:text-chonky-peach shadow-sm'
+                    ? 'bg-white dark:bg-[#160B0B] text-chonky-red dark:text-chonky-peach shadow-sm'
                     : 'text-chonky-muted dark:text-gray-400 hover:text-chonky-text dark:hover:text-white'
                 }`}
               >
@@ -274,7 +274,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                 onClick={() => setOrderType('pickup')}
                 className={`py-2 text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition ${
                   orderType === 'pickup'
-                    ? 'bg-white dark:bg-[#251515] text-chonky-red dark:text-chonky-peach shadow-sm'
+                    ? 'bg-white dark:bg-[#160B0B] text-chonky-red dark:text-chonky-peach shadow-sm'
                     : 'text-chonky-muted dark:text-gray-400 hover:text-chonky-text dark:hover:text-white'
                 }`}
               >
@@ -325,7 +325,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                   placeholder="e.g. Ahmed Fayaz"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className={`w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none transition bg-white dark:bg-[#1E1313] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 ${
+                  className={`w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none transition bg-white dark:bg-[#0E0707] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 ${
                     errors.customerName
                       ? 'border-rose-500 focus:ring-2 focus:ring-rose-200'
                       : 'border-chonky-border dark:border-white/15 focus:border-chonky-red focus:ring-2 focus:ring-chonky-red/20'
@@ -349,7 +349,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                   placeholder="e.g. 7991234 or +960 7991234"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  className={`w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none transition bg-white dark:bg-[#1E1313] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 ${
+                  className={`w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none transition bg-white dark:bg-[#0E0707] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 ${
                     errors.customerPhone
                       ? 'border-rose-500 focus:ring-2 focus:ring-rose-200'
                       : 'border-chonky-border dark:border-white/15 focus:border-chonky-red focus:ring-2 focus:ring-chonky-red/20'
@@ -380,7 +380,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                   placeholder="e.g. Ma. Coral Reef, 3rd Floor, Apt 302, Majeedhee Magu"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className={`w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none transition bg-white dark:bg-[#1E1313] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 ${
+                  className={`w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none transition bg-white dark:bg-[#0E0707] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 ${
                     errors.address
                       ? 'border-rose-500 focus:ring-2 focus:ring-rose-200'
                       : 'border-chonky-border dark:border-white/15 focus:border-chonky-red focus:ring-2 focus:ring-chonky-red/20'
@@ -401,7 +401,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                   placeholder="e.g. Near Redwave Plaza, ring doorbell 302"
                   value={deliveryNotes}
                   onChange={(e) => setDeliveryNotes(e.target.value)}
-                  className="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-chonky-border dark:border-white/15 bg-white dark:bg-[#1E1313] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 focus:outline-none focus:border-chonky-red focus:ring-2 focus:ring-chonky-red/20 transition"
+                  className="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-chonky-border dark:border-white/15 bg-white dark:bg-[#0E0707] text-chonky-text dark:text-white placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500 focus:outline-none focus:border-chonky-red focus:ring-2 focus:ring-chonky-red/20 transition"
                 />
               </div>
             </div>

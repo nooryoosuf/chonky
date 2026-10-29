@@ -27,18 +27,18 @@ export function AppContent() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-chonky-bg dark:bg-[#0E0707] text-chonky-text dark:text-[#F7F3EE] transition-colors duration-500 selection:bg-chonky-peach selection:text-chonky-red">
+    <div className="relative min-h-screen flex flex-col bg-chonky-bg dark:bg-[#050303] text-chonky-text dark:text-[#F7F3EE] transition-colors duration-500 selection:bg-chonky-peach selection:text-chonky-red">
       
-      {/* Red Ambient Background Glows (Active in Dark Mode) */}
+      {/* Subtle Crimson Ambient Background Glows (Active in Dark Mode) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden dark:opacity-100 opacity-0 transition-opacity duration-700">
         {/* Glow 1: Top-Left Ambient Halo */}
-        <div className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full bg-gradient-to-br from-chonky-red/35 via-[#4d0404]/20 to-transparent blur-[140px]" />
+        <div className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full bg-gradient-to-br from-chonky-red/16 via-transparent to-transparent blur-[160px]" />
         
         {/* Glow 2: Center-Right Warm Red Flame */}
-        <div className="absolute top-[35%] -right-40 w-[700px] h-[700px] rounded-full bg-gradient-to-bl from-chonky-red/30 via-rose-950/20 to-transparent blur-[150px]" />
+        <div className="absolute top-[35%] -right-40 w-[700px] h-[700px] rounded-full bg-gradient-to-bl from-chonky-red/13 via-transparent to-transparent blur-[160px]" />
         
         {/* Glow 3: Bottom-Left Food Hearth Glow */}
-        <div className="absolute top-[75%] -left-32 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-chonky-red/25 via-amber-950/15 to-transparent blur-[140px]" />
+        <div className="absolute top-[75%] -left-32 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-chonky-red/10 via-transparent to-transparent blur-[160px]" />
         
         {/* Subtle dot/mesh pattern overlay */}
         <div 

@@ -51,7 +51,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   };
 
   return (
-    <div className="sticky top-[61px] sm:top-[69px] z-30 bg-chonky-bg/90 dark:bg-[#120808]/90 backdrop-blur-xl border-b border-chonky-border/70 dark:border-white/10 py-2.5 sm:py-3 transition-colors">
+    <div className="sticky top-[61px] sm:top-[69px] z-30 bg-chonky-bg/90 dark:bg-[#070404]/90 backdrop-blur-xl border-b border-chonky-border/70 dark:border-white/10 py-2.5 sm:py-3 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div 
           ref={scrollRef}

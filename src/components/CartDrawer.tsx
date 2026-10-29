@@ -44,7 +44,7 @@ export const CartDrawer: React.FC = () => {
       />
 
       {/* Drawer Panel */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#150B0B] text-chonky-text dark:text-[#F7F3EE] h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 border-l border-chonky-border/70 dark:border-white/10">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 border-l border-chonky-border/70 dark:border-white/10">
         
         {/* Header */}
         <div className="p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
@@ -134,7 +134,7 @@ export const CartDrawer: React.FC = () => {
             items.map((item) => (
               <div
                 key={item.id}
-                className="p-3.5 rounded-2xl border border-chonky-border/80 dark:border-white/10 bg-white dark:bg-[#1C1212] hover:border-chonky-border dark:hover:border-white/20 transition shadow-xs flex flex-col gap-2.5"
+                className="p-3.5 rounded-2xl border border-chonky-border/80 dark:border-white/10 bg-white dark:bg-[#0E0606] hover:border-chonky-border dark:hover:border-white/20 transition shadow-xs flex flex-col gap-2.5"
               >
                 <div className="flex items-start gap-3">
                   {/* Thumbnail */}
@@ -207,7 +207,7 @@ export const CartDrawer: React.FC = () => {
                   <div className="flex items-center border border-chonky-border dark:border-white/15 rounded-full bg-chonky-subtle dark:bg-white/10 px-1 py-0.5">
                     <button
                       onClick={() => updateQuantity(item.id, -1)}
-                      className="w-6 h-6 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach flex items-center justify-center transition shadow-xs text-xs"
+                      className="w-6 h-6 rounded-full bg-white dark:bg-[#160B0B] text-chonky-text dark:text-white hover:bg-chonky-peach flex items-center justify-center transition shadow-xs text-xs"
                       aria-label="Decrease quantity"
                     >
                       <Minus className="w-3 h-3" />
@@ -217,7 +217,7 @@ export const CartDrawer: React.FC = () => {
                     </span>
                     <button
                       onClick={() => updateQuantity(item.id, 1)}
-                      className="w-6 h-6 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach flex items-center justify-center transition shadow-xs text-xs"
+                      className="w-6 h-6 rounded-full bg-white dark:bg-[#160B0B] text-chonky-text dark:text-white hover:bg-chonky-peach flex items-center justify-center transition shadow-xs text-xs"
                       aria-label="Increase quantity"
                     >
                       <Plus className="w-3 h-3" />
@@ -231,7 +231,7 @@ export const CartDrawer: React.FC = () => {
 
         {/* Footer Order Summary & Checkout Trigger */}
         {items.length > 0 && (
-          <div className="p-5 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#130909] safe-bottom shadow-sheet space-y-3">
+          <div className="p-5 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#0A0505] safe-bottom shadow-sheet space-y-3">
             {/* Breakdown */}
             <div className="space-y-1.5 text-xs text-chonky-muted dark:text-gray-400">
               <div className="flex justify-between">

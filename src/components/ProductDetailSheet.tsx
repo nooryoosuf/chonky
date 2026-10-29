@@ -222,7 +222,7 @@ export const ProductDetailSheet: React.FC = () => {
           transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
           transition: dragY === 0 ? 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'
         }}
-        className={`relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#150B0B] text-chonky-text dark:text-[#F7F3EE] rounded-t-[36px] sm:rounded-t-[40px] md:rounded-[40px] shadow-[0_-12px_45px_rgba(0,0,0,0.35)] md:shadow-[0_25px_70px_rgba(0,0,0,0.5)] z-10 max-h-[94vh] md:max-h-[88vh] flex flex-col overflow-hidden font-sans border-t border-black/5 md:border dark:border-white/10 ${
+        className={`relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-t-[36px] sm:rounded-t-[40px] md:rounded-[40px] shadow-[0_-12px_45px_rgba(0,0,0,0.35)] md:shadow-[0_25px_70px_rgba(0,0,0,0.5)] z-10 max-h-[94vh] md:max-h-[88vh] flex flex-col overflow-hidden font-sans border-t border-black/5 md:border dark:border-white/10 ${
           dragY > 0 ? '' : 'animate-slide-up-modal'
         }`}
       >
@@ -452,49 +452,49 @@ export const ProductDetailSheet: React.FC = () => {
               value={specialInstructions}
               onChange={(e) => setSpecialInstructions(e.target.value)}
               placeholder="e.g. Extra napkins, sauce on the side, no onions..."
-              className="w-full p-3.5 text-xs sm:text-sm border border-chonky-border dark:border-white/10 bg-white dark:bg-[#100707] rounded-2xl focus:outline-none focus:ring-2 focus:ring-chonky-red/20 focus:border-chonky-red text-chonky-text dark:text-white transition resize-none placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500"
+              className="w-full p-3.5 text-xs sm:text-sm border border-chonky-border dark:border-white/10 bg-white dark:bg-[#0D0707] rounded-2xl focus:outline-none focus:ring-2 focus:ring-chonky-red/20 focus:border-chonky-red text-chonky-text dark:text-white transition resize-none placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500"
             />
           </div>
         </div>
 
-        {/* Sticky Bottom Action Area (Frosted iOS Safe Area Glass Dock) */}
-        <div className="p-4 sm:p-5 border-t border-chonky-border/80 dark:border-white/10 bg-white/90 dark:bg-[#140909]/90 backdrop-blur-xl safe-bottom">
+        {/* Sticky Bottom Action Area - Balanced Equal Padding & Aligned Heights */}
+        <div className="p-5 sm:p-6 border-t border-black/5 dark:border-white/10 bg-white/95 dark:bg-[#080404]/95 backdrop-blur-xl shrink-0">
           <div className="flex items-center gap-3 sm:gap-4">
             
-            {/* Quantity Stepper (iOS Segmented Pill) */}
-            <div className="flex items-center border border-chonky-border dark:border-white/15 rounded-full bg-chonky-subtle dark:bg-white/10 p-1 shrink-0">
+            {/* Quantity Stepper (iOS Segmented Pill matching CTA height) */}
+            <div className="h-[54px] flex items-center border border-chonky-border dark:border-white/15 rounded-full bg-chonky-subtle dark:bg-white/10 px-2 gap-1 shrink-0">
               <button
                 type="button"
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                 disabled={quantity <= 1}
-                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center disabled:opacity-40 transition shadow-xs active:scale-90"
+                className="w-9 h-9 rounded-full bg-white dark:bg-[#1A0D0D] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center disabled:opacity-40 transition shadow-xs active:scale-90"
                 aria-label="Decrease quantity"
               >
-                <Minus className="w-3.5 h-3.5" />
+                <Minus className="w-4 h-4" />
               </button>
-              <span className="w-8 text-center text-sm font-black text-chonky-text dark:text-white">
+              <span className="w-9 text-center text-sm font-black text-chonky-text dark:text-white">
                 {quantity}
               </span>
               <button
                 type="button"
                 onClick={() => setQuantity(prev => Math.min(20, prev + 1))}
-                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center transition shadow-xs active:scale-90"
+                className="w-9 h-9 rounded-full bg-white dark:bg-[#1A0D0D] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center transition shadow-xs active:scale-90"
                 aria-label="Increase quantity"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Add to Cart CTA Button with Tactile Press Feedback */}
+            {/* Add to Cart CTA Button with Balanced Equal Height & Space */}
             <button
               type="button"
               onClick={handleAddToCart}
-              className="flex-1 py-4 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-95 shadow-glow-red"
+              className="h-[54px] flex-1 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
             >
               <span>
                 {editingCartItem ? 'Update Order' : 'Add to Cart'}
               </span>
-              <span className="font-black tracking-tight text-lg">
+              <span className="font-black tracking-tight text-base sm:text-lg">
                 MVR {calculatedTotalPrice}
               </span>
             </button>

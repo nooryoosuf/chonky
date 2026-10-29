@@ -29,11 +29,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <article
       onClick={() => openCustomizer(product)}
-      className="group relative bg-white dark:bg-[#1A1111]/90 backdrop-blur-md rounded-[1.75rem] sm:rounded-[2rem] p-3 sm:p-3.5 border border-chonky-border/70 dark:border-white/10 hover:border-chonky-red/40 dark:hover:border-chonky-red/60 shadow-card dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-hover dark:hover:shadow-[0_12px_40px_rgba(112,8,8,0.3)] transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1.5 active:scale-[0.99] select-none"
+      className="group relative bg-white dark:bg-[#0A0505]/95 backdrop-blur-md rounded-[1.75rem] sm:rounded-[2rem] p-3 sm:p-3.5 border border-chonky-border/70 dark:border-white/10 hover:border-chonky-red/40 dark:hover:border-chonky-red/60 shadow-card dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-hover dark:hover:shadow-[0_12px_40px_rgba(112,8,8,0.3)] transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1.5 active:scale-[0.99] select-none"
     >
       <div>
         {/* Floating Image Stage with Squircle Frame */}
-        <div className="relative aspect-[4/3] w-full rounded-[1.35rem] sm:rounded-[1.5rem] overflow-hidden bg-chonky-subtle dark:bg-[#120909]">
+        <div className="relative aspect-[4/3] w-full rounded-[1.35rem] sm:rounded-[1.5rem] overflow-hidden bg-chonky-subtle dark:bg-[#070303]">
           <img
             src={product.image}
             alt={product.name}

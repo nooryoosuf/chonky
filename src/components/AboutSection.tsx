@@ -45,7 +45,7 @@ export const AboutSection: React.FC = () => {
           {/* Visual Showcase collage */}
           <div className="lg:col-span-5 grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <div className="rounded-[2.2rem] overflow-hidden aspect-[4/5] shadow-hover bg-chonky-subtle dark:bg-[#150B0B] group">
+              <div className="rounded-[2.2rem] overflow-hidden aspect-[4/5] shadow-hover bg-chonky-subtle dark:bg-[#080404] group">
                 <img
                   src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=700&q=80"
                   alt="Smash griddle action"
@@ -63,7 +63,7 @@ export const AboutSection: React.FC = () => {
                 <p className="text-3xl font-black text-chonky-peach">30 Mins</p>
                 <p className="text-xs font-bold text-white/90 mt-0.5">Average Island Delivery</p>
               </div>
-              <div className="rounded-[2.2rem] overflow-hidden aspect-[4/5] shadow-hover bg-chonky-subtle dark:bg-[#150B0B] group">
+              <div className="rounded-[2.2rem] overflow-hidden aspect-[4/5] shadow-hover bg-chonky-subtle dark:bg-[#080404] group">
                 <img
                   src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=700&q=80"
                   alt="Melted submarine sandwich"
@@ -75,7 +75,7 @@ export const AboutSection: React.FC = () => {
         </div>
 
         {/* Kitchen Info Bar */}
-        <div className="rounded-[2.5rem] bg-chonky-subtle dark:bg-[#170E0E] border border-chonky-border/70 dark:border-white/10 p-7 sm:p-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-xs sm:text-sm shadow-xs">
+        <div className="rounded-[2.5rem] bg-chonky-subtle dark:bg-[#0A0505] border border-chonky-border/70 dark:border-white/10 p-7 sm:p-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-xs sm:text-sm shadow-xs">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-chonky-red/10 dark:bg-chonky-red/30 text-chonky-red dark:text-chonky-peach flex items-center justify-center shrink-0">
               <Clock className="w-6 h-6" />

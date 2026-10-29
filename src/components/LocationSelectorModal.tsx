@@ -24,7 +24,7 @@ export const LocationSelectorModal: React.FC = () => {
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200 border border-chonky-border/70 dark:border-white/10">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200 border border-chonky-border/70 dark:border-white/10">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-chonky-border/60 dark:border-white/10 bg-chonky-peach-light/40 dark:bg-white/5">
           <div className="flex items-center gap-2.5">
@@ -52,7 +52,7 @@ export const LocationSelectorModal: React.FC = () => {
               onClick={() => setOrderType('delivery')}
               className={`flex items-center justify-center gap-2 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition ${
                 orderType === 'delivery'
-                  ? 'bg-white dark:bg-[#251515] text-chonky-red dark:text-chonky-peach shadow-sm'
+                  ? 'bg-white dark:bg-[#160B0B] text-chonky-red dark:text-chonky-peach shadow-sm'
                   : 'text-chonky-muted dark:text-gray-400 hover:text-chonky-text dark:hover:text-white'
               }`}
             >
@@ -63,7 +63,7 @@ export const LocationSelectorModal: React.FC = () => {
               onClick={() => setOrderType('pickup')}
               className={`flex items-center justify-center gap-2 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition ${
                 orderType === 'pickup'
-                  ? 'bg-white dark:bg-[#251515] text-chonky-red dark:text-chonky-peach shadow-sm'
+                  ? 'bg-white dark:bg-[#160B0B] text-chonky-red dark:text-chonky-peach shadow-sm'
                   : 'text-chonky-muted dark:text-gray-400 hover:text-chonky-text dark:hover:text-white'
               }`}
             >

@@ -98,11 +98,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Fluid Carousel Card Container */}
-        <div className="relative rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-to-br from-[#160808] via-[#250A0A] to-[#0E0404] text-white overflow-hidden shadow-hover border border-white/10 dark:border-chonky-red/30 min-h-[460px] sm:min-h-[490px] md:min-h-[520px] flex flex-col justify-between p-6 sm:p-10 md:p-12 transition-all">
+        <div className="relative rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-to-br from-[#100505] via-[#160707] to-[#060303] text-white overflow-hidden shadow-hover border border-white/10 dark:border-chonky-red/30 min-h-[460px] sm:min-h-[490px] md:min-h-[520px] flex flex-col justify-between p-6 sm:p-10 md:p-12 transition-all">
           
           {/* Subtle Ambient Radial Glow Behind Food */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] bg-chonky-red/40 rounded-full blur-3xl pointer-events-none -mr-20" />
-          <div className="absolute left-10 top-10 w-72 h-72 bg-chonky-red/15 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] bg-chonky-red/25 rounded-full blur-3xl pointer-events-none -mr-20" />
+          <div className="absolute left-10 top-10 w-72 h-72 bg-chonky-red/10 rounded-full blur-2xl pointer-events-none" />
 
           {/* Top Row: Slide Switcher Tabs with Progress Bars */}
           <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10">

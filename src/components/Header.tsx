@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {/* Top Banner Notice */}
-      <div className="bg-chonky-peach dark:bg-[#200A0A] text-chonky-text dark:text-chonky-peach text-xs py-1.5 px-4 text-center font-medium border-b border-chonky-peach-dark/30 dark:border-chonky-red/30 flex items-center justify-center gap-2 transition-colors">
+      <div className="bg-chonky-peach dark:bg-[#120505] text-chonky-text dark:text-chonky-peach text-xs py-1.5 px-4 text-center font-medium border-b border-chonky-peach-dark/30 dark:border-chonky-red/30 flex items-center justify-center gap-2 transition-colors">
         <Sparkles className="w-3.5 h-3.5 text-chonky-red dark:text-amber-400 animate-pulse" />
         <span>Hot fresh smash burgers & stone-baked pizza · Free delivery over MVR 350</span>
         <span className="hidden sm:inline text-chonky-muted dark:text-chonky-peach/70">| Open today 12:00 PM – 1:00 AM</span>
@@ -80,8 +80,8 @@ export const Header: React.FC<HeaderProps> = ({
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           isScrolled
-            ? 'bg-chonky-bg/95 dark:bg-[#120808]/90 backdrop-blur-md shadow-soft dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)] py-2.5 border-b border-chonky-border/70 dark:border-white/10'
-            : 'bg-chonky-bg/80 dark:bg-[#0F0909]/80 backdrop-blur-sm py-4 border-b border-chonky-border/40 dark:border-white/5'
+            ? 'bg-chonky-bg/95 dark:bg-[#070404]/90 backdrop-blur-md shadow-soft dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)] py-2.5 border-b border-chonky-border/70 dark:border-white/10'
+            : 'bg-chonky-bg/80 dark:bg-[#050303]/85 backdrop-blur-sm py-4 border-b border-chonky-border/40 dark:border-white/5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -254,7 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          <div className="relative w-4/5 max-w-xs bg-white dark:bg-[#150B0B] text-chonky-text dark:text-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-250 border-r border-chonky-border/60 dark:border-white/10">
+          <div className="relative w-4/5 max-w-xs bg-white dark:bg-[#080404] text-chonky-text dark:text-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-250 border-r border-chonky-border/60 dark:border-white/10">
             {/* Drawer Header (Icon removed) */}
             <div className="p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
               <img
@@ -278,7 +278,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setIsMobileMenuOpen(false);
                   openLocationSelector();
                 }}
-                className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-[#1E1313] border border-chonky-border dark:border-white/10 text-left shadow-xs"
+                className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-[#120707] border border-chonky-border dark:border-white/10 text-left shadow-xs"
               >
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />

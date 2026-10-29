@@ -11,7 +11,7 @@ export const CartBar: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 p-3 sm:hidden safe-bottom bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 z-40 p-3 sm:hidden safe-bottom bg-gradient-to-t from-white via-white/90 to-transparent dark:from-[#050303] dark:via-[#050303]/90 dark:to-transparent pointer-events-none">
       <div className="pointer-events-auto max-w-md mx-auto">
         <button
           onClick={openCart}

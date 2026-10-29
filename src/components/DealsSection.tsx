@@ -38,10 +38,10 @@ export const DealsSection: React.FC = () => {
             <div
               key={deal.id}
               onClick={() => openCustomizer(deal)}
-              className="bg-white dark:bg-[#1A1111]/90 rounded-[2.5rem] border border-chonky-border/70 dark:border-white/10 p-6 sm:p-7 shadow-card dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-hover dark:hover:shadow-[0_12px_40px_rgba(112,8,8,0.3)] transition-all duration-300 flex flex-col sm:flex-row gap-6 cursor-pointer group hover:-translate-y-1 active:scale-[0.99]"
+              className="bg-white dark:bg-[#0A0505]/95 rounded-[2.5rem] border border-chonky-border/70 dark:border-white/10 p-6 sm:p-7 shadow-card dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-hover dark:hover:shadow-[0_12px_40px_rgba(112,8,8,0.3)] transition-all duration-300 flex flex-col sm:flex-row gap-6 cursor-pointer group hover:-translate-y-1 active:scale-[0.99]"
             >
               {/* Image with Squircle Frame */}
-              <div className="relative aspect-[16/10] sm:w-52 sm:aspect-square rounded-[2rem] overflow-hidden bg-chonky-subtle dark:bg-[#120909] shrink-0">
+              <div className="relative aspect-[16/10] sm:w-52 sm:aspect-square rounded-[2rem] overflow-hidden bg-chonky-subtle dark:bg-[#070303] shrink-0">
                 <img
                   src={deal.image}
                   alt={deal.name}
