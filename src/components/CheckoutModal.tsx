@@ -15,7 +15,8 @@ import {
   AlertCircle, 
   Copy, 
   Check, 
-  ArrowLeft 
+  ArrowLeft,
+  ArrowRight 
 } from 'lucide-react';
 
 export const CheckoutModal: React.FC = () => {
@@ -109,7 +110,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
   // 1. ORDER CONFIRMATION VIEW
   if (completedOrder) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans">
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans h-[100dvh] max-h-[100dvh] overflow-hidden">
         <div 
           className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
           onClick={() => {
@@ -118,23 +119,26 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           }}
         />
 
-        <div className="relative w-full max-w-lg bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
+        <div className="relative w-full max-w-lg bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-t-[32px] sm:rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[92dvh] sm:max-h-[88vh] flex flex-col border-t sm:border border-chonky-border/70 dark:border-white/10">
+          {/* Mobile Grab Handle */}
+          <div className="w-10 h-1 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-2.5 sm:hidden shrink-0" />
+
           {/* Header */}
-          <div className="p-6 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 text-center border-b border-emerald-100 dark:border-emerald-900/40 relative">
-            <div className="w-14 h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
-              <CheckCircle2 className="w-8 h-8 stroke-[2.5]" />
+          <div className="p-5 sm:p-6 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 text-center border-b border-emerald-100 dark:border-emerald-900/40 relative shrink-0">
+            <div className="w-13 h-13 sm:w-14 sm:h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-2.5 shadow-md">
+              <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2.5]" />
             </div>
             <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-100">
               Order Received
             </span>
-            <h2 className="text-2xl font-black mt-2">Order Confirmed!</h2>
+            <h2 className="text-xl sm:text-2xl font-black mt-2">Order Confirmed!</h2>
             <p className="text-xs text-emerald-800 dark:text-emerald-300 mt-1">
               Order Reference: <strong className="font-mono text-emerald-950 dark:text-emerald-100">{completedOrder.orderId}</strong>
             </p>
           </div>
 
           {/* Details */}
-          <div className="p-6 overflow-y-auto space-y-5 text-sm">
+          <div className="p-5 sm:p-6 flex-1 min-h-0 overflow-y-auto space-y-5 text-sm overscroll-contain">
             <div className="p-3.5 rounded-2xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border/70 dark:border-white/10 text-xs flex items-center justify-between">
               <div>
                 <p className="text-chonky-muted dark:text-gray-400">Estimated Prep & Delivery</p>
@@ -192,10 +196,10 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           </div>
 
           {/* Footer Actions */}
-          <div className="p-5 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#0A0505] flex items-center gap-3">
+          <div className="shrink-0 p-5 sm:p-6 pb-[max(2rem,env(safe-area-inset-bottom,32px))] sm:pb-6 border-t border-chonky-border dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl flex items-center gap-3">
             <button
               onClick={handleCopySummary}
-              className="flex-1 py-3 px-4 rounded-full border border-chonky-border dark:border-white/10 hover:bg-chonky-subtle dark:hover:bg-white/5 text-chonky-text dark:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition"
+              className="flex-1 h-[48px] sm:h-[52px] px-4 rounded-full border border-chonky-border dark:border-white/10 hover:bg-chonky-subtle dark:hover:bg-white/5 text-chonky-text dark:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition active:scale-95"
             >
               {isCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
               <span>{isCopied ? 'Summary Copied!' : 'Copy Summary'}</span>
@@ -205,7 +209,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
                 resetCompletedOrder();
                 closeCheckout();
               }}
-              className="flex-1 py-3 px-4 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-bold text-xs sm:text-sm text-center transition shadow-glow-red"
+              className="flex-1 h-[48px] sm:h-[52px] px-4 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-bold text-xs sm:text-sm text-center transition shadow-glow-red active:scale-95"
             >
               Order More Food
             </button>
@@ -217,16 +221,19 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
 
   // 2. CHECKOUT FORM VIEW
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 font-sans">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans h-[100dvh] max-h-[100dvh] overflow-hidden">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
         onClick={closeCheckout}
       />
 
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-250 max-h-[92vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
+      <div className="relative w-full max-w-xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-t-[32px] sm:rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 sm:zoom-in-95 slide-in-from-bottom-5 sm:slide-in-from-bottom-0 duration-250 max-h-[92dvh] sm:max-h-[88vh] flex flex-col border-t sm:border border-chonky-border/70 dark:border-white/10">
+        {/* Mobile Grab Handle */}
+        <div className="w-10 h-1 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-2.5 sm:hidden shrink-0" />
+
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
+        <div className="p-4 sm:p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5 shrink-0">
           <div className="flex items-center gap-2">
             <button
               onClick={closeCheckout}
@@ -248,8 +255,8 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           </button>
         </div>
 
-        {/* Scrollable Form */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-5 sm:p-6 space-y-5">
+        {/* Scrollable Form Body */}
+        <form id="checkout-form" onSubmit={handleSubmit} className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-5 overscroll-contain">
           
           {/* Order Type Toggle */}
           <div>
@@ -482,26 +489,31 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
               <span className="text-chonky-red dark:text-[#ff4d4d]">MVR {total}</span>
             </div>
           </div>
-
-          {/* Sticky Submit Button */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-center gap-2 transition shadow-glow-red disabled:opacity-60 active:scale-95"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Submitting Order...</span>
-                </div>
-              ) : (
-                <span>Confirm & Place Order · MVR {total}</span>
-              )}
-            </button>
-          </div>
-
         </form>
+
+        {/* Sticky Bottom Action Dock with Guaranteed Safe Clearance */}
+        <div className="shrink-0 p-5 sm:p-6 pb-[max(2rem,env(safe-area-inset-bottom,32px))] sm:pb-6 border-t border-chonky-border/70 dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl">
+          <button
+            type="submit"
+            form="checkout-form"
+            disabled={isSubmitting}
+            className="w-full h-[54px] sm:h-[56px] px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red disabled:opacity-60"
+          >
+            <span>
+              {isSubmitting ? 'Submitting Order...' : 'Confirm & Place Order'}
+            </span>
+            <div className="flex items-center gap-2">
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <span className="font-black text-base sm:text-lg">MVR {total}</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </>
+              )}
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );

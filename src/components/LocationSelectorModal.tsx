@@ -16,7 +16,7 @@ export const LocationSelectorModal: React.FC = () => {
   if (!isLocationSelectorOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans h-[100dvh] max-h-[100dvh] overflow-hidden">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/65 backdrop-blur-sm transition-opacity"
@@ -24,9 +24,12 @@ export const LocationSelectorModal: React.FC = () => {
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200 border border-chonky-border/70 dark:border-white/10">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-t-[32px] sm:rounded-3xl shadow-modal dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200 border-t sm:border border-chonky-border/70 dark:border-white/10 max-h-[92dvh] sm:max-h-[85vh] flex flex-col">
+        {/* Mobile Grab Handle */}
+        <div className="w-10 h-1 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-2.5 sm:hidden shrink-0" />
+
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-chonky-border/60 dark:border-white/10 bg-chonky-peach-light/40 dark:bg-white/5">
+        <div className="flex items-center justify-between p-5 border-b border-chonky-border/60 dark:border-white/10 bg-chonky-peach-light/40 dark:bg-white/5 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-chonky-red/10 dark:bg-chonky-red/30 text-chonky-red dark:text-chonky-peach flex items-center justify-center">
               <MapPin className="w-5 h-5" />
@@ -74,7 +77,7 @@ export const LocationSelectorModal: React.FC = () => {
         </div>
 
         {/* Location List */}
-        <div className="p-5 pt-2 max-h-[60vh] overflow-y-auto space-y-2">
+        <div className="p-5 pt-2 flex-1 min-h-0 overflow-y-auto space-y-2 overscroll-contain">
           {orderType === 'delivery' ? (
             <>
               <p className="text-xs font-black uppercase tracking-wider text-chonky-muted dark:text-gray-400 mb-2">
@@ -147,8 +150,8 @@ export const LocationSelectorModal: React.FC = () => {
           )}
         </div>
 
-        {/* Footer info */}
-        <div className="p-4 bg-chonky-subtle dark:bg-white/5 text-center border-t border-chonky-border dark:border-white/10 text-xs text-chonky-muted dark:text-gray-400">
+        {/* Footer info with Safe Area Clearance */}
+        <div className="shrink-0 p-4 pb-[max(1.75rem,env(safe-area-inset-bottom,28px))] sm:pb-4 bg-chonky-subtle dark:bg-white/5 text-center border-t border-chonky-border dark:border-white/10 text-xs text-chonky-muted dark:text-gray-400">
           Free delivery on all orders above <strong className="text-chonky-text dark:text-white">MVR 350</strong>!
         </div>
       </div>
