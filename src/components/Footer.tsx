@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Heart, ArrowRight, Sparkles, Clock, ShieldCheck } 
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-gradient-to-b from-chonky-red to-[#4d0404] text-chonky-peach pt-16 pb-12 border-t-4 border-chonky-peach/30 selection:bg-chonky-peach selection:text-chonky-red">
+    <footer className="bg-gradient-to-b from-chonky-red to-[#4d0404] text-chonky-peach pt-16 pb-28 sm:pb-24 border-t-4 border-chonky-peach/30 selection:bg-chonky-peach selection:text-chonky-red">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Top Callout / Crave Club Banner */}

@@ -222,7 +222,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Shopping Cart Button */}
               <button
                 onClick={openCart}
-                className={`relative flex items-center gap-2.5 px-4 py-2.5 rounded-full font-black text-xs sm:text-sm transition-all duration-200 select-none ${
+                className={`relative flex items-center gap-2.5 h-[42px] sm:h-[44px] px-4 sm:px-5 rounded-full font-black text-xs sm:text-sm transition-all duration-200 select-none ${
                   itemCount > 0
                     ? 'bg-chonky-red text-white hover:bg-chonky-red-light shadow-glow-red transform active:scale-95'
                     : 'bg-white dark:bg-white/10 text-chonky-text dark:text-white hover:bg-chonky-peach/40 dark:hover:bg-white/15 border border-chonky-border dark:border-white/10 shadow-xs'
@@ -232,7 +232,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="relative">
                   <ShoppingBag className="w-4 h-4" />
                   {itemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                    <span className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[10px] font-black min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-xs">
                       {itemCount}
                     </span>
                   )}

@@ -231,9 +231,9 @@ export const CartDrawer: React.FC = () => {
 
         {/* Footer Order Summary & Checkout Trigger */}
         {items.length > 0 && (
-          <div className="p-5 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#0A0505] safe-bottom shadow-sheet space-y-3">
+          <div className="p-5 sm:p-6 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#0A0505] safe-bottom shadow-sheet space-y-4">
             {/* Breakdown */}
-            <div className="space-y-1.5 text-xs text-chonky-muted dark:text-gray-400">
+            <div className="space-y-2 text-xs text-chonky-muted dark:text-gray-400">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span className="font-semibold text-chonky-text dark:text-white">MVR {subtotal}</span>
@@ -258,14 +258,14 @@ export const CartDrawer: React.FC = () => {
               </div>
             </div>
 
-            {/* Checkout Action Button */}
+            {/* Checkout Action Button with Equal Heights and Spacing */}
             <button
               onClick={openCheckout}
-              className="w-full py-4 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
+              className="w-full h-[54px] sm:h-[56px] px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
             >
               <span>Proceed to Checkout</span>
               <div className="flex items-center gap-2">
-                <span className="font-black text-lg">MVR {total}</span>
+                <span className="font-black text-base sm:text-lg">MVR {total}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </div>
             </button>
