@@ -29,18 +29,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <article
       onClick={() => openCustomizer(product)}
-      className="group relative bg-white rounded-[1.75rem] sm:rounded-[2rem] p-3 sm:p-3.5 border border-chonky-border/70 hover:border-chonky-red/30 shadow-card hover:shadow-hover transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1.5 active:scale-[0.99] select-none"
+      className="group relative bg-white dark:bg-[#1A1111]/90 backdrop-blur-md rounded-[1.75rem] sm:rounded-[2rem] p-3 sm:p-3.5 border border-chonky-border/70 dark:border-white/10 hover:border-chonky-red/40 dark:hover:border-chonky-red/60 shadow-card dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-hover dark:hover:shadow-[0_12px_40px_rgba(112,8,8,0.3)] transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1.5 active:scale-[0.99] select-none"
     >
       <div>
         {/* Floating Image Stage with Squircle Frame */}
-        <div className="relative aspect-[4/3] w-full rounded-[1.35rem] sm:rounded-[1.5rem] overflow-hidden bg-chonky-subtle">
+        <div className="relative aspect-[4/3] w-full rounded-[1.35rem] sm:rounded-[1.5rem] overflow-hidden bg-chonky-subtle dark:bg-[#120909]">
           <img
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover object-center transform group-hover:scale-108 transition-transform duration-700 ease-out"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
           {/* Badge Pill */}
           {product.badge && (
@@ -55,36 +55,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Prep Time Glass Pill */}
           {product.prepTime && (
-            <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-white/10 shadow-xs">
+            <div className="absolute bottom-2.5 left-2.5 bg-black/65 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-white/15 shadow-xs">
               <Clock className="w-2.5 h-2.5 text-chonky-peach" />
               <span>{product.prepTime}</span>
             </div>
           )}
 
           {/* Subtle Category Micro-tag */}
-          <div className="absolute top-2.5 right-2.5 bg-white/80 backdrop-blur-md text-chonky-text text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2.5 right-2.5 bg-white/80 dark:bg-black/60 backdrop-blur-md text-chonky-text dark:text-gray-200 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
             {product.category}
           </div>
         </div>
 
         {/* Content Box */}
         <div className="pt-3.5 pb-1 px-1 space-y-1.5">
-          <h3 className="font-extrabold text-sm sm:text-base text-chonky-text group-hover:text-chonky-red transition-colors line-clamp-1 font-sans">
+          <h3 className="font-extrabold text-sm sm:text-base text-chonky-text dark:text-[#F7F3EE] group-hover:text-chonky-red dark:group-hover:text-chonky-peach transition-colors line-clamp-1 font-sans">
             {product.name}
           </h3>
-          <p className="text-xs text-chonky-muted line-clamp-2 leading-relaxed font-normal">
+          <p className="text-xs text-chonky-muted dark:text-gray-400 line-clamp-2 leading-relaxed font-normal">
             {product.description}
           </p>
         </div>
       </div>
 
       {/* Bottom Price & Add Action Row */}
-      <div className="pt-3 px-1 mt-2 border-t border-chonky-border/50 flex items-center justify-between">
+      <div className="pt-3 px-1 mt-2 border-t border-chonky-border/50 dark:border-white/10 flex items-center justify-between">
         <div>
-          <span className="text-[10px] uppercase font-bold text-chonky-muted tracking-wider block leading-none">
+          <span className="text-[10px] uppercase font-bold text-chonky-muted dark:text-gray-400 tracking-wider block leading-none">
             MVR
           </span>
-          <span className="text-lg sm:text-xl font-black text-chonky-red tracking-tight leading-tight">
+          <span className="text-lg sm:text-xl font-black text-chonky-red dark:text-[#ff4d4d] tracking-tight leading-tight">
             {product.basePrice}
           </span>
         </div>
@@ -96,7 +96,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             e.stopPropagation();
             openCustomizer(product);
           }}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-chonky-peach-light group-hover:bg-chonky-red text-chonky-text group-hover:text-white border border-chonky-border group-hover:border-chonky-red flex items-center justify-center transition-all duration-300 transform group-hover:scale-105 active:scale-90 shadow-xs group-hover:shadow-glow-red"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-chonky-peach-light dark:bg-white/10 group-hover:bg-chonky-red text-chonky-text dark:text-white border border-chonky-border dark:border-white/10 group-hover:border-chonky-red flex items-center justify-center transition-all duration-300 transform group-hover:scale-105 active:scale-90 shadow-xs group-hover:shadow-glow-red"
           aria-label={`Customize and add ${product.name}`}
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />

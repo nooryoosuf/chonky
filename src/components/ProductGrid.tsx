@@ -37,17 +37,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       {/* 1. FAN FAVOURITES / WORTH THE CRAVING SECTION (Show only when no search is active and category is 'all') */}
       {!searchQuery && selectedCategory === 'all' && (
         <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 border-b border-chonky-border pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 border-b border-chonky-border/70 dark:border-white/10 pb-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-chonky-red text-xs font-black uppercase tracking-wider mb-1">
-                <Flame className="w-4 h-4 fill-chonky-red" />
+              <div className="inline-flex items-center gap-1.5 text-chonky-red dark:text-amber-400 text-xs font-black uppercase tracking-wider mb-1">
+                <Flame className="w-4 h-4 fill-current" />
                 <span>Fan Favourites</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-chonky-text tracking-tight font-sans">
+              <h2 className="text-xl sm:text-2xl font-black text-chonky-text dark:text-[#F7F3EE] tracking-tight font-sans">
                 Worth the Craving
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-chonky-muted">
+            <p className="text-xs sm:text-sm text-chonky-muted dark:text-gray-400">
               Most ordered smash burgers, loaded subs, and stone-baked slices
             </p>
           </div>
@@ -64,13 +64,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       <section className="space-y-8">
         
         {/* Section Heading & Result count */}
-        <div className="flex items-end justify-between border-b border-chonky-border pb-3">
+        <div className="flex items-end justify-between border-b border-chonky-border/70 dark:border-white/10 pb-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-chonky-red text-xs font-bold uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-1.5 text-chonky-red dark:text-chonky-peach text-xs font-bold uppercase tracking-wider mb-1">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Artisanal Kitchen</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-chonky-text tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-chonky-text dark:text-[#F7F3EE] tracking-tight font-sans">
               {searchQuery ? (
                 <span>Search Results for "{searchQuery}"</span>
               ) : selectedCategory === 'all' ? (
@@ -80,7 +80,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               )}
             </h2>
           </div>
-          <span className="text-xs font-semibold text-chonky-muted">
+          <span className="text-xs font-bold text-chonky-muted dark:text-gray-400">
             {filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}
           </span>
         </div>
@@ -88,18 +88,18 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         {/* Empty State */}
         {filteredProducts.length === 0 ? (
           <div className="py-16 text-center space-y-4 max-w-sm mx-auto">
-            <div className="w-16 h-16 rounded-full bg-chonky-peach/50 text-chonky-red flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 rounded-full bg-chonky-peach/50 dark:bg-white/10 text-chonky-red dark:text-chonky-peach flex items-center justify-center mx-auto">
               <SearchX className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-chonky-text">No delicious matches found</h3>
-              <p className="text-xs text-chonky-muted mt-1 leading-relaxed">
+              <h3 className="font-bold text-base text-chonky-text dark:text-white">No delicious matches found</h3>
+              <p className="text-xs text-chonky-muted dark:text-gray-400 mt-1 leading-relaxed">
                 We couldn't find anything matching "{searchQuery}". Try searching for burgers, pepperoni, fries or tenders.
               </p>
             </div>
             <button
               onClick={onClearSearch}
-              className="px-5 py-2 rounded-full bg-chonky-subtle hover:bg-chonky-peach text-xs font-bold text-chonky-text border border-chonky-border transition"
+              className="px-5 py-2.5 rounded-full bg-chonky-subtle dark:bg-white/10 hover:bg-chonky-peach dark:hover:bg-white/20 text-xs font-bold text-chonky-text dark:text-white border border-chonky-border dark:border-white/10 transition"
             >
               Clear Search & Show All
             </button>
@@ -113,16 +113,16 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
               return (
                 <div key={cat.id} id={`cat-${cat.id}`} className="space-y-4 pt-4 scroll-mt-28">
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 border-b border-chonky-border/60 pb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 border-b border-chonky-border/60 dark:border-white/10 pb-2">
                     <div>
-                      <h3 className="text-lg sm:text-xl font-black text-chonky-text tracking-tight">
+                      <h3 className="text-lg sm:text-xl font-black text-chonky-text dark:text-white tracking-tight font-sans">
                         {cat.name}
                       </h3>
                       {cat.description && (
-                        <p className="text-xs text-chonky-muted">{cat.description}</p>
+                        <p className="text-xs text-chonky-muted dark:text-gray-400">{cat.description}</p>
                       )}
                     </div>
-                    <span className="text-xs font-medium text-chonky-muted">
+                    <span className="text-xs font-bold text-chonky-muted dark:text-gray-400">
                       {catProducts.length} items
                     </span>
                   </div>

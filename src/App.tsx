@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { HeroCarousel } from './components/HeroCarousel';
 import { CategoryNav } from './components/CategoryNav';
@@ -26,58 +27,84 @@ export function AppContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-chonky-bg selection:bg-chonky-peach selection:text-chonky-red">
-      {/* 1. Sticky Navigation Header */}
-      <Header
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-      />
+    <div className="relative min-h-screen flex flex-col bg-chonky-bg dark:bg-[#0E0707] text-chonky-text dark:text-[#F7F3EE] transition-colors duration-500 selection:bg-chonky-peach selection:text-chonky-red">
+      
+      {/* Red Ambient Background Glows (Active in Dark Mode) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden dark:opacity-100 opacity-0 transition-opacity duration-700">
+        {/* Glow 1: Top-Left Ambient Halo */}
+        <div className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full bg-gradient-to-br from-chonky-red/35 via-[#4d0404]/20 to-transparent blur-[140px]" />
+        
+        {/* Glow 2: Center-Right Warm Red Flame */}
+        <div className="absolute top-[35%] -right-40 w-[700px] h-[700px] rounded-full bg-gradient-to-bl from-chonky-red/30 via-rose-950/20 to-transparent blur-[150px]" />
+        
+        {/* Glow 3: Bottom-Left Food Hearth Glow */}
+        <div className="absolute top-[75%] -left-32 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-chonky-red/25 via-amber-950/15 to-transparent blur-[140px]" />
+        
+        {/* Subtle dot/mesh pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.03] mix-blend-screen"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)`,
+            backgroundSize: '36px 36px'
+          }}
+        />
+      </div>
 
-      {/* 2. Hero Promotional Carousel */}
-      <HeroCarousel onSelectCategory={handleCategorySelect} />
-
-      {/* 3. Horizontal Category Navigation */}
-      <CategoryNav
-        activeCategory={selectedCategory}
-        onSelectCategory={handleCategorySelect}
-      />
-
-      {/* 4. Main Menu & Food Merchandising */}
-      <main className="flex-1">
-        <ProductGrid
-          products={PRODUCTS}
-          selectedCategory={selectedCategory}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* 1. Sticky Navigation Header */}
+        <Header
           searchQuery={searchQuery}
-          onClearSearch={() => setSearchQuery('')}
+          setSearchQuery={setSearchQuery}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
         />
 
-        {/* 5. Combos & Deals Section */}
-        <DealsSection />
+        {/* 2. Hero Promotional Carousel */}
+        <HeroCarousel onSelectCategory={handleCategorySelect} />
 
-        {/* 6. Editorial Brand Story & About */}
-        <AboutSection />
-      </main>
+        {/* 3. Horizontal Category Navigation */}
+        <CategoryNav
+          activeCategory={selectedCategory}
+          onSelectCategory={handleCategorySelect}
+        />
 
-      {/* 7. Footer */}
-      <Footer />
+        {/* 4. Main Menu & Food Merchandising */}
+        <main className="flex-1">
+          <ProductGrid
+            products={PRODUCTS}
+            selectedCategory={selectedCategory}
+            searchQuery={searchQuery}
+            onClearSearch={() => setSearchQuery('')}
+          />
 
-      {/* Modals & Overlays */}
-      <ProductDetailSheet />
-      <CartDrawer />
-      <CartBar />
-      <CheckoutModal />
-      <LocationSelectorModal />
+          {/* 5. Combos & Deals Section */}
+          <DealsSection />
+
+          {/* 6. Editorial Brand Story & About */}
+          <AboutSection />
+        </main>
+
+        {/* 7. Footer */}
+        <Footer />
+
+        {/* Modals & Overlays */}
+        <ProductDetailSheet />
+        <CartDrawer />
+        <CartBar />
+        <CheckoutModal />
+        <LocationSelectorModal />
+      </div>
     </div>
   );
 }
 
 export function App() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <ThemeProvider>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </ThemeProvider>
   );
 }
 

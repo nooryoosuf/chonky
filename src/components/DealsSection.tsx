@@ -8,7 +8,7 @@ export const DealsSection: React.FC = () => {
   const dealProducts = PRODUCTS.filter(p => p.category === 'deals');
 
   return (
-    <section id="deals-section" className="bg-gradient-to-b from-chonky-peach-light/60 to-chonky-bg border-y border-chonky-peach-dark/30 py-16 sm:py-20">
+    <section id="deals-section" className="bg-gradient-to-b from-chonky-peach-light/60 to-chonky-bg dark:from-[#1A0C0C]/80 dark:to-[#0F0707] border-y border-chonky-peach-dark/30 dark:border-white/10 py-16 sm:py-20 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Header */}
@@ -18,15 +18,15 @@ export const DealsSection: React.FC = () => {
               <Tag className="w-3.5 h-3.5" />
               <span>Limited Crave Combos</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-chonky-text tracking-tight font-sans">
+            <h2 className="text-3xl sm:text-4xl font-black text-chonky-text dark:text-white tracking-tight font-sans">
               Curated Squad Feasts
             </h2>
-            <p className="text-xs sm:text-sm text-chonky-muted max-w-lg">
+            <p className="text-xs sm:text-sm text-chonky-muted dark:text-gray-400 max-w-lg">
               Designed for sharing, late-night squad cravings, and movie nights. Handpicked with guaranteed savings.
             </p>
           </div>
 
-          <div className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-chonky-border text-xs font-black text-chonky-red shadow-xs">
+          <div className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-white/10 border border-chonky-border dark:border-white/10 text-xs font-black text-chonky-red dark:text-chonky-peach shadow-xs">
             <Sparkles className="w-4 h-4" />
             <span>Save up to MVR 85 on Combos</span>
           </div>
@@ -38,10 +38,10 @@ export const DealsSection: React.FC = () => {
             <div
               key={deal.id}
               onClick={() => openCustomizer(deal)}
-              className="bg-white rounded-[2.5rem] border border-chonky-border/70 p-6 sm:p-7 shadow-card hover:shadow-hover transition-all duration-300 flex flex-col sm:flex-row gap-6 cursor-pointer group hover:-translate-y-1 active:scale-[0.99]"
+              className="bg-white dark:bg-[#1A1111]/90 rounded-[2.5rem] border border-chonky-border/70 dark:border-white/10 p-6 sm:p-7 shadow-card dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-hover dark:hover:shadow-[0_12px_40px_rgba(112,8,8,0.3)] transition-all duration-300 flex flex-col sm:flex-row gap-6 cursor-pointer group hover:-translate-y-1 active:scale-[0.99]"
             >
               {/* Image with Squircle Frame */}
-              <div className="relative aspect-[16/10] sm:w-52 sm:aspect-square rounded-[2rem] overflow-hidden bg-chonky-subtle shrink-0">
+              <div className="relative aspect-[16/10] sm:w-52 sm:aspect-square rounded-[2rem] overflow-hidden bg-chonky-subtle dark:bg-[#120909] shrink-0">
                 <img
                   src={deal.image}
                   alt={deal.name}
@@ -55,20 +55,20 @@ export const DealsSection: React.FC = () => {
               {/* Info */}
               <div className="flex-1 flex flex-col justify-between">
                 <div className="space-y-2">
-                  <h3 className="text-xl font-black text-chonky-text group-hover:text-chonky-red transition-colors font-sans">
+                  <h3 className="text-xl font-black text-chonky-text dark:text-white group-hover:text-chonky-red dark:group-hover:text-chonky-peach transition-colors font-sans">
                     {deal.name}
                   </h3>
-                  <p className="text-xs text-chonky-muted leading-relaxed font-normal">
+                  <p className="text-xs text-chonky-muted dark:text-gray-400 leading-relaxed font-normal">
                     {deal.description}
                   </p>
                 </div>
 
-                <div className="mt-5 pt-4 border-t border-chonky-border/50 flex items-center justify-between">
+                <div className="mt-5 pt-4 border-t border-chonky-border/50 dark:border-white/10 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-chonky-muted tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-chonky-muted dark:text-gray-400 tracking-wider block">
                       Bundle Price
                     </span>
-                    <p className="text-2xl font-black text-chonky-red leading-none">
+                    <p className="text-2xl font-black text-chonky-red dark:text-[#ff4d4d] leading-none">
                       MVR {deal.basePrice}
                     </p>
                   </div>

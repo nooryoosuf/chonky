@@ -51,7 +51,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   };
 
   return (
-    <div className="sticky top-[61px] sm:top-[69px] z-30 bg-chonky-bg/90 backdrop-blur-xl border-b border-chonky-border/70 py-2.5 sm:py-3 transition-all">
+    <div className="sticky top-[61px] sm:top-[69px] z-30 bg-chonky-bg/90 dark:bg-[#120808]/90 backdrop-blur-xl border-b border-chonky-border/70 dark:border-white/10 py-2.5 sm:py-3 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div 
           ref={scrollRef}
@@ -66,10 +66,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 className={`whitespace-nowrap px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-black flex items-center gap-2 transition-all duration-200 shrink-0 select-none ${
                   isSelected
                     ? 'bg-chonky-red text-white shadow-glow-red scale-[1.03]'
-                    : 'bg-white text-chonky-text hover:bg-chonky-peach-light/70 border border-chonky-border/80 text-chonky-muted hover:text-chonky-text active:scale-95'
+                    : 'bg-white dark:bg-white/5 text-chonky-text dark:text-gray-300 hover:bg-chonky-peach-light/70 dark:hover:bg-white/10 border border-chonky-border/80 dark:border-white/10 text-chonky-muted hover:text-chonky-text dark:hover:text-white active:scale-95'
                 }`}
               >
-                <span className={isSelected ? 'text-white' : 'text-chonky-red'}>
+                <span className={isSelected ? 'text-white' : 'text-chonky-red dark:text-chonky-peach'}>
                   {getCategoryIcon(cat.id)}
                 </span>
                 <span>{cat.name}</span>

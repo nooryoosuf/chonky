@@ -218,16 +218,16 @@ export const ProductDetailSheet: React.FC = () => {
       <div
         ref={sheetRef}
         style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
-        className="relative w-full md:max-w-xl lg:max-w-2xl bg-white rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-250 transition-transform font-sans"
+        className="relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-250 transition-transform font-sans border-t border-chonky-border/80 md:border dark:border-white/10"
       >
         {/* Mobile Swipe Handle */}
         <div 
-          className="md:hidden pt-3 pb-1 flex justify-center bg-white cursor-grab active:cursor-grabbing touch-none select-none"
+          className="md:hidden pt-3 pb-1 flex justify-center bg-white dark:bg-[#160D0D] cursor-grab active:cursor-grabbing touch-none select-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+          <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full" />
         </div>
 
         {/* Scrollable Content Body */}
@@ -238,18 +238,18 @@ export const ProductDetailSheet: React.FC = () => {
           onTouchEnd={handleTouchEnd}
         >
           {/* Hero Image Section with Close Button */}
-          <div className="relative aspect-[16/9] w-full bg-chonky-subtle">
+          <div className="relative aspect-[16/9] w-full bg-chonky-subtle dark:bg-black/50">
             <img
               src={customizingProduct.image}
               alt={customizingProduct.name}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 
             {/* Close Button */}
             <button
               onClick={closeCustomizer}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/75 text-white backdrop-blur-md flex items-center justify-center transition border border-white/20"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-md flex items-center justify-center transition border border-white/20 active:scale-90"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -278,8 +278,8 @@ export const ProductDetailSheet: React.FC = () => {
           </div>
 
           {/* Description */}
-          <div className="p-5 border-b border-chonky-border/60">
-            <p className="text-xs sm:text-sm text-chonky-muted leading-relaxed">
+          <div className="p-5 border-b border-chonky-border/60 dark:border-white/10">
+            <p className="text-xs sm:text-sm text-chonky-muted dark:text-gray-300 leading-relaxed">
               {customizingProduct.description}
             </p>
           </div>
@@ -292,32 +292,32 @@ export const ProductDetailSheet: React.FC = () => {
             return (
               <div
                 key={group.id}
-                className={`p-5 border-b border-chonky-border/60 transition ${
-                  isMissing ? 'bg-rose-50/60' : ''
+                className={`p-5 border-b border-chonky-border/60 dark:border-white/10 transition ${
+                  isMissing ? 'bg-rose-50/60 dark:bg-rose-950/30' : ''
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-sm sm:text-base text-chonky-text">
+                    <h3 className="font-bold text-sm sm:text-base text-chonky-text dark:text-white">
                       {group.title}
                     </h3>
                     {group.required ? (
                       <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                         isMissing
                           ? 'bg-rose-600 text-white animate-pulse'
-                          : 'bg-chonky-red/10 text-chonky-red'
+                          : 'bg-chonky-red/10 dark:bg-chonky-red/30 text-chonky-red dark:text-chonky-peach'
                       }`}>
                         Required · Pick 1
                       </span>
                     ) : (
-                      <span className="text-[11px] font-medium text-chonky-muted">
+                      <span className="text-[11px] font-medium text-chonky-muted dark:text-gray-400">
                         Optional
                       </span>
                     )}
                   </div>
 
                   {hasSelection && (
-                    <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1">
+                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <Check className="w-3.5 h-3.5" />
                       Selected
                     </span>
@@ -325,7 +325,7 @@ export const ProductDetailSheet: React.FC = () => {
                 </div>
 
                 {isMissing && (
-                  <p className="text-xs font-semibold text-rose-600 flex items-center gap-1 mb-2.5">
+                  <p className="text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1 mb-2.5">
                     <AlertCircle className="w-3.5 h-3.5" />
                     Please choose one option to continue.
                   </p>
@@ -342,16 +342,16 @@ export const ProductDetailSheet: React.FC = () => {
                         onClick={() => handleOptionSelect(group.id, choice.id)}
                         className={`text-left p-3 rounded-xl border transition-all flex items-center justify-between ${
                           isSelected
-                            ? 'border-chonky-red bg-chonky-red/5 ring-1 ring-chonky-red'
-                            : 'border-chonky-border hover:border-chonky-red/40 hover:bg-chonky-peach-light/30'
+                            ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
+                            : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:border-chonky-red/40 hover:bg-chonky-peach-light/30 dark:hover:bg-white/10'
                         }`}
                       >
                         <div className="flex-1 pr-2">
-                          <p className="font-semibold text-xs sm:text-sm text-chonky-text">
+                          <p className="font-semibold text-xs sm:text-sm text-chonky-text dark:text-white">
                             {choice.name}
                           </p>
                           {choice.priceDelta !== 0 && (
-                            <p className="text-xs font-bold text-chonky-red mt-0.5">
+                            <p className="text-xs font-bold text-chonky-red dark:text-[#ff6666] mt-0.5">
                               {choice.priceDelta > 0 ? `+ MVR ${choice.priceDelta}` : `- MVR ${Math.abs(choice.priceDelta)}`}
                             </p>
                           )}
@@ -361,7 +361,7 @@ export const ProductDetailSheet: React.FC = () => {
                         <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                           isSelected
                             ? 'border-chonky-red bg-chonky-red text-white'
-                            : 'border-chonky-border bg-white'
+                            : 'border-chonky-border dark:border-white/20 bg-white dark:bg-transparent'
                         }`}>
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
@@ -375,12 +375,12 @@ export const ProductDetailSheet: React.FC = () => {
 
           {/* Extras / Add-ons Checklist */}
           {customizingProduct.extras && customizingProduct.extras.length > 0 && (
-            <div className="p-5 border-b border-chonky-border/60">
+            <div className="p-5 border-b border-chonky-border/60 dark:border-white/10">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-sm sm:text-base text-chonky-text">
+                <h3 className="font-bold text-sm sm:text-base text-chonky-text dark:text-white">
                   Craving Something Extra?
                 </h3>
-                <span className="text-[11px] font-medium text-chonky-muted">
+                <span className="text-[11px] font-medium text-chonky-muted dark:text-gray-400">
                   Optional add-ons
                 </span>
               </div>
@@ -395,29 +395,29 @@ export const ProductDetailSheet: React.FC = () => {
                       onClick={() => handleExtraToggle(extra.id)}
                       className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between ${
                         isChecked
-                          ? 'border-chonky-red bg-chonky-red/5 ring-1 ring-chonky-red'
-                          : 'border-chonky-border hover:border-chonky-red/40 hover:bg-chonky-peach-light/30'
+                          ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
+                          : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:border-chonky-red/40 hover:bg-chonky-peach-light/30 dark:hover:bg-white/10'
                       }`}
                     >
                       <div className="flex-1 pr-2">
-                        <p className="font-semibold text-xs sm:text-sm text-chonky-text">
+                        <p className="font-semibold text-xs sm:text-sm text-chonky-text dark:text-white">
                           {extra.name}
                         </p>
                         {extra.description && (
-                          <p className="text-[11px] text-chonky-muted mt-0.5">
+                          <p className="text-[11px] text-chonky-muted dark:text-gray-400 mt-0.5">
                             {extra.description}
                           </p>
                         )}
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-chonky-red">
+                        <span className="text-xs font-bold text-chonky-red dark:text-[#ff6666]">
                           + MVR {extra.price}
                         </span>
                         <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 ${
                           isChecked
                             ? 'border-chonky-red bg-chonky-red text-white'
-                            : 'border-chonky-border bg-white'
+                            : 'border-chonky-border dark:border-white/20 bg-white dark:bg-transparent'
                         }`}>
                           {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
@@ -432,10 +432,10 @@ export const ProductDetailSheet: React.FC = () => {
           {/* Special Instructions */}
           <div className="p-5">
             <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="instructions" className="font-bold text-xs sm:text-sm text-chonky-text">
+              <label htmlFor="instructions" className="font-bold text-xs sm:text-sm text-chonky-text dark:text-white">
                 Special Instructions
               </label>
-              <span className="text-[11px] text-chonky-muted">
+              <span className="text-[11px] text-chonky-muted dark:text-gray-400">
                 {specialInstructions.length}/150
               </span>
             </div>
@@ -446,33 +446,33 @@ export const ProductDetailSheet: React.FC = () => {
               value={specialInstructions}
               onChange={(e) => setSpecialInstructions(e.target.value)}
               placeholder="e.g. Extra napkins, sauce on the side, no onions..."
-              className="w-full p-3 text-xs sm:text-sm border border-chonky-border rounded-xl focus:outline-none focus:ring-2 focus:ring-chonky-red/20 focus:border-chonky-red transition resize-none placeholder:text-chonky-muted/60"
+              className="w-full p-3 text-xs sm:text-sm border border-chonky-border dark:border-white/10 bg-white dark:bg-[#100707] rounded-xl focus:outline-none focus:ring-2 focus:ring-chonky-red/20 focus:border-chonky-red text-chonky-text dark:text-white transition resize-none placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500"
             />
           </div>
         </div>
 
         {/* Sticky Bottom Action Area */}
-        <div className="p-4 sm:p-5 border-t border-chonky-border/80 bg-white/95 backdrop-blur-md safe-bottom">
+        <div className="p-4 sm:p-5 border-t border-chonky-border/80 dark:border-white/10 bg-white/95 dark:bg-[#140909]/95 backdrop-blur-md safe-bottom">
           <div className="flex items-center gap-3 sm:gap-4">
             
             {/* Quantity Stepper */}
-            <div className="flex items-center border border-chonky-border rounded-full bg-chonky-subtle p-1 shrink-0">
+            <div className="flex items-center border border-chonky-border dark:border-white/15 rounded-full bg-chonky-subtle dark:bg-white/10 p-1 shrink-0">
               <button
                 type="button"
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                 disabled={quantity <= 1}
-                className="w-8 h-8 rounded-full bg-white text-chonky-text hover:bg-chonky-peach flex items-center justify-center disabled:opacity-40 transition shadow-xs"
+                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center disabled:opacity-40 transition shadow-xs"
                 aria-label="Decrease quantity"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="w-8 text-center text-sm font-bold text-chonky-text">
+              <span className="w-8 text-center text-sm font-bold text-chonky-text dark:text-white">
                 {quantity}
               </span>
               <button
                 type="button"
                 onClick={() => setQuantity(prev => Math.min(20, prev + 1))}
-                className="w-8 h-8 rounded-full bg-white text-chonky-text hover:bg-chonky-peach flex items-center justify-center transition shadow-xs"
+                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center transition shadow-xs"
                 aria-label="Increase quantity"
               >
                 <Plus className="w-3.5 h-3.5" />
