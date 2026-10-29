@@ -237,7 +237,7 @@ export const ProductDetailSheet: React.FC = () => {
         {/* Scrollable Content Body */}
         <div 
           ref={contentRef}
-          className="overflow-y-auto flex-1 overscroll-contain"
+          className="overflow-y-auto flex-1 overscroll-contain min-h-0"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -458,7 +458,7 @@ export const ProductDetailSheet: React.FC = () => {
         </div>
 
         {/* Sticky Bottom Action Area - Balanced Equal Padding & Aligned Heights */}
-        <div className="p-5 sm:p-6 border-t border-black/5 dark:border-white/10 bg-white/95 dark:bg-[#080404]/95 backdrop-blur-xl shrink-0">
+        <div className="p-5 sm:p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,24px))] sm:pb-6 border-t border-black/5 dark:border-white/10 bg-white/95 dark:bg-[#080404]/95 backdrop-blur-xl shrink-0">
           <div className="flex items-center gap-3 sm:gap-4">
             
             {/* Quantity Stepper (iOS Segmented Pill matching CTA height) */}

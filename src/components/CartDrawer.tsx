@@ -36,7 +36,7 @@ export const CartDrawer: React.FC = () => {
   const freeDeliveryPercent = Math.min(100, (subtotal / freeDeliveryThreshold) * 100);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end font-sans">
+    <div className="fixed inset-0 z-50 flex justify-end font-sans overflow-hidden h-[100dvh] max-h-[100dvh]">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -44,7 +44,7 @@ export const CartDrawer: React.FC = () => {
       />
 
       {/* Drawer Panel */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 border-l border-chonky-border/70 dark:border-white/10">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] h-[100dvh] max-h-[100dvh] shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 border-l border-chonky-border/70 dark:border-white/10 overflow-hidden">
         
         {/* Header */}
         <div className="p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
@@ -111,7 +111,7 @@ export const CartDrawer: React.FC = () => {
         )}
 
         {/* Cart Item List or Empty State */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 space-y-3.5 overscroll-contain">
           {items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
               <div className="w-20 h-20 rounded-full bg-chonky-peach/50 dark:bg-white/5 flex items-center justify-center text-chonky-red/60 dark:text-chonky-peach">
@@ -231,7 +231,7 @@ export const CartDrawer: React.FC = () => {
 
         {/* Footer Order Summary & Checkout Trigger */}
         {items.length > 0 && (
-          <div className="p-5 sm:p-6 border-t border-chonky-border dark:border-white/10 bg-white dark:bg-[#0A0505] safe-bottom shadow-sheet space-y-4">
+          <div className="shrink-0 p-5 sm:p-6 pb-[max(2rem,env(safe-area-inset-bottom,32px))] sm:pb-6 border-t border-chonky-border dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl shadow-sheet space-y-4">
             {/* Breakdown */}
             <div className="space-y-2 text-xs text-chonky-muted dark:text-gray-400">
               <div className="flex justify-between">
