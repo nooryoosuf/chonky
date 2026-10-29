@@ -10,7 +10,7 @@
   body {
     background-color: #FFFCF8;
     color: #1E1B18;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Satoshi', 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
@@ -29,17 +29,50 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F7F3EC;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D8CEBE;
+  background: #3B2020;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8AC9A;
+  background: #700808;
 }
 
 /* Safe area padding for mobile bottom bar and sheets */
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* Down-to-Up Modal and Sheet Keyframe Animations */
+@keyframes slideUpModal {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up-modal {
+  animation: slideUpModal 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-fade-in-backdrop {
+  animation: fadeInBackdrop 0.25s ease-out forwards;
 }

@@ -208,17 +208,19 @@ export const ProductDetailSheet: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
-      {/* Backdrop */}
+      {/* Backdrop with Fade-In Animation */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm animate-fade-in-backdrop transition-opacity"
         onClick={closeCustomizer}
       />
 
-      {/* Main Sheet / Modal Container */}
+      {/* Main Sheet / Modal Container Animated In From Down to Up */}
       <div
         ref={sheetRef}
         style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
-        className="relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-250 transition-transform font-sans border-t border-chonky-border/80 md:border dark:border-white/10"
+        className={`relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden font-sans border-t border-chonky-border/80 md:border dark:border-white/10 ${
+          dragY > 0 ? 'transition-none' : 'animate-slide-up-modal'
+        }`}
       >
         {/* Mobile Swipe Handle */}
         <div 
