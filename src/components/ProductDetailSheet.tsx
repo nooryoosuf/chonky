@@ -17,8 +17,9 @@ export const ProductDetailSheet: React.FC = () => {
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
-  // Swipe-to-dismiss state for mobile bottom sheet
+  // iPhone sheet swipe-to-dismiss gesture state
   const sheetRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number | null>(null);
   const [dragY, setDragY] = useState(0);
 
@@ -138,7 +139,6 @@ export const ProductDetailSheet: React.FC = () => {
 
     const singleUnitPrice = customizingProduct.basePrice + extraPrice;
     return {
-      unitPrice: singleUnitPrice,
       calculatedTotalPrice: singleUnitPrice * quantity,
       chosenOptionsList: chosenOptions,
       chosenExtrasList: chosenExtras
@@ -180,10 +180,9 @@ export const ProductDetailSheet: React.FC = () => {
     );
   };
 
-  // Touch handlers for swipe to dismiss on mobile
+  // Fluid iPhone gesture handlers
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Only allow swipe to dismiss when at top of scroll
-    if (sheetRef.current && sheetRef.current.scrollTop === 0) {
+    if (!contentRef.current || contentRef.current.scrollTop <= 0) {
       touchStartY.current = e.touches[0].clientY;
     }
   };
@@ -193,12 +192,14 @@ export const ProductDetailSheet: React.FC = () => {
     const currentY = e.touches[0].clientY;
     const diff = currentY - touchStartY.current;
     if (diff > 0) {
-      setDragY(diff);
+      // iPhone rubber-band resistance curve
+      const dampening = 1 + diff * 0.0025;
+      setDragY(diff / dampening);
     }
   };
 
   const handleTouchEnd = () => {
-    if (dragY > 120) {
+    if (dragY > 110) {
       closeCustomizer();
     } else {
       setDragY(0);
@@ -207,71 +208,74 @@ export const ProductDetailSheet: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
       {/* Backdrop with Fade-In Animation */}
       <div 
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm animate-fade-in-backdrop transition-opacity"
+        className="fixed inset-0 bg-black/75 backdrop-blur-sm animate-fade-in-backdrop transition-opacity"
         onClick={closeCustomizer}
       />
 
-      {/* Main Sheet / Modal Container Animated In From Down to Up */}
+      {/* Main iPhone-like Modal / Sheet Container */}
       <div
         ref={sheetRef}
-        style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
-        className={`relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#160D0D] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-sheet md:shadow-modal z-10 max-h-[92vh] md:max-h-[85vh] flex flex-col overflow-hidden font-sans border-t border-chonky-border/80 md:border dark:border-white/10 ${
-          dragY > 0 ? 'transition-none' : 'animate-slide-up-modal'
+        style={{ 
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: dragY === 0 ? 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'
+        }}
+        className={`relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#150B0B] text-chonky-text dark:text-[#F7F3EE] rounded-t-[36px] sm:rounded-t-[40px] md:rounded-[40px] shadow-[0_-12px_45px_rgba(0,0,0,0.35)] md:shadow-[0_25px_70px_rgba(0,0,0,0.5)] z-10 max-h-[94vh] md:max-h-[88vh] flex flex-col overflow-hidden font-sans border-t border-black/5 md:border dark:border-white/10 ${
+          dragY > 0 ? '' : 'animate-slide-up-modal'
         }`}
       >
-        {/* Mobile Swipe Handle */}
+        {/* Floating iPhone Grab Indicator directly over image */}
         <div 
-          className="md:hidden pt-3 pb-1 flex justify-center bg-white dark:bg-[#160D0D] cursor-grab active:cursor-grabbing touch-none select-none"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none md:hidden flex justify-center"
+          aria-hidden="true"
         >
-          <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full" />
+          <div className="w-10 h-1 rounded-full bg-white/75 backdrop-blur-md shadow-xs" />
         </div>
 
         {/* Scrollable Content Body */}
         <div 
+          ref={contentRef}
           className="overflow-y-auto flex-1 overscroll-contain"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Hero Image Section with Close Button */}
-          <div className="relative aspect-[16/9] w-full bg-chonky-subtle dark:bg-black/50">
+          {/* Hero Image Section - Touches the VERY TOP of the modal flush with rounded-t corners */}
+          <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-chonky-subtle dark:bg-black/50 overflow-hidden">
             <img
               src={customizingProduct.image}
               alt={customizingProduct.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover select-none"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+            {/* Top vignette gradient for grab handle & close button visibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
 
-            {/* Close Button */}
+            {/* Apple style Frosted Circular Close Button */}
             <button
               onClick={closeCustomizer}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-md flex items-center justify-center transition border border-white/20 active:scale-90"
-              aria-label="Close"
+              className="absolute top-3.5 right-3.5 z-30 w-8 h-8 rounded-full bg-black/45 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center transition border border-white/20 active:scale-90"
+              aria-label="Close modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 stroke-[2.5]" />
             </button>
 
-            {/* Price Badge on Image */}
-            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
-              <div>
+            {/* Price & Name overlay directly on image bottom */}
+            <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between text-white">
+              <div className="max-w-[70%]">
                 {customizingProduct.badge && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-chonky-peach text-chonky-red mb-1.5 shadow-xs">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-chonky-peach text-chonky-red mb-2 shadow-xs">
                     <Sparkles className="w-3 h-3" />
                     {customizingProduct.badge}
                   </span>
                 )}
-                <h2 className="text-xl sm:text-2xl font-black drop-shadow-md">
+                <h2 className="text-xl sm:text-2xl font-black drop-shadow-md leading-tight font-sans">
                   {customizingProduct.name}
                 </h2>
               </div>
               <div className="text-right">
-                <span className="text-xs text-gray-200 uppercase font-semibold">Base</span>
+                <span className="text-[10px] text-gray-300 uppercase font-bold tracking-wider block">Base Price</span>
                 <p className="text-xl sm:text-2xl font-black text-chonky-peach drop-shadow-md leading-none">
                   MVR {customizingProduct.basePrice}
                 </p>
@@ -281,7 +285,7 @@ export const ProductDetailSheet: React.FC = () => {
 
           {/* Description */}
           <div className="p-5 border-b border-chonky-border/60 dark:border-white/10">
-            <p className="text-xs sm:text-sm text-chonky-muted dark:text-gray-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-chonky-muted dark:text-gray-300 leading-relaxed font-normal">
               {customizingProduct.description}
             </p>
           </div>
@@ -300,11 +304,11 @@ export const ProductDetailSheet: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-sm sm:text-base text-chonky-text dark:text-white">
+                    <h3 className="font-bold text-sm sm:text-base text-chonky-text dark:text-white font-sans">
                       {group.title}
                     </h3>
                     {group.required ? (
-                      <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                      <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                         isMissing
                           ? 'bg-rose-600 text-white animate-pulse'
                           : 'bg-chonky-red/10 dark:bg-chonky-red/30 text-chonky-red dark:text-chonky-peach'
@@ -319,8 +323,8 @@ export const ProductDetailSheet: React.FC = () => {
                   </div>
 
                   {hasSelection && (
-                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" />
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                       Selected
                     </span>
                   )}
@@ -333,8 +337,8 @@ export const ProductDetailSheet: React.FC = () => {
                   </p>
                 )}
 
-                {/* Option Choice Radio Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* Option Choice Radio Cards with iPhone style rounded-2xl */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {group.choices.map((choice) => {
                     const isSelected = selectedOptions[group.id] === choice.id;
                     return (
@@ -342,18 +346,18 @@ export const ProductDetailSheet: React.FC = () => {
                         key={choice.id}
                         type="button"
                         onClick={() => handleOptionSelect(group.id, choice.id)}
-                        className={`text-left p-3 rounded-xl border transition-all flex items-center justify-between ${
+                        className={`text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between active:scale-[0.98] ${
                           isSelected
                             ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
                             : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:border-chonky-red/40 hover:bg-chonky-peach-light/30 dark:hover:bg-white/10'
                         }`}
                       >
                         <div className="flex-1 pr-2">
-                          <p className="font-semibold text-xs sm:text-sm text-chonky-text dark:text-white">
+                          <p className="font-bold text-xs sm:text-sm text-chonky-text dark:text-white">
                             {choice.name}
                           </p>
                           {choice.priceDelta !== 0 && (
-                            <p className="text-xs font-bold text-chonky-red dark:text-[#ff6666] mt-0.5">
+                            <p className="text-xs font-black text-chonky-red dark:text-[#ff6666] mt-0.5">
                               {choice.priceDelta > 0 ? `+ MVR ${choice.priceDelta}` : `- MVR ${Math.abs(choice.priceDelta)}`}
                             </p>
                           )}
@@ -379,7 +383,7 @@ export const ProductDetailSheet: React.FC = () => {
           {customizingProduct.extras && customizingProduct.extras.length > 0 && (
             <div className="p-5 border-b border-chonky-border/60 dark:border-white/10">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-sm sm:text-base text-chonky-text dark:text-white">
+                <h3 className="font-bold text-sm sm:text-base text-chonky-text dark:text-white font-sans">
                   Craving Something Extra?
                 </h3>
                 <span className="text-[11px] font-medium text-chonky-muted dark:text-gray-400">
@@ -395,14 +399,14 @@ export const ProductDetailSheet: React.FC = () => {
                       key={extra.id}
                       type="button"
                       onClick={() => handleExtraToggle(extra.id)}
-                      className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between ${
+                      className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between active:scale-[0.98] ${
                         isChecked
                           ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
                           : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:border-chonky-red/40 hover:bg-chonky-peach-light/30 dark:hover:bg-white/10'
                       }`}
                     >
                       <div className="flex-1 pr-2">
-                        <p className="font-semibold text-xs sm:text-sm text-chonky-text dark:text-white">
+                        <p className="font-bold text-xs sm:text-sm text-chonky-text dark:text-white">
                           {extra.name}
                         </p>
                         {extra.description && (
@@ -413,10 +417,10 @@ export const ProductDetailSheet: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-chonky-red dark:text-[#ff6666]">
+                        <span className="text-xs font-black text-chonky-red dark:text-[#ff6666]">
                           + MVR {extra.price}
                         </span>
-                        <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 ${
+                        <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 ${
                           isChecked
                             ? 'border-chonky-red bg-chonky-red text-white'
                             : 'border-chonky-border dark:border-white/20 bg-white dark:bg-transparent'
@@ -448,49 +452,49 @@ export const ProductDetailSheet: React.FC = () => {
               value={specialInstructions}
               onChange={(e) => setSpecialInstructions(e.target.value)}
               placeholder="e.g. Extra napkins, sauce on the side, no onions..."
-              className="w-full p-3 text-xs sm:text-sm border border-chonky-border dark:border-white/10 bg-white dark:bg-[#100707] rounded-xl focus:outline-none focus:ring-2 focus:ring-chonky-red/20 focus:border-chonky-red text-chonky-text dark:text-white transition resize-none placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500"
+              className="w-full p-3.5 text-xs sm:text-sm border border-chonky-border dark:border-white/10 bg-white dark:bg-[#100707] rounded-2xl focus:outline-none focus:ring-2 focus:ring-chonky-red/20 focus:border-chonky-red text-chonky-text dark:text-white transition resize-none placeholder:text-chonky-muted/60 dark:placeholder:text-gray-500"
             />
           </div>
         </div>
 
-        {/* Sticky Bottom Action Area */}
-        <div className="p-4 sm:p-5 border-t border-chonky-border/80 dark:border-white/10 bg-white/95 dark:bg-[#140909]/95 backdrop-blur-md safe-bottom">
+        {/* Sticky Bottom Action Area (Frosted iOS Safe Area Glass Dock) */}
+        <div className="p-4 sm:p-5 border-t border-chonky-border/80 dark:border-white/10 bg-white/90 dark:bg-[#140909]/90 backdrop-blur-xl safe-bottom">
           <div className="flex items-center gap-3 sm:gap-4">
             
-            {/* Quantity Stepper */}
+            {/* Quantity Stepper (iOS Segmented Pill) */}
             <div className="flex items-center border border-chonky-border dark:border-white/15 rounded-full bg-chonky-subtle dark:bg-white/10 p-1 shrink-0">
               <button
                 type="button"
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                 disabled={quantity <= 1}
-                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center disabled:opacity-40 transition shadow-xs"
+                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center disabled:opacity-40 transition shadow-xs active:scale-90"
                 aria-label="Decrease quantity"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="w-8 text-center text-sm font-bold text-chonky-text dark:text-white">
+              <span className="w-8 text-center text-sm font-black text-chonky-text dark:text-white">
                 {quantity}
               </span>
               <button
                 type="button"
                 onClick={() => setQuantity(prev => Math.min(20, prev + 1))}
-                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center transition shadow-xs"
+                className="w-8 h-8 rounded-full bg-white dark:bg-[#251515] text-chonky-text dark:text-white hover:bg-chonky-peach dark:hover:bg-white/20 flex items-center justify-center transition shadow-xs active:scale-90"
                 aria-label="Increase quantity"
               >
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* Add to Cart CTA Button */}
+            {/* Add to Cart CTA Button with Tactile Press Feedback */}
             <button
               type="button"
               onClick={handleAddToCart}
-              className="flex-1 py-3.5 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
+              className="flex-1 py-4 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-95 shadow-glow-red"
             >
               <span>
                 {editingCartItem ? 'Update Order' : 'Add to Cart'}
               </span>
-              <span className="font-black tracking-tight">
+              <span className="font-black tracking-tight text-lg">
                 MVR {calculatedTotalPrice}
               </span>
             </button>
