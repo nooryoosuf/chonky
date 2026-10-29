@@ -22,6 +22,8 @@ export const ProductDetailSheet: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number | null>(null);
   const [dragY, setDragY] = useState(0);
+  const [isAddingSuccess, setIsAddingSuccess] = useState(false);
+  const [isDismissing, setIsDismissing] = useState(false);
 
   // Initialize or reset selections when product opens or changes
   useEffect(() => {
@@ -32,8 +34,14 @@ export const ProductDetailSheet: React.FC = () => {
       setSpecialInstructions('');
       setHasAttemptedSubmit(false);
       setDragY(0);
+      setIsAddingSuccess(false);
+      setIsDismissing(false);
       return;
     }
+
+    setIsAddingSuccess(false);
+    setIsDismissing(false);
+    setDragY(0);
 
     if (editingCartItem && editingCartItem.productId === customizingProduct.id) {
       // Editing existing cart item
@@ -164,20 +172,37 @@ export const ProductDetailSheet: React.FC = () => {
     });
   };
 
+  const handleCloseWithAnimation = () => {
+    setIsDismissing(true);
+    setTimeout(() => {
+      closeCustomizer();
+    }, 260);
+  };
+
   const handleAddToCart = () => {
     setHasAttemptedSubmit(true);
     if (!validationStatus.isValid) {
       return;
     }
 
-    addToCart(
-      customizingProduct,
-      chosenOptionsList,
-      chosenExtrasList,
-      specialInstructions,
-      quantity,
-      editingCartItem ? editingCartItem.id : undefined
-    );
+    setIsAddingSuccess(true);
+
+    // 1. Brief rewarding tactile checkmark
+    setTimeout(() => {
+      setIsDismissing(true);
+
+      // 2. Smooth fluid slide-down dismissal
+      setTimeout(() => {
+        addToCart(
+          customizingProduct,
+          chosenOptionsList,
+          chosenExtrasList,
+          specialInstructions,
+          quantity,
+          editingCartItem ? editingCartItem.id : undefined
+        );
+      }, 260);
+    }, 220);
   };
 
   // Fluid iPhone gesture handlers
@@ -200,7 +225,7 @@ export const ProductDetailSheet: React.FC = () => {
 
   const handleTouchEnd = () => {
     if (dragY > 110) {
-      closeCustomizer();
+      handleCloseWithAnimation();
     } else {
       setDragY(0);
     }
@@ -208,22 +233,34 @@ export const ProductDetailSheet: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+    <div className={`fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 transition-opacity duration-300 ${
+      isDismissing ? 'pointer-events-none' : ''
+    }`}>
       {/* Backdrop with Fade-In Animation */}
       <div 
-        className="fixed inset-0 bg-black/75 backdrop-blur-sm animate-fade-in-backdrop transition-opacity"
-        onClick={closeCustomizer}
+        className={`fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity duration-260 ${
+          isDismissing ? 'opacity-0' : 'animate-fade-in-backdrop'
+        }`}
+        onClick={handleCloseWithAnimation}
       />
 
       {/* Main iPhone-like Modal / Sheet Container */}
       <div
         ref={sheetRef}
         style={{ 
-          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-          transition: dragY === 0 ? 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'
+          transform: isDismissing 
+            ? 'translateY(105%) scale(0.96)' 
+            : dragY > 0 
+            ? `translateY(${dragY}px)` 
+            : undefined,
+          transition: isDismissing
+            ? 'transform 0.28s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.22s ease-out'
+            : dragY === 0 
+            ? 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)' 
+            : 'none'
         }}
         className={`relative w-full md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-t-[36px] sm:rounded-t-[40px] md:rounded-[40px] shadow-[0_-12px_45px_rgba(0,0,0,0.35)] md:shadow-[0_25px_70px_rgba(0,0,0,0.5)] z-10 max-h-[94vh] md:max-h-[88vh] flex flex-col overflow-hidden font-sans border-t border-black/5 md:border dark:border-white/10 ${
-          dragY > 0 ? '' : 'animate-slide-up-modal'
+          isDismissing ? 'opacity-0' : dragY > 0 ? '' : 'animate-slide-up-modal'
         }`}
       >
         {/* Floating iPhone Grab Indicator directly over image */}
@@ -254,7 +291,7 @@ export const ProductDetailSheet: React.FC = () => {
 
             {/* Apple style Frosted Circular Close Button */}
             <button
-              onClick={closeCustomizer}
+              onClick={handleCloseWithAnimation}
               className="absolute top-3.5 right-3.5 z-30 w-8 h-8 rounded-full bg-black/45 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center transition border border-white/20 active:scale-90"
               aria-label="Close modal"
             >
@@ -485,18 +522,32 @@ export const ProductDetailSheet: React.FC = () => {
               </button>
             </div>
 
-            {/* Add to Cart CTA Button with Balanced Equal Height & Space */}
+            {/* Add to Cart CTA Button with Fluid Press & Confirmation Animation */}
             <button
               type="button"
+              disabled={isAddingSuccess}
               onClick={handleAddToCart}
-              className="h-[54px] flex-1 px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
+              className={`h-[54px] flex-1 px-6 rounded-full font-black text-sm sm:text-base flex items-center justify-between transition-all transform duration-200 active:scale-95 shadow-glow-red ${
+                isAddingSuccess
+                  ? 'bg-emerald-600 text-white scale-[1.01]'
+                  : 'bg-chonky-red hover:bg-chonky-red-light text-white'
+              }`}
             >
-              <span>
-                {editingCartItem ? 'Update Order' : 'Add to Cart'}
-              </span>
-              <span className="font-black tracking-tight text-base sm:text-lg">
-                MVR {calculatedTotalPrice}
-              </span>
+              {isAddingSuccess ? (
+                <div className="flex items-center justify-center gap-2 w-full">
+                  <Check className="w-5 h-5 stroke-[3] animate-badge-pop" />
+                  <span>{editingCartItem ? 'Order Updated!' : 'Added to Crave Bag!'}</span>
+                </div>
+              ) : (
+                <>
+                  <span>
+                    {editingCartItem ? 'Update Order' : 'Add to Cart'}
+                  </span>
+                  <span className="font-black tracking-tight text-base sm:text-lg">
+                    MVR {calculatedTotalPrice}
+                  </span>
+                </>
+              )}
             </button>
           </div>
         </div>

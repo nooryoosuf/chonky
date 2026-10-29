@@ -232,7 +232,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="relative">
                   <ShoppingBag className="w-4 h-4" />
                   {itemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[10px] font-black min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-xs">
+                    <span 
+                      key={itemCount}
+                      className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[10px] font-black min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-xs animate-badge-pop"
+                    >
                       {itemCount}
                     </span>
                   )}
