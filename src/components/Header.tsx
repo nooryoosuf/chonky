@@ -3,13 +3,10 @@ import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { useProfile } from '../context/ProfileContext';
 import { 
-  ShoppingBag, 
   Search, 
   MapPin, 
   ChevronDown,
   Sparkles,
-  Sun,
-  Moon,
   User,
   X
 } from 'lucide-react';
@@ -28,15 +25,12 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveSection: _setActiveSection
 }) => {
   const { 
-    itemCount, 
-    subtotal, 
-    openCart, 
     selectedLocation, 
     openLocationSelector,
     orderType 
   } = useCart();
 
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const { openProfile, profile } = useProfile();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -187,20 +181,6 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </div>
 
-              {/* Theme Toggle Button (Dark / Light) */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-full border border-chonky-border dark:border-white/10 hover:bg-chonky-peach-light/50 dark:hover:bg-white/10 transition text-chonky-text dark:text-amber-400 flex items-center justify-center shadow-xs active:scale-90"
-                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              >
-                {theme === 'dark' ? (
-                  <Sun className="w-4 h-4 text-amber-300 hover:rotate-45 transition-transform" />
-                ) : (
-                  <Moon className="w-4 h-4 text-chonky-text" />
-                )}
-              </button>
-
               {/* Mobile Location Pill */}
               <button
                 onClick={openLocationSelector}
@@ -221,32 +201,6 @@ export const Header: React.FC<HeaderProps> = ({
                 {profile.loyaltyPoints > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white dark:border-[#070404]" />
                 )}
-              </button>
-
-              {/* Shopping Cart Button */}
-              <button
-                onClick={openCart}
-                className={`relative flex items-center gap-2.5 h-[42px] sm:h-[44px] px-4 sm:px-5 rounded-full font-black text-xs sm:text-sm transition-all duration-200 select-none ${
-                  itemCount > 0
-                    ? 'bg-chonky-red text-white hover:bg-chonky-red-light shadow-glow-red transform active:scale-95'
-                    : 'bg-white dark:bg-white/10 text-chonky-text dark:text-white hover:bg-chonky-peach/40 dark:hover:bg-white/15 border border-chonky-border dark:border-white/10 shadow-xs'
-                }`}
-                aria-label={`Shopping cart with ${itemCount} items`}
-              >
-                <div className="relative">
-                  <ShoppingBag className="w-4 h-4" />
-                  {itemCount > 0 && (
-                    <span 
-                      key={itemCount}
-                      className="absolute -top-2 -right-2 bg-chonky-peach text-chonky-red text-[10px] font-black min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-xs animate-badge-pop"
-                    >
-                      {itemCount}
-                    </span>
-                  )}
-                </div>
-                <span>
-                  {itemCount > 0 ? `MVR ${subtotal}` : 'Cart'}
-                </span>
               </button>
             </div>
           </div>
