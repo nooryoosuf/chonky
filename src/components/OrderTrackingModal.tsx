@@ -50,32 +50,59 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
   const stopGpsWatchRef = useRef<(() => void) | null>(null);
 
-  // Touch Drag gestures for Mobile Bottom Sheet (swipe up to expand, swipe down to compact)
-  const touchStartY = useRef<number | null>(null);
-  const touchCurrentY = useRef<number | null>(null);
+  // Dedicated Touch Drag handlers for Bottom Sheet
+  const handleTouchStartY = useRef<number | null>(null);
+  const handleTouchCurrentY = useRef<number | null>(null);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchCurrentY.current = e.touches[0].clientY;
+  // Drag listeners on the top grab handle
+  const onHandleTouchStart = (e: React.TouchEvent) => {
+    handleTouchStartY.current = e.touches[0].clientY;
+    handleTouchCurrentY.current = e.touches[0].clientY;
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchCurrentY.current = e.touches[0].clientY;
+  const onHandleTouchMove = (e: React.TouchEvent) => {
+    handleTouchCurrentY.current = e.touches[0].clientY;
   };
 
-  const handleTouchEnd = () => {
-    if (touchStartY.current !== null && touchCurrentY.current !== null) {
-      const deltaY = touchCurrentY.current - touchStartY.current;
-      if (deltaY > 40) {
-        // Swiped down -> compact
-        setIsSheetCollapsed(true);
-      } else if (deltaY < -30) {
-        // Swiped up -> show full
+  const onHandleTouchEnd = () => {
+    if (handleTouchStartY.current !== null && handleTouchCurrentY.current !== null) {
+      const deltaY = handleTouchCurrentY.current - handleTouchStartY.current;
+      if (isSheetCollapsed) {
+        // When compact: swiping up expands into full view
+        if (deltaY < -30) {
+          setIsSheetCollapsed(false);
+        }
+      } else {
+        // When expanded: only collapse to compact view if deliberately dragged down by at least 70px!
+        // Otherwise, keep it expanded so content scrolling is never interrupted.
+        if (deltaY > 70) {
+          setIsSheetCollapsed(true);
+        }
+      }
+    }
+    handleTouchStartY.current = null;
+    handleTouchCurrentY.current = null;
+  };
+
+  // Drag listeners on the compact card (swipe up anywhere on the card expands it)
+  const onCompactTouchStart = (e: React.TouchEvent) => {
+    handleTouchStartY.current = e.touches[0].clientY;
+    handleTouchCurrentY.current = e.touches[0].clientY;
+  };
+
+  const onCompactTouchMove = (e: React.TouchEvent) => {
+    handleTouchCurrentY.current = e.touches[0].clientY;
+  };
+
+  const onCompactTouchEnd = () => {
+    if (handleTouchStartY.current !== null && handleTouchCurrentY.current !== null) {
+      const deltaY = handleTouchCurrentY.current - handleTouchStartY.current;
+      if (deltaY < -30) {
         setIsSheetCollapsed(false);
       }
     }
-    touchStartY.current = null;
-    touchCurrentY.current = null;
+    handleTouchStartY.current = null;
+    handleTouchCurrentY.current = null;
   };
 
   useEffect(() => {
@@ -536,20 +563,20 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         {/* Spacer to allow full map visibility */}
         <div className="flex-1 pointer-events-none" />
 
-        {/* Floating Uber / Grab Style Slide-Up Bottom Drawer with Drag & Compact/Expand toggle */}
+        {/* Floating Uber / Grab Style Slide-Up Bottom Drawer with Dedicated Drag Area */}
         <div 
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
           className={`relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out ${
             isSheetCollapsed ? 'max-h-[145px] pb-safe' : 'max-h-[70vh] sm:max-h-[64vh]'
           }`}
         >
-          {/* Subtle Clean Grab Handle (Draggable & Tappable, No text clutter) */}
+          {/* Subtle Clean Grab Handle (Dedicated Drag Handle with 70px threshold - Keeps content expanded while scrolling) */}
           <div
+            onTouchStart={onHandleTouchStart}
+            onTouchMove={onHandleTouchMove}
+            onTouchEnd={onHandleTouchEnd}
             onClick={() => setIsSheetCollapsed(!isSheetCollapsed)}
-            className="w-full pt-3 pb-2 flex items-center justify-center shrink-0 cursor-grab active:cursor-grabbing hover:bg-black/5 dark:hover:bg-white/5 transition"
-            aria-label="Drag or tap to toggle order details"
+            className="w-full pt-3 pb-2.5 flex items-center justify-center shrink-0 cursor-grab active:cursor-grabbing hover:bg-black/5 dark:hover:bg-white/5 transition"
+            aria-label="Drag down to compact, or tap to toggle"
           >
             <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-white/25 hover:bg-gray-400 transition-colors" />
           </div>
@@ -557,6 +584,9 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
           {isSheetCollapsed ? (
             /* Compact Mode: Card with Estimate Time, Headline, Driver Icon, and Call Button */
             <div 
+              onTouchStart={onCompactTouchStart}
+              onTouchMove={onCompactTouchMove}
+              onTouchEnd={onCompactTouchEnd}
               onClick={() => setIsSheetCollapsed(false)}
               className="px-5 pb-5 pt-1 flex items-center justify-between gap-4 cursor-pointer select-none active:bg-black/5 dark:active:bg-white/5 transition-colors"
             >
