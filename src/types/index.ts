@@ -89,6 +89,7 @@ export interface OrderDetails {
   address?: string;
   deliveryNotes?: string;
   paymentMethod: PaymentMethod;
+  transferSlip?: string;
   items: CartItem[];
   subtotal: number;
   deliveryFee: number;

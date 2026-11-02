@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
 import { PaymentMethod } from '../types';
+import { BMLTransferModal } from './BMLTransferModal';
 import { 
   X, 
   Bike, 
@@ -13,6 +14,8 @@ import {
   Banknote, 
   QrCode, 
   ArrowRightLeft,
+  Building,
+  UploadCloud,
   CheckCircle2, 
   AlertCircle, 
   Copy, 
@@ -38,8 +41,11 @@ export const CheckoutModal: React.FC = () => {
     completedOrder,
     resetCompletedOrder,
     paymentMethod: cartPaymentMethod,
-    setPaymentMethod: setCartPaymentMethod
+    setPaymentMethod: setCartPaymentMethod,
+    transferSlip
   } = useCart();
+
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
 
   const { profile, recordNewOrder } = useProfile();
 
@@ -223,6 +229,22 @@ Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMeth
                 <p><strong className="text-chonky-text dark:text-white">Notes:</strong> {completedOrder.deliveryNotes}</p>
               )}
               <p><strong className="text-chonky-text dark:text-white">Payment:</strong> {getPaymentLabel(completedOrder.paymentMethod)}</p>
+              {completedOrder.transferSlip && (
+                <div className="pt-2 mt-1 border-t border-chonky-border/40 dark:border-white/10 flex items-center justify-between">
+                  <span className="font-bold text-chonky-text dark:text-white">Transfer Slip:</span>
+                  {completedOrder.transferSlip.startsWith('data:image') ? (
+                    <img 
+                      src={completedOrder.transferSlip} 
+                      alt="Attached Transfer Slip" 
+                      className="w-12 h-12 object-cover rounded-lg border border-emerald-500/50 shadow-xs" 
+                    />
+                  ) : (
+                    <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-md">
+                      Slip Attached ✓
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Clear Demo Notice */}
@@ -526,6 +548,7 @@ Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMeth
                 onClick={() => {
                   setPaymentMethod('transfer');
                   setCartPaymentMethod('transfer');
+                  setIsTransferModalOpen(true);
                 }}
                 className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition ${
                   paymentMethod === 'transfer'
@@ -543,14 +566,37 @@ Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMeth
 
             {/* Contextual instruction for Transfer */}
             {paymentMethod === 'transfer' && (
-              <div className="p-3.5 rounded-2xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border dark:border-white/10 text-xs space-y-1 animate-in fade-in">
+              <div className="p-4 rounded-2xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border dark:border-white/10 text-xs space-y-2.5 animate-in fade-in">
                 <div className="flex items-center justify-between font-bold text-chonky-text dark:text-white">
-                  <span>BML Account Details</span>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 px-2 py-0.5 rounded-full font-bold">MVR</span>
+                  <span className="flex items-center gap-1.5">
+                    <Building className="w-3.5 h-3.5 text-chonky-red dark:text-chonky-peach" />
+                    <span>BML Account Details</span>
+                  </span>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 px-2 py-0.5 rounded-full font-bold">Bank of Maldives</span>
                 </div>
-                <p className="text-chonky-muted dark:text-gray-300">Name: <strong className="text-chonky-text dark:text-white">Chonky Burgers MV</strong></p>
-                <p className="text-chonky-muted dark:text-gray-300">Account: <strong className="text-chonky-text dark:text-white font-mono text-sm">7730000123456</strong></p>
-                <p className="text-[11px] text-chonky-red dark:text-chonky-peach font-medium pt-0.5">Please add your phone number in transfer remarks.</p>
+                
+                <div className="space-y-1 bg-white dark:bg-black/20 p-2.5 rounded-xl border border-chonky-border/50 dark:border-white/5">
+                  <p className="text-chonky-muted dark:text-gray-300">Name: <strong className="text-chonky-text dark:text-white">Chonky Burgers MV</strong></p>
+                  <p className="text-chonky-muted dark:text-gray-300">Account: <strong className="text-chonky-text dark:text-white font-mono text-sm">7730000123456</strong> (MVR)</p>
+                  <p className="text-chonky-muted dark:text-gray-300">Amount: <strong className="text-chonky-red dark:text-chonky-peach font-bold">MVR {total}</strong></p>
+                </div>
+
+                {/* Transfer Slip Attachment Trigger */}
+                <button
+                  type="button"
+                  onClick={() => setIsTransferModalOpen(true)}
+                  className={`w-full py-2.5 px-3 rounded-xl border font-bold text-xs flex items-center justify-between transition ${
+                    transferSlip
+                      ? 'border-emerald-500/50 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-200'
+                      : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/10 text-chonky-text dark:text-white hover:border-chonky-red'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    {transferSlip ? <Check className="w-4 h-4 text-emerald-600" /> : <UploadCloud className="w-4 h-4 text-chonky-red" />}
+                    <span>{transferSlip ? 'Transfer Slip Attached ✓' : 'Attach Transfer Slip / Screenshot'}</span>
+                  </span>
+                  <span className="text-[11px] underline font-extrabold">{transferSlip ? 'Change' : 'Attach Now'}</span>
+                </button>
               </div>
             )}
 
@@ -623,6 +669,12 @@ Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMeth
           </button>
         </div>
       </div>
+
+      {/* BML Transfer Modal */}
+      <BMLTransferModal
+        isOpen={isTransferModalOpen}
+        onClose={() => setIsTransferModalOpen(false)}
+      />
     </div>
   );
 };

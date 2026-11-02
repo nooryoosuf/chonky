@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PaymentMethod } from '../types';
+import { BMLTransferModal } from './BMLTransferModal';
 import { 
   X, 
   Check, 
@@ -77,10 +78,15 @@ export const getPaymentMethodInfo = (method: PaymentMethod) => {
 
 export const PaymentPickerModal: React.FC<PaymentPickerModalProps> = ({ isOpen, onClose }) => {
   const { paymentMethod, setPaymentMethod } = useCart();
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
 
-  if (!isOpen) return null;
+  if (!isOpen && !isTransferModalOpen) return null;
 
   const handleSelect = (method: PaymentMethod) => {
+    if (method === 'transfer') {
+      setIsTransferModalOpen(true);
+      return;
+    }
     setPaymentMethod(method);
     onClose();
   };
@@ -185,6 +191,19 @@ export const PaymentPickerModal: React.FC<PaymentPickerModalProps> = ({ isOpen, 
         </div>
 
       </div>
+
+      {/* BML Account Transfer Details & Slip Attachment Modal */}
+      <BMLTransferModal
+        isOpen={isTransferModalOpen}
+        onClose={() => {
+          setIsTransferModalOpen(false);
+          onClose();
+        }}
+        onContinue={() => {
+          setIsTransferModalOpen(false);
+          onClose();
+        }}
+      />
     </div>
   );
 };

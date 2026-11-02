@@ -31,6 +31,8 @@ interface CartContextType {
   setOrderType: (type: OrderType) => void;
   paymentMethod: PaymentMethod;
   setPaymentMethod: (pm: PaymentMethod) => void;
+  transferSlip: string | null;
+  setTransferSlip: (slip: string | null) => void;
   setSelectedLocation: (location: DeliveryLocation) => void;
   openCart: () => void;
   closeCart: () => void;
@@ -94,6 +96,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [orderType, setOrderType] = useState<OrderType>('delivery');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bml_pay');
+  const [transferSlip, setTransferSlip] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLocationSelectorOpen, setIsLocationSelectorOpen] = useState(false);
@@ -303,6 +306,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       address: details.address,
       deliveryNotes: details.deliveryNotes,
       paymentMethod: details.paymentMethod,
+      transferSlip: transferSlip || undefined,
       items: [...items],
       subtotal,
       deliveryFee,
@@ -343,6 +347,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setOrderType,
         paymentMethod,
         setPaymentMethod,
+        transferSlip,
+        setTransferSlip,
         setSelectedLocation,
         openCart,
         closeCart,
