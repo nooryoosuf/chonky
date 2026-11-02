@@ -2,6 +2,8 @@ import React from 'react';
 import { Phone, Mail, MapPin, Heart, ArrowRight, Sparkles, Clock, ShieldCheck } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const base = import.meta.env.BASE_URL;
+
   return (
     <footer className="bg-gradient-to-b from-chonky-red to-[#4d0404] text-chonky-peach pt-16 pb-28 sm:pb-24 border-t-4 border-chonky-peach/30 selection:bg-chonky-peach selection:text-chonky-red">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -47,12 +49,12 @@ export const Footer: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <img
-                src="/chonky-icon-peach.svg"
+                src={`${base}chonky-icon-peach.svg`}
                 alt="Chonky Mascot"
                 className="h-10 w-auto"
               />
               <img
-                src="/chonky-typography-peach.svg"
+                src={`${base}chonky-typography-peach.svg`}
                 alt="Chonky"
                 className="h-7 w-auto"
               />

@@ -32,6 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const { theme } = useTheme();
   const { openProfile, closeProfile, isProfileOpen, profile } = useProfile();
+  const base = import.meta.env.BASE_URL;
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -96,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-label="Chonky Home"
               >
                 <img
-                  src={theme === 'dark' ? '/chonky-typography-peach.svg' : '/chonky-typography.svg'}
+                  src={theme === 'dark' ? `${base}chonky-typography-peach.svg` : `${base}chonky-typography.svg`}
                   alt="CHONKY"
                   className="h-7 sm:h-8 w-auto transform group-hover:scale-105 transition-transform duration-300 drop-shadow-xs"
                 />
