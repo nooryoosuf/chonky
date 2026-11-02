@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
+import { useProfile } from '../context/ProfileContext';
 import { 
   ShoppingBag, 
   Search, 
   MapPin, 
-  Menu as MenuIcon, 
-  X, 
   ChevronDown,
   Sparkles,
-  PhoneCall,
   Sun,
-  Moon
+  Moon,
+  User,
+  X
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -37,9 +37,9 @@ export const Header: React.FC<HeaderProps> = ({
   } = useCart();
 
   const { theme, toggleTheme } = useTheme();
+  const { openProfile, profile } = useProfile();
 
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   useEffect(() => {
@@ -51,7 +51,6 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const scrollToSection = (id: string) => {
-    setIsMobileMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
       const offset = 80;
@@ -87,17 +86,9 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4">
             
-            {/* Left: Mobile hamburger & Logo */}
+            {/* Left: Brand Logo & Desktop Location */}
             <div className="flex items-center gap-3 sm:gap-6">
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden p-2 -ml-2 rounded-xl text-chonky-text dark:text-white hover:bg-chonky-subtle dark:hover:bg-white/10 transition"
-                aria-label="Open Navigation Menu"
-              >
-                <MenuIcon className="w-6 h-6" />
-              </button>
-
-              {/* Chonky Official Typography Wordmark (Icon removed as requested) */}
+              {/* Chonky Official Typography Wordmark */}
               <a
                 href="#"
                 onClick={(e) => {
@@ -219,6 +210,19 @@ export const Header: React.FC<HeaderProps> = ({
                 <MapPin className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
               </button>
 
+              {/* Profile Account Icon Button */}
+              <button
+                onClick={() => openProfile('overview')}
+                className="relative p-2 rounded-full border border-chonky-border dark:border-white/10 hover:border-chonky-red/40 dark:hover:border-chonky-peach/40 hover:bg-chonky-peach-light/50 dark:hover:bg-white/10 transition text-chonky-text dark:text-white flex items-center justify-center shadow-xs active:scale-90"
+                aria-label="Open User Profile & Account Settings"
+                title="Account, Orders & Loyalty Points"
+              >
+                <User className="w-4 h-4" />
+                {profile.loyaltyPoints > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white dark:border-[#070404]" />
+                )}
+              </button>
+
               {/* Shopping Cart Button */}
               <button
                 onClick={openCart}
@@ -248,103 +252,6 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </header>
-
-      {/* Mobile Drawer Menu */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden">
-          <div 
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-
-          <div className="relative w-4/5 max-w-xs bg-white dark:bg-[#080404] text-chonky-text dark:text-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-250 border-r border-chonky-border/60 dark:border-white/10">
-            {/* Drawer Header (Icon removed) */}
-            <div className="p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
-              <img
-                src={theme === 'dark' ? '/chonky-typography-peach.svg' : '/chonky-typography.svg'}
-                alt="CHONKY"
-                className="h-6 w-auto"
-              />
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-1.5 rounded-full text-chonky-muted dark:text-gray-400 hover:bg-chonky-subtle dark:hover:bg-white/10"
-                aria-label="Close menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Mobile Location Selector Strip */}
-            <div className="p-4 border-b border-chonky-border dark:border-white/10 bg-chonky-subtle dark:bg-white/5">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  openLocationSelector();
-                }}
-                className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-[#120707] border border-chonky-border dark:border-white/10 text-left shadow-xs"
-              >
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
-                  <div>
-                    <p className="text-[10px] text-chonky-muted dark:text-gray-400 uppercase font-black">Delivery Zone</p>
-                    <p className="text-xs font-bold text-chonky-text dark:text-white">{selectedLocation.area}</p>
-                  </div>
-                </div>
-                <span className="text-xs font-black text-chonky-red dark:text-chonky-peach">Change</span>
-              </button>
-            </div>
-
-            {/* Navigation links */}
-            <div className="p-5 space-y-3 flex-1 overflow-y-auto">
-              <button
-                onClick={() => scrollToSection('menu-section')}
-                className="w-full text-left py-2.5 px-3 rounded-2xl font-black text-chonky-text dark:text-gray-200 hover:bg-chonky-peach-light dark:hover:bg-white/10 hover:text-chonky-red dark:hover:text-chonky-peach transition text-base"
-              >
-                🍔 Full Menu
-              </button>
-              <button
-                onClick={() => scrollToSection('deals-section')}
-                className="w-full text-left py-2.5 px-3 rounded-2xl font-black text-chonky-text dark:text-gray-200 hover:bg-chonky-peach-light dark:hover:bg-white/10 hover:text-chonky-red dark:hover:text-chonky-peach transition text-base flex items-center justify-between"
-              >
-                <span>🔥 Value Deals & Combos</span>
-                <span className="text-[10px] bg-chonky-red text-white px-2 py-0.5 rounded-full font-bold">
-                  Save
-                </span>
-              </button>
-              <button
-                onClick={() => scrollToSection('about-section')}
-                className="w-full text-left py-2.5 px-3 rounded-2xl font-black text-chonky-text dark:text-gray-200 hover:bg-chonky-peach-light dark:hover:bg-white/10 hover:text-chonky-red dark:hover:text-chonky-peach transition text-base"
-              >
-                📖 About Chonky Story
-              </button>
-
-              <div className="pt-6 border-t border-chonky-border/70 dark:border-white/10 space-y-3 text-xs text-chonky-muted dark:text-gray-400">
-                <div className="flex items-center gap-2 text-chonky-text dark:text-white font-bold">
-                  <PhoneCall className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
-                  <span>Call to order: +960 788-9900</span>
-                </div>
-                <p>Opening hours: Daily 12:00 PM – 1:00 AM</p>
-                <p>Malé Kitchen & Delivery Hub</p>
-              </div>
-            </div>
-
-            {/* Mobile Drawer Footer */}
-            <div className="p-4 border-t border-chonky-border dark:border-white/10 bg-chonky-subtle dark:bg-white/5 space-y-2">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  openCart();
-                }}
-                className="w-full py-3.5 bg-chonky-red text-white font-black rounded-2xl flex items-center justify-center gap-2 shadow-glow-red"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>View Cart ({itemCount})</span>
-                {itemCount > 0 && <span>· MVR {subtotal}</span>}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

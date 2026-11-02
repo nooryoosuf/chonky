@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ProfileProvider } from './context/ProfileContext';
 import { Header } from './components/Header';
 import { HeroCarousel } from './components/HeroCarousel';
 import { CategoryNav } from './components/CategoryNav';
@@ -11,6 +12,8 @@ import { Footer } from './components/Footer';
 import { ProductDetailSheet } from './components/ProductDetailSheet';
 import { CartDrawer } from './components/CartDrawer';
 import { CartBar } from './components/CartBar';
+import { MobileNavBar } from './components/MobileNavBar';
+import { ProfileModal } from './components/ProfileModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
 import { PRODUCTS } from './data/menuData';
@@ -91,6 +94,8 @@ export function AppContent() {
         <ProductDetailSheet />
         <CartDrawer />
         <CartBar />
+        <MobileNavBar />
+        <ProfileModal />
         <CheckoutModal />
         <LocationSelectorModal />
       </div>
@@ -101,9 +106,11 @@ export function AppContent() {
 export function App() {
   return (
     <ThemeProvider>
-      <CartProvider>
-        <AppContent />
-      </CartProvider>
+      <ProfileProvider>
+        <CartProvider>
+          <AppContent />
+        </CartProvider>
+      </ProfileProvider>
     </ThemeProvider>
   );
 }

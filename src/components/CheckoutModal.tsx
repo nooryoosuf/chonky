@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { useProfile } from '../context/ProfileContext';
 import { PaymentMethod } from '../types';
 import { 
   X, 
@@ -37,12 +38,27 @@ export const CheckoutModal: React.FC = () => {
     resetCompletedOrder
   } = useCart();
 
-  // Form states
-  const [customerName, setCustomerName] = useState('');
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
+  const { profile, recordNewOrder } = useProfile();
+
+  // Form states initialized with profile defaults
+  const [customerName, setCustomerName] = useState(profile.name);
+  const [customerPhone, setCustomerPhone] = useState(profile.phone);
+  const defaultAddr = profile.addresses.find(a => a.isDefault) || profile.addresses[0];
+  const [address, setAddress] = useState(defaultAddr?.address || '');
+  const [deliveryNotes, setDeliveryNotes] = useState(defaultAddr?.notes || '');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bml_transfer');
+
+  // Sync profile when opened
+  useEffect(() => {
+    if (isCheckoutOpen) {
+      if (!customerName) setCustomerName(profile.name);
+      if (!customerPhone) setCustomerPhone(profile.phone);
+      if (!address && defaultAddr) {
+        setAddress(defaultAddr.address);
+        if (defaultAddr.notes) setDeliveryNotes(defaultAddr.notes);
+      }
+    }
+  }, [isCheckoutOpen, profile]);
 
   // Validation and Submission
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -81,13 +97,15 @@ export const CheckoutModal: React.FC = () => {
 
     // Simulate ordering submission
     setTimeout(() => {
-      placeOrder({
+      const placed = placeOrder({
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
+        customerEmail: profile.email,
         address: orderType === 'delivery' ? address.trim() : undefined,
         deliveryNotes: deliveryNotes.trim() || undefined,
         paymentMethod
       });
+      recordNewOrder(placed);
       setIsSubmitting(false);
     }, 900);
   };

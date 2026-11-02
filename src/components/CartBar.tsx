@@ -18,11 +18,13 @@ export const CartBar: React.FC = () => {
         aria-hidden="true" 
       />
 
-      {/* Floating Cart Action Pill with Guaranteed Bottom Clearance */}
+      {/* Floating Cart Action Pill with Guaranteed Bottom Clearance on Mobile (above bottom nav) and Desktop */}
       <aside 
         key={itemCount > 0 ? 'cart-bar-active' : 'cart-bar-empty'}
-        className="fixed left-0 right-0 z-40 px-4 sm:px-6 pointer-events-none flex justify-center"
-        style={{ bottom: 'max(1.75rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)))' }}
+        className="fixed left-0 right-0 z-40 px-4 sm:px-6 pointer-events-none flex justify-center bottom-[76px] sm:bottom-7"
+        style={{
+          bottom: 'max(4.75rem, calc(4.25rem + env(safe-area-inset-bottom, 0px)))'
+        }}
         aria-label="Floating cart action"
       >
         <div className="w-full max-w-md sm:max-w-lg pointer-events-auto animate-fluid-cart-pop">
