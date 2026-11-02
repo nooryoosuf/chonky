@@ -4,12 +4,8 @@ import { CardBrandRow } from './CardBrandLogos';
 import { ChonkyLiveMap } from './ChonkyLiveMap';
 import { 
   startDriverGpsTracking, 
-  stopDriverTracking, 
-  publishDriverLocation,
-  CHONKY_KITCHEN_COORDS,
-  getDestinationCoordinates
+  stopDriverTracking
 } from '../services/driverLocationService';
-import { fetchRoadRoute } from '../services/routingService';
 import { 
   X, 
   Bike, 
@@ -23,13 +19,8 @@ import {
   ShieldCheck,
   ChevronDown,
   ChevronUp,
-  RotateCcw,
   Key,
-  Maximize2,
-  Minimize2,
-  Radio,
-  Play,
-  Square
+  Minimize2
 } from 'lucide-react';
 
 interface OrderTrackingModalProps {
@@ -44,7 +35,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   order,
   isOpen,
   onClose,
-  onUpdateStatus,
+  onUpdateStatus: _onUpdateStatus,
   onOrderMore
 }) => {
   const [currentStatus, setCurrentStatus] = useState<OrderDetails['status']>(order?.status || 'received');
@@ -53,13 +44,10 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   const [isFullPageMap, setIsFullPageMap] = useState(false);
   const [isSheetCollapsed, setIsSheetCollapsed] = useState(true);
   
-  // Real GPS & simulation state
-  const [isSharingDeviceGps, setIsSharingDeviceGps] = useState(false);
-  const [isSimulatingDrive, setIsSimulatingDrive] = useState(false);
+  // Real GPS & road stats
   const [roadEtaMin, setRoadEtaMin] = useState<number | null>(null);
   const [roadDistKm, setRoadDistKm] = useState<number | null>(null);
 
-  const simulationIntervalRef = useRef<number | null>(null);
   const stopGpsWatchRef = useRef<(() => void) | null>(null);
 
   // Touch Drag gestures for Mobile Bottom Sheet (swipe up to expand, swipe down to compact)
@@ -96,18 +84,12 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
     }
   }, [order]);
 
-  // Clean up GPS tracking & simulations on unmount or close
+  // Clean up GPS tracking on unmount or close
   const cleanupTracking = useCallback(() => {
-    if (simulationIntervalRef.current !== null) {
-      clearInterval(simulationIntervalRef.current);
-      simulationIntervalRef.current = null;
-    }
     if (stopGpsWatchRef.current) {
       stopGpsWatchRef.current();
       stopGpsWatchRef.current = null;
     }
-    setIsSharingDeviceGps(false);
-    setIsSimulatingDrive(false);
   }, []);
 
   useEffect(() => {
@@ -115,6 +97,14 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
       cleanupTracking();
     }
   }, [isOpen, cleanupTracking]);
+
+  // Real driver GPS tracking starts when on the way
+  useEffect(() => {
+    if (currentStatus === 'on_the_way' && order) {
+      const stopFn = startDriverGpsTracking(order.orderId);
+      stopGpsWatchRef.current = stopFn;
+    }
+  }, [currentStatus, order]);
 
   // Stop tracking when order completes
   useEffect(() => {
@@ -134,108 +124,6 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
     navigator.clipboard.writeText(order.orderId);
     setCopiedId(true);
     setTimeout(() => setCopiedId(false), 2000);
-  };
-
-  const handleStatusChange = (status: OrderDetails['status']) => {
-    setCurrentStatus(status);
-    if (onUpdateStatus) {
-      onUpdateStatus(order.orderId, status);
-    }
-  };
-
-  // 1. Start Real Driver GPS Tracking using browser Geolocation API
-  const handleToggleDeviceGps = () => {
-    if (isSharingDeviceGps) {
-      cleanupTracking();
-      return;
-    }
-
-    // Stop simulation if running
-    if (simulationIntervalRef.current !== null) {
-      clearInterval(simulationIntervalRef.current);
-      simulationIntervalRef.current = null;
-      setIsSimulatingDrive(false);
-    }
-
-    handleStatusChange('on_the_way');
-    setIsSharingDeviceGps(true);
-
-    const stopFn = startDriverGpsTracking(
-      order.orderId,
-      () => {},
-      (err) => {
-        console.warn('Driver device GPS error:', err);
-        alert('Could not access device GPS. Please grant location permissions in your browser.');
-        setIsSharingDeviceGps(false);
-      }
-    );
-    stopGpsWatchRef.current = stopFn;
-  };
-
-  // 2. Start Real OSRM Road Coordinate Waypoint Simulation (for indoor/demo testing)
-  const handleToggleSimulation = async () => {
-    if (isSimulatingDrive) {
-      cleanupTracking();
-      return;
-    }
-
-    // Stop device GPS if running
-    if (stopGpsWatchRef.current) {
-      stopGpsWatchRef.current();
-      stopGpsWatchRef.current = null;
-      setIsSharingDeviceGps(false);
-    }
-
-    handleStatusChange('on_the_way');
-    setIsSimulatingDrive(true);
-
-    const destCoords = getDestinationCoordinates(order.area, order.address);
-    const route = await fetchRoadRoute(CHONKY_KITCHEN_COORDS, destCoords);
-
-    if (!route || route.coordinates.length === 0) {
-      setIsSimulatingDrive(false);
-      return;
-    }
-
-    const waypoints = route.coordinates;
-    let step = 0;
-
-    // Publish initial waypoint
-    publishDriverLocation({
-      orderId: order.orderId,
-      longitude: waypoints[0][0],
-      latitude: waypoints[0][1],
-      isRealGps: true,
-      timestamp: Date.now(),
-      statusText: 'Driver dispatched on road'
-    });
-
-    simulationIntervalRef.current = window.setInterval(() => {
-      step++;
-      if (step >= waypoints.length) {
-        // Arrived at destination
-        publishDriverLocation({
-          orderId: order.orderId,
-          longitude: waypoints[waypoints.length - 1][0],
-          latitude: waypoints[waypoints.length - 1][1],
-          isRealGps: true,
-          timestamp: Date.now(),
-          statusText: 'Driver arrived'
-        });
-        cleanupTracking();
-        handleStatusChange('delivered');
-        return;
-      }
-
-      publishDriverLocation({
-        orderId: order.orderId,
-        longitude: waypoints[step][0],
-        latitude: waypoints[step][1],
-        isRealGps: true,
-        timestamp: Date.now(),
-        statusText: `En route (${Math.round(((step) / waypoints.length) * 100)}%)`
-      });
-    }, 1500);
   };
 
   // Status index for progress calculation
@@ -627,9 +515,9 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         <div className="relative z-30 p-3.5 sm:p-4 flex items-center justify-between pointer-events-none">
           <button
             onClick={() => setIsFullPageMap(false)}
-            className="px-3.5 py-2 rounded-full bg-[#101112]/90 hover:bg-black text-white text-xs font-bold backdrop-blur-md border border-white/15 flex items-center gap-2 shadow-lg transition active:scale-95 pointer-events-auto"
+            className="h-10 sm:h-11 px-4 rounded-2xl bg-[#101112]/95 hover:bg-black text-white text-xs font-bold backdrop-blur-md border border-white/15 flex items-center gap-2 shadow-lg transition active:scale-90 pointer-events-auto"
           >
-            <Minimize2 className="w-3.5 h-3.5 text-chonky-peach" />
+            <Minimize2 className="w-4 h-4 text-chonky-peach" />
             <span>Card View</span>
           </button>
 
@@ -638,10 +526,10 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
               cleanupTracking();
               onClose();
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#101112]/90 hover:bg-black text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-95 pointer-events-auto"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-90 pointer-events-auto"
             aria-label="Close tracking"
           >
-            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -774,75 +662,17 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             className="w-full h-full"
           />
 
-          {/* Close Button Top Right (Clear of vertical map controls) */}
+          {/* Close Button Top Right - Consistent Size & Generous Touch Target */}
           <button
             onClick={() => {
               cleanupTracking();
               onClose();
             }}
-            className="absolute top-3.5 right-3.5 z-30 w-8.5 h-8.5 rounded-full bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-90"
+            className="absolute top-3.5 right-3.5 sm:right-4 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-90"
             aria-label="Close tracking"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
-
-          {/* Expand Full Page Button */}
-          <button
-            onClick={() => setIsFullPageMap(true)}
-            className="absolute bottom-2.5 right-3 z-20 px-2.5 py-1 rounded-xl bg-[#101112]/90 hover:bg-black text-white text-[10.5px] font-extrabold flex items-center gap-1.5 border border-white/15 shadow-md transition active:scale-95"
-            title="Open Full Page Live Map"
-          >
-            <Maximize2 className="w-3 h-3 text-chonky-peach" />
-            <span>Full Map</span>
-          </button>
-
-          {/* Order Milestones & Live Test Switcher Strip */}
-          <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1 bg-black/85 backdrop-blur-md p-1 rounded-xl border border-white/10 max-w-[calc(100%-100px)] overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-1 px-1 text-[8.5px] font-black uppercase text-amber-400 tracking-wider shrink-0">
-              <RotateCcw className="w-2.5 h-2.5" />
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-              {(['received', 'preparing', 'on_the_way', 'delivered'] as const).map((st) => (
-                <button
-                  key={st}
-                  onClick={() => handleStatusChange(st)}
-                  className={`px-1.5 py-0.5 rounded-lg text-[9.5px] font-extrabold transition-all whitespace-nowrap ${
-                    currentStatus === st
-                      ? 'bg-chonky-red text-white shadow-xs'
-                      : 'text-gray-300 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {st === 'received' ? '1. Confirmed' : st === 'preparing' ? '2. Prep 🔥' : st === 'on_the_way' ? '3. En Route 🛵' : '4. Done ✓'}
-                </button>
-              ))}
-            </div>
-
-            {/* Test Drive & Live Device GPS Shortcuts */}
-            <div className="flex items-center gap-1 pl-1 ml-0.5 border-l border-white/20 shrink-0">
-              <button
-                type="button"
-                onClick={handleToggleSimulation}
-                className={`px-1.5 py-0.5 rounded-lg text-[9px] font-black flex items-center gap-1 transition-all whitespace-nowrap ${
-                  isSimulatingDrive ? 'bg-[#E53945] text-white shadow-xs' : 'text-amber-300 hover:text-white hover:bg-white/10'
-                }`}
-                title="Test Drive along real roads"
-              >
-                {isSimulatingDrive ? <Square className="w-2 h-2" /> : <Play className="w-2 h-2" />}
-                <span>{isSimulatingDrive ? 'Stop' : 'Drive'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={handleToggleDeviceGps}
-                className={`px-1.5 py-0.5 rounded-lg text-[9px] font-black flex items-center gap-1 transition-all whitespace-nowrap ${
-                  isSharingDeviceGps ? 'bg-emerald-600 text-white shadow-xs' : 'text-emerald-400 hover:text-white hover:bg-white/10'
-                }`}
-                title="Broadcast Device GPS"
-              >
-                <Radio className="w-2 h-2" />
-                <span>{isSharingDeviceGps ? 'GPS On' : 'GPS'}</span>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* ========================================================= */}

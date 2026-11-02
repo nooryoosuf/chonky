@@ -382,77 +382,76 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
       />
 
       {/* Top Floating Overlay: Live GPS Telemetry Pill */}
-      <div className="absolute top-3.5 left-3.5 sm:left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#101112]/90 backdrop-blur-md border border-white/10 shadow-lg text-xs pointer-events-auto">
+      <div className="absolute top-3.5 left-3.5 sm:left-4 z-10 flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#101112]/95 backdrop-blur-md border border-white/15 shadow-lg text-xs pointer-events-auto">
         <span className="relative flex h-2.5 w-2.5">
           <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isStale ? 'bg-amber-400 opacity-75' : 'bg-emerald-400 opacity-75'}`} />
           <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isStale ? 'bg-amber-500' : 'bg-emerald-500'}`} />
         </span>
-        <div className="flex items-center gap-1.5 text-[11px] font-extrabold tracking-wide text-white">
+        <div className="flex items-center gap-1.5 text-xs font-black tracking-wide text-white">
           <span>{orderStatus === 'delivered' ? 'ARRIVED & DELIVERED' : isGpsActive ? 'LIVE DRIVER GPS' : 'KITCHEN DISPATCH'}</span>
-          <span className="text-[10px] text-gray-400 font-normal">· {timeAgo}</span>
+          <span className="text-[11px] text-gray-400 font-normal">· {timeAgo}</span>
         </div>
       </div>
 
-      {/* Floating Vertical Map Toolbar on Right Side (Safely positioned below header & close button) */}
-      <div className="absolute top-14 sm:top-16 right-3.5 sm:right-4 z-20 flex flex-col items-center gap-2 pointer-events-auto">
+      {/* Floating Map Action Toolbar: Consistent Sizing in ONE LINE */}
+      <div className={`absolute ${isFullPage ? 'bottom-40 sm:bottom-44' : 'bottom-3'} right-3 sm:right-4 z-20 flex items-center gap-2.5 pointer-events-auto`}>
         {/* Recenter Button */}
         <button
           type="button"
           onClick={handleRecenter}
-          className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
           title="Recenter Map"
           aria-label="Recenter Map"
         >
-          <Navigation className="w-3.5 h-3.5 text-chonky-peach" />
+          <Navigation className="w-5 h-5 text-chonky-peach" />
         </button>
 
-        {/* Zoom In & Out Capsule */}
-        <div className="flex flex-col bg-[#101112]/95 backdrop-blur-md border border-white/15 rounded-2xl overflow-hidden shadow-lg">
-          <button
-            type="button"
-            onClick={handleZoomIn}
-            className="w-8.5 h-8 sm:w-9 sm:h-8 flex items-center justify-center text-gray-200 hover:text-white hover:bg-white/15 transition active:scale-90"
-            title="Zoom In"
-            aria-label="Zoom In"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-          <div className="h-[1px] bg-white/15" />
-          <button
-            type="button"
-            onClick={handleZoomOut}
-            className="w-8.5 h-8 sm:w-9 sm:h-8 flex items-center justify-center text-gray-200 hover:text-white hover:bg-white/15 transition active:scale-90"
-            title="Zoom Out"
-            aria-label="Zoom Out"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Zoom In Button */}
+        <button
+          type="button"
+          onClick={handleZoomIn}
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
+          title="Zoom In"
+          aria-label="Zoom In"
+        >
+          <Plus className="w-5 h-5" />
+        </button>
 
-        {/* Full Page / Expand Toggle */}
+        {/* Zoom Out Button */}
+        <button
+          type="button"
+          onClick={handleZoomOut}
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
+          title="Zoom Out"
+          aria-label="Zoom Out"
+        >
+          <Minus className="w-5 h-5" />
+        </button>
+
+        {/* Full Page / Compact Toggle Button */}
         {onToggleFullPage && (
           <button
             type="button"
             onClick={onToggleFullPage}
-            className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
-            title={isFullPage ? 'Minimize to Sheet' : 'Expand Full Page Map'}
-            aria-label={isFullPage ? 'Minimize to Sheet' : 'Expand Full Page Map'}
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
+            title={isFullPage ? 'Compact to Sheet' : 'Expand Full Page Map'}
+            aria-label={isFullPage ? 'Compact to Sheet' : 'Expand Full Page Map'}
           >
-            {isFullPage ? <Minimize2 className="w-3.5 h-3.5 text-chonky-peach" /> : <Maximize2 className="w-3.5 h-3.5 text-chonky-peach" />}
+            {isFullPage ? <Minimize2 className="w-5 h-5 text-chonky-peach" /> : <Maximize2 className="w-5 h-5 text-chonky-peach" />}
           </button>
         )}
       </div>
 
       {/* Floating Bottom Route Badge (Distance & Real Road Duration) */}
       {routeInfo && (
-        <div className="absolute bottom-3 left-4 z-10 flex items-center gap-2 px-3 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 text-xs shadow-md pointer-events-none">
-          <Compass className="w-3.5 h-3.5 text-[#E53945]" />
-          <span className="font-extrabold text-white text-[11px]">
+        <div className={`absolute ${isFullPage ? 'bottom-40 sm:bottom-44' : 'bottom-3'} left-3 sm:left-4 z-10 hidden xs:flex sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#101112]/95 backdrop-blur-md border border-white/15 text-xs shadow-lg pointer-events-none`}>
+          <Compass className="w-4 h-4 text-[#E53945]" />
+          <span className="font-extrabold text-white text-xs">
             {routeInfo.distanceKm} km
           </span>
-          <span className="text-gray-400 text-[10px]">·</span>
-          <span className="text-emerald-400 font-extrabold text-[11px]">
-            ~{routeInfo.etaMin} mins via Malé roads
+          <span className="text-gray-400 text-xs">·</span>
+          <span className="text-emerald-400 font-extrabold text-xs">
+            ~{routeInfo.etaMin} mins
           </span>
         </div>
       )}
