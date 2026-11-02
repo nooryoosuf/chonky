@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useCart } from '../context/CartContext';
-import { Bike, Flame, Sparkles, ChevronRight, X, Radio } from 'lucide-react';
+import { Bike, Flame, Sparkles, ChevronRight, ChevronDown, ChevronUp, X, Radio } from 'lucide-react';
 
 export const ActiveOrderPill: React.FC = () => {
   const { 
@@ -15,6 +15,7 @@ export const ActiveOrderPill: React.FC = () => {
   } = useCart();
 
   const [isDismissed, setIsDismissed] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   
   // Fluid vertical drag positioning
   const [offsetY, setOffsetY] = useState<number>(0);
@@ -60,24 +61,99 @@ export const ActiveOrderPill: React.FC = () => {
   const getSubText = (status: string) => {
     switch (status) {
       case 'on_the_way':
-        return 'Live GPS active · Drag to reposition';
+        return 'Live GPS active · Drag or minimize';
       case 'preparing':
-        return 'Fresh patties on the grill · Drag to move';
+        return 'Fresh patties on the grill · Drag or minimize';
       case 'delivered':
-        return 'Enjoy your meal! Drag to move';
+        return 'Enjoy your meal! Drag or minimize';
       default:
-        return `${currentOrder.orderType === 'delivery' ? `Delivery to ${currentOrder.area}` : 'Counter Pickup'} · Drag to move`;
+        return `${currentOrder.orderType === 'delivery' ? `Delivery to ${currentOrder.area}` : 'Counter Pickup'}`;
     }
   };
 
-  // Safe bottom clearance on mobile:
+  // =========================================================================
+  // VIEW MODE 1: MINIMIZED STICKY BANNER (Sits flush right above bottom nav)
+  // =========================================================================
+  if (isMinimized) {
+    const bannerBottomClass = itemCount > 0
+      ? 'bottom-[calc(8.8rem+env(safe-area-inset-bottom,8px))] sm:bottom-24'
+      : 'bottom-[calc(4.25rem+env(safe-area-inset-bottom,4px))] sm:bottom-4';
+
+    return (
+      <div 
+        className={`fixed ${bannerBottomClass} left-3 right-3 sm:left-auto sm:right-6 sm:w-auto z-40 max-w-md mx-auto sm:max-w-none animate-in slide-in-from-bottom duration-200 pointer-events-auto`}
+      >
+        <div 
+          onClick={() => openTracking(currentOrder)}
+          className="w-full sm:w-auto h-11 px-3.5 rounded-full bg-gradient-to-r from-[#700808] via-[#850B0B] to-[#990D0D] border-2 border-[#E53945]/70 shadow-[0_6px_25px_rgba(229,57,69,0.5),0_0_15px_rgba(229,57,69,0.3)] text-white flex items-center justify-between gap-3 cursor-pointer group hover:scale-[1.01] active:scale-[0.99] transition-all"
+          role="button"
+          tabIndex={0}
+          aria-label="Active order tracking banner. Tap to open live tracking."
+        >
+          {/* Left: Live Radar Pulse Beacon & Status */}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-white" />
+            </span>
+            <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded-md bg-black/35 text-[#F2E2C7] border border-white/10 shrink-0">
+              {currentOrder.orderId}
+            </span>
+            <span className="text-xs font-black text-white truncate">
+              {getStatusText(currentOrder.status || 'received')}
+            </span>
+          </div>
+
+          {/* Right: Expand to card, Track button & Dismiss */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Expand to Full Card */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMinimized(false);
+              }}
+              className="w-7 h-7 rounded-full bg-black/25 hover:bg-black/45 text-[#F2E2C7] flex items-center justify-center transition active:scale-90"
+              title="Expand to full card"
+              aria-label="Expand to full card"
+            >
+              <ChevronUp className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Glowing Track Pill */}
+            <div className="px-2.5 py-1 rounded-full bg-white text-[#700808] font-black text-[11px] shadow-xs flex items-center gap-1 group-hover:bg-[#F2E2C7] transition-colors">
+              <span>Track</span>
+              <ChevronRight className="w-3 h-3 stroke-[3] text-[#700808]" />
+            </div>
+
+            {/* Dismiss X */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDismissed(true);
+              }}
+              className="p-1 rounded-full text-white/70 hover:text-white hover:bg-black/25 transition ml-0.5 active:scale-90"
+              title="Dismiss banner"
+              aria-label="Dismiss banner"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // VIEW MODE 2: FULL DRAGGABLE CARD (Can be moved up/down or minimized)
+  // =========================================================================
   const bottomPositionClass = itemCount > 0
     ? 'bottom-[calc(9.75rem+env(safe-area-inset-bottom,16px))] sm:bottom-28'
     : 'bottom-[calc(5.25rem+env(safe-area-inset-bottom,14px))] sm:bottom-8';
 
   // --- Fluid Drag Gesture Handlers ---
   const handlePointerDown = (e: React.PointerEvent) => {
-    // If clicked on close button, let click pass through
     if ((e.target as HTMLElement).closest('button')) {
       return;
     }
@@ -115,10 +191,15 @@ export const ActiveOrderPill: React.FC = () => {
     } catch {
       // ignore
     }
+
+    // If dragged strongly downward near bottom boundary, auto-minimize to banner!
+    if (offsetY >= 25) {
+      setIsMinimized(true);
+      setOffsetY(0);
+    }
   };
 
   const handleCardClick = () => {
-    // Only open tracking if user tapped, not if they dragged the card
     if (!hasMoved.current) {
       openTracking(currentOrder);
     }
@@ -182,13 +263,27 @@ export const ActiveOrderPill: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Action Button & Close */}
+        {/* Right Action Buttons: Track, Minimize, Dismiss */}
         <div className="flex items-center gap-1.5 shrink-0 pl-1">
           {/* Glowing Track Live Pill */}
           <div className="px-3.5 py-1.5 rounded-full bg-white text-[#700808] font-black text-xs shadow-md flex items-center gap-1 group-hover:bg-[#F2E2C7] transition-colors pointer-events-none">
             <span>Track</span>
             <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#700808]" />
           </div>
+
+          {/* Minimize Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMinimized(true);
+            }}
+            className="w-7 h-7 rounded-full bg-black/25 hover:bg-black/45 text-white/90 hover:text-white flex items-center justify-center transition active:scale-90"
+            title="Minimize to bottom banner"
+            aria-label="Minimize to bottom banner"
+          >
+            <ChevronDown className="w-4 h-4" />
+          </button>
 
           {/* Dismiss Button */}
           <button
