@@ -354,99 +354,59 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         </div>
       </div>
 
-      {/* 3. Driver GPS Live Controls & Simulation Strip */}
-      <div className="p-3 rounded-2xl bg-[#17191B] border border-white/10 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isSharingDeviceGps || isSimulatingDrive ? 'bg-emerald-400 opacity-75' : 'bg-gray-500'}`} />
-            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isSharingDeviceGps || isSimulatingDrive ? 'bg-emerald-500' : 'bg-gray-600'}`} />
-          </span>
-          <span className="font-extrabold text-white text-[11px]">
-            {isSharingDeviceGps ? 'Broadcasting My GPS' : isSimulatingDrive ? 'Simulating Rider Motion' : 'Real GPS Dispatch'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {/* Driver Device GPS Broadcast Toggle */}
-          <button
-            type="button"
-            onClick={handleToggleDeviceGps}
-            className={`px-2.5 py-1 rounded-xl text-[10.5px] font-extrabold flex items-center gap-1 transition-all active:scale-95 ${
-              isSharingDeviceGps
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-white/10 text-gray-200 hover:text-white hover:bg-white/15'
-            }`}
-            title="Use device GPS as Ali the driver"
-          >
-            <Radio className="w-3 h-3" />
-            <span>{isSharingDeviceGps ? 'Stop GPS' : 'Share My GPS (Driver)'}</span>
-          </button>
-
-          {/* Real OSRM Road Coordinate Simulation Button */}
-          <button
-            type="button"
-            onClick={handleToggleSimulation}
-            className={`px-2.5 py-1 rounded-xl text-[10.5px] font-extrabold flex items-center gap-1 transition-all active:scale-95 ${
-              isSimulatingDrive
-                ? 'bg-[#E53945] text-white shadow-xs'
-                : 'bg-white/10 text-gray-200 hover:text-white hover:bg-white/15'
-            }`}
-            title="Step through genuine road waypoints"
-          >
-            {isSimulatingDrive ? <Square className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-            <span>{isSimulatingDrive ? 'Stop Drive' : 'Test Drive'}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 4. Uber / Grab Courier Driver Card */}
+      {/* 3. Uber / Grab Courier Driver Card - Generous & Spacious */}
       {isDelivery && (
-        <div className="p-4.5 sm:p-5 rounded-3xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 shadow-sm flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5 min-w-0">
+        <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#140C0C] border border-chonky-border/70 dark:border-white/10 shadow-sm flex items-center justify-between gap-4 sm:gap-5 transition-all">
+          <div className="flex items-center gap-4 min-w-0">
             {/* Driver Avatar with Vehicle Badge */}
             <div className="relative shrink-0">
-              <div className="w-13 h-13 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-base shadow-md">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-800 text-white flex items-center justify-center font-black text-lg sm:text-xl shadow-md border-2 border-white dark:border-[#140C0C]">
                 AS
               </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white dark:border-[#120808]">
-                <Bike className="w-3 h-3 stroke-[2.5]" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white dark:border-[#140C0C] shadow-xs">
+                <Bike className="w-3.5 h-3.5 stroke-[2.5]" />
               </div>
             </div>
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-extrabold text-sm sm:text-base text-chonky-text dark:text-white">
+            <div className="min-w-0 space-y-1">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <span className="font-extrabold text-base sm:text-lg text-chonky-text dark:text-white leading-tight">
                   Ali Shafeeq
                 </span>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
-                  ★ 4.9
+                <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950/80 dark:text-amber-200 flex items-center gap-1 shadow-2xs">
+                  <span>★</span>
+                  <span>4.9</span>
                 </span>
               </div>
-              <p className="text-xs text-chonky-muted dark:text-gray-400 truncate mt-1">
-                Honda Wave 125 · <strong className="text-chonky-text dark:text-gray-200 font-mono">AB1B-1234</strong>
-              </p>
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-chonky-muted dark:text-gray-400 flex-wrap">
+                <span>Honda Wave 125</span>
+                <span>•</span>
+                <span className="px-2.5 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 font-mono font-bold text-chonky-text dark:text-gray-200 text-xs tracking-wider">
+                  AB1B-1234
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Call & WhatsApp Quick Action Buttons */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <a
               href="tel:+9607771234"
-              className="w-11 h-11 rounded-full bg-chonky-subtle dark:bg-white/10 hover:bg-chonky-peach text-chonky-text dark:text-white flex items-center justify-center transition border border-chonky-border/60 dark:border-white/10 shadow-xs active:scale-95"
-              title="Call Driver"
+              className="w-12 h-12 rounded-2xl bg-chonky-subtle dark:bg-white/10 hover:bg-chonky-peach dark:hover:bg-white/15 text-chonky-text dark:text-white flex items-center justify-center transition border border-chonky-border/60 dark:border-white/10 shadow-xs active:scale-95"
+              title="Call Driver Ali"
               aria-label="Call Driver Ali"
             >
-              <Phone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <Phone className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </a>
             <a
               href={`https://wa.me/9607889900?text=Hi%20Ali%2C%20checking%20on%20my%20Chonky%20order%20${order.orderId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-11 h-11 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition shadow-xs active:scale-95"
+              className="w-12 h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition shadow-xs active:scale-95"
               title="Message on WhatsApp"
               aria-label="Message on WhatsApp"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-5 h-5" />
             </a>
           </div>
         </div>
@@ -660,7 +620,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         <div className="flex-1 pointer-events-none" />
 
         {/* Floating Uber / Grab Style Slide-Up Bottom Drawer */}
-        <div className="relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col max-h-[58vh] sm:max-h-[52vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+        <div className="relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col max-h-[70vh] sm:max-h-[64vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
           {/* Subtle Grab Handle */}
           <div className="w-full pt-3 pb-1 flex justify-center shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-white/20" />
@@ -732,17 +692,17 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             <span>Full Map</span>
           </button>
 
-          {/* Order Milestones Switcher Strip */}
-          <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1 bg-black/85 backdrop-blur-md p-1 rounded-xl border border-white/10">
-            <div className="flex items-center gap-1 px-1 text-[8.5px] font-black uppercase text-amber-400 tracking-wider">
+          {/* Order Milestones & Live Test Switcher Strip */}
+          <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1 bg-black/85 backdrop-blur-md p-1 rounded-xl border border-white/10 max-w-[calc(100%-100px)] overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1 px-1 text-[8.5px] font-black uppercase text-amber-400 tracking-wider shrink-0">
               <RotateCcw className="w-2.5 h-2.5" />
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               {(['received', 'preparing', 'on_the_way', 'delivered'] as const).map((st) => (
                 <button
                   key={st}
                   onClick={() => handleStatusChange(st)}
-                  className={`px-1.5 py-0.5 rounded-lg text-[9.5px] font-extrabold transition-all ${
+                  className={`px-1.5 py-0.5 rounded-lg text-[9.5px] font-extrabold transition-all whitespace-nowrap ${
                     currentStatus === st
                       ? 'bg-chonky-red text-white shadow-xs'
                       : 'text-gray-300 hover:text-white hover:bg-white/10'
@@ -751,6 +711,32 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                   {st === 'received' ? '1. Confirmed' : st === 'preparing' ? '2. Prep 🔥' : st === 'on_the_way' ? '3. En Route 🛵' : '4. Done ✓'}
                 </button>
               ))}
+            </div>
+
+            {/* Test Drive & Live Device GPS Shortcuts */}
+            <div className="flex items-center gap-1 pl-1 ml-0.5 border-l border-white/20 shrink-0">
+              <button
+                type="button"
+                onClick={handleToggleSimulation}
+                className={`px-1.5 py-0.5 rounded-lg text-[9px] font-black flex items-center gap-1 transition-all whitespace-nowrap ${
+                  isSimulatingDrive ? 'bg-[#E53945] text-white shadow-xs' : 'text-amber-300 hover:text-white hover:bg-white/10'
+                }`}
+                title="Test Drive along real roads"
+              >
+                {isSimulatingDrive ? <Square className="w-2 h-2" /> : <Play className="w-2 h-2" />}
+                <span>{isSimulatingDrive ? 'Stop' : 'Drive'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleToggleDeviceGps}
+                className={`px-1.5 py-0.5 rounded-lg text-[9px] font-black flex items-center gap-1 transition-all whitespace-nowrap ${
+                  isSharingDeviceGps ? 'bg-emerald-600 text-white shadow-xs' : 'text-emerald-400 hover:text-white hover:bg-white/10'
+                }`}
+                title="Broadcast Device GPS"
+              >
+                <Radio className="w-2 h-2" />
+                <span>{isSharingDeviceGps ? 'GPS On' : 'GPS'}</span>
+              </button>
             </div>
           </div>
         </div>
