@@ -78,9 +78,16 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
 
   const slide = HERO_SLIDES[currentSlide];
 
+  // Key perks/tags per slide
+  const slideHighlights: Record<number, string[]> = {
+    0: ['100% Angus Beef', 'Double Smashed', 'Potato Bun'],
+    1: ['Prime Shaved Ribeye', 'Toasted Hearth Roll', 'Real Provolone Melt'],
+    2: ['48-hr Sourdough', 'Cupping Pepperoni', 'Hot Honey Drizzle']
+  };
+
   return (
     <section
-      className="relative w-full overflow-hidden bg-transparent dark:bg-transparent flex flex-col justify-center min-h-[calc(100dvh-4.5rem)] pt-2 pb-4 sm:pt-4 sm:pb-8"
+      className="relative w-full overflow-hidden bg-transparent dark:bg-transparent pt-4 pb-8 sm:pt-6 sm:pb-12"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -88,17 +95,17 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
       onTouchEnd={handleTouchEnd}
       aria-label="Promotional highlights carousel"
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full flex-1 flex flex-col">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Main Full-Screen Fluid Carousel Card Container */}
-        <div className="relative rounded-[2rem] sm:rounded-[3rem] bg-gradient-to-br from-[#100505] via-[#160707] to-[#060303] text-white overflow-hidden shadow-hover border border-white/10 dark:border-chonky-red/30 flex-1 min-h-[calc(100dvh-6.5rem)] sm:min-h-[calc(100vh-7rem)] flex flex-col justify-between p-5 sm:p-10 md:p-12 transition-all">
+        {/* Main Fluid Carousel Card Container */}
+        <div className="relative rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-to-br from-[#100505] via-[#160707] to-[#060303] text-white overflow-hidden shadow-hover border border-white/10 dark:border-chonky-red/30 min-h-[460px] sm:min-h-[490px] md:min-h-[520px] flex flex-col justify-between p-6 sm:p-10 md:p-12 transition-all">
           
           {/* Subtle Ambient Radial Glow Behind Food */}
           <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] bg-chonky-red/25 rounded-full blur-3xl pointer-events-none -mr-20" />
           <div className="absolute left-10 top-10 w-72 h-72 bg-chonky-red/10 rounded-full blur-2xl pointer-events-none" />
 
           {/* Top Row: Slide Switcher Tabs with Progress Bars */}
-          <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-white/10 shrink-0">
+          <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10">
             {/* Slide Category Pills */}
             <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1">
               {HERO_SLIDES.map((s, idx) => {
@@ -110,7 +117,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
                       setCurrentSlide(idx);
                       setProgress(0);
                     }}
-                    className={`relative px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
+                    className={`relative px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
                       isActive
                         ? 'bg-white/15 text-white shadow-xs border border-white/20'
                         : 'bg-black/20 text-gray-400 hover:text-white hover:bg-white/10'
@@ -147,72 +154,82 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
           </div>
 
           {/* Center Stage: Split Grid Layout */}
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center py-3 sm:py-6 my-auto flex-1 min-h-0">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-6 sm:py-8 my-auto">
             
-            {/* Left Column: Dynamic Typography & Primary CTA (7 cols) */}
-            <div className="lg:col-span-7 flex flex-col justify-center text-left">
-              <div key={slide.id} className="space-y-3.5 sm:space-y-5 animate-in fade-in duration-500">
-                
-                {/* Tagline Pill */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-chonky-peach/15 border border-chonky-peach/30 text-chonky-peach text-[11px] sm:text-xs font-black uppercase tracking-wider backdrop-blur-md w-fit">
-                  <Flame className="w-3.5 h-3.5 text-chonky-peach animate-pulse" />
-                  <span>{slide.tagline}</span>
-                </div>
-
-                {/* Punchy Headline (Fixed Height for zero layout jumping) */}
-                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] font-sans min-h-[3.8rem] sm:min-h-[5.5rem] lg:min-h-[6.5rem] flex items-center">
-                  <span className="line-clamp-2">{slide.headline}</span>
-                </h1>
-
-                {/* Supporting sentence (Fixed Height for zero layout jumping) */}
-                <p className="text-xs sm:text-base text-gray-300 max-w-xl leading-relaxed font-normal min-h-[2.5rem] sm:min-h-[3rem] flex items-center">
-                  <span className="line-clamp-2">{slide.description}</span>
-                </p>
-
-                {/* Primary Action Button (Clean single button) */}
-                <div className="pt-1 sm:pt-2">
-                  <button
-                    onClick={() => handleCtaClick(slide.category)}
-                    className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-extrabold text-sm sm:text-base flex items-center gap-3 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-glow-red group w-fit"
-                  >
-                    <span>{slide.cta}</span>
-                    <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-
+            {/* Left Column: Dynamic Typography & CTAs (7 cols) */}
+            <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-left animate-in fade-in duration-500 key={slide.id}">
+              
+              {/* Tagline Pill */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-chonky-peach/15 border border-chonky-peach/30 text-chonky-peach text-xs font-black uppercase tracking-wider backdrop-blur-md">
+                <Flame className="w-3.5 h-3.5 text-chonky-peach animate-pulse" />
+                <span>{slide.tagline}</span>
               </div>
+
+              {/* Punchy Headline */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] font-sans">
+                {slide.headline}
+              </h1>
+
+              {/* Supporting sentence */}
+              <p className="text-sm sm:text-base text-gray-300 max-w-xl leading-relaxed font-normal">
+                {slide.description}
+              </p>
+
+              {/* Ingredient Highlight Chips */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {slideHighlights[currentSlide]?.map((hl, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 rounded-xl bg-white/10 backdrop-blur-xs text-xs font-semibold text-gray-200 border border-white/10"
+                  >
+                    {hl}
+                  </span>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 sm:pt-4 flex flex-wrap items-center gap-4">
+                <button
+                  onClick={() => handleCtaClick(slide.category)}
+                  className="px-7 py-3.5 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-extrabold text-sm sm:text-base flex items-center gap-3 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-glow-red group"
+                >
+                  <span>{slide.cta}</span>
+                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <button
+                  onClick={() => handleCtaClick('all')}
+                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all duration-200 border border-white/15"
+                >
+                  Explore All Menu
+                </button>
+              </div>
+
             </div>
 
-            {/* Right Column: Hero Visual Frame (5 cols) with Smooth Fluid Crossfade */}
+            {/* Right Column: Hero Visual Frame (5 cols) */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
               
               {/* Layered Decorative Backdrop Pill */}
-              <div className="relative w-full max-w-[280px] xs:max-w-xs sm:max-w-md aspect-square sm:aspect-[4/3] lg:aspect-square rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden p-2.5 sm:p-3 bg-gradient-to-tr from-white/10 to-white/5 border border-white/15 shadow-2xl backdrop-blur-md group">
+              <div className="relative w-full max-w-md aspect-square sm:aspect-[4/3] lg:aspect-square rounded-[2.5rem] overflow-hidden p-3 bg-gradient-to-tr from-white/10 to-white/5 border border-white/15 shadow-2xl backdrop-blur-md group">
                 
-                {/* Photo Stack for Seamless Crossfade Transitions */}
-                <div className="w-full h-full rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden relative">
-                  {HERO_SLIDES.map((s, idx) => (
-                    <img
-                      key={s.id}
-                      src={s.image}
-                      alt={s.headline}
-                      className={`absolute inset-0 w-full h-full object-cover object-center transform transition-all duration-700 ease-in-out ${
-                        idx === currentSlide
-                          ? 'opacity-100 scale-102 z-10'
-                          : 'opacity-0 scale-105 pointer-events-none z-0'
-                      }`}
-                    />
-                  ))}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 z-10 pointer-events-none" />
+                {/* Photo with subtle hover tilt */}
+                <div className="w-full h-full rounded-[2rem] overflow-hidden relative">
+                  <img
+                    src={slide.image}
+                    alt={slide.headline}
+                    className="w-full h-full object-cover object-center transform scale-102 group-hover:scale-110 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
 
                   {/* Floating Price Pill */}
-                  <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 bg-black/70 backdrop-blur-md px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-2xl border border-white/20 text-left z-20">
-                    <p className="text-[9px] sm:text-[10px] uppercase font-bold text-chonky-peach tracking-wider">Starting at</p>
-                    <p className="text-sm sm:text-base font-black text-white">MVR 135</p>
+                  <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-white/20 text-left">
+                    <p className="text-[10px] uppercase font-bold text-chonky-peach tracking-wider">Starting at</p>
+                    <p className="text-base font-black text-white">MVR 135</p>
                   </div>
 
                   {/* Floating Chef Badge */}
-                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-chonky-red/90 text-white backdrop-blur-md px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-soft z-20">
+                  <div className="absolute top-4 right-4 bg-chonky-red/90 text-white backdrop-blur-md px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-soft">
                     <Sparkles className="w-3 h-3 text-chonky-peach" />
                     <span>Top Rated</span>
                   </div>
@@ -225,7 +242,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
           </div>
 
           {/* Bottom Bar: Prev/Next Quick Controls & Counter */}
-          <div className="relative z-20 flex items-center justify-between pt-3 sm:pt-4 border-t border-white/10 text-xs text-gray-400 shrink-0">
+          <div className="relative z-20 flex items-center justify-between pt-4 border-t border-white/10 text-xs text-gray-400">
             <div className="flex items-center gap-2">
               <span className="font-mono text-white font-black text-sm">
                 0{currentSlide + 1}
@@ -239,14 +256,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
             <div className="flex items-center gap-2">
               <button
                 onClick={prevSlide}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition border border-white/10 active:scale-90"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition border border-white/10 active:scale-90"
                 aria-label="Previous slide"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={nextSlide}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition border border-white/10 active:scale-90"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition border border-white/10 active:scale-90"
                 aria-label="Next slide"
               >
                 <ChevronRight className="w-4 h-4" />

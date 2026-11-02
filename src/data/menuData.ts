@@ -566,8 +566,8 @@ export const HERO_SLIDES = [
     id: 'slide-burgers',
     category: 'burgers',
     tagline: 'Fresh Griddle Smashed Daily',
-    headline: 'Double Angus & Melted Cheddar: The Chonky OG',
-    description: 'Crispy caramelized edges, double aged cheese, and pillowy potato buns baked fresh.',
+    headline: 'Double Angus. Melted Cheddar. The Chonky OG Smash.',
+    description: 'Crispy caramelized edges, double aged cheese, and pillowy potato buns. Handcrafted comfort that hits the spot.',
     cta: 'Order Burgers',
     image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1600&q=85',
     accent: '#700808'
@@ -576,9 +576,9 @@ export const HERO_SLIDES = [
     id: 'slide-submarines',
     category: 'submarines',
     tagline: 'Artisan Hearth Bakes',
-    headline: 'Toasted Submarines Packed With Prime Shaved Ribeye',
-    description: 'Seared meats smothered in bubbling provolone and house sauce inside crunchy golden rolls.',
-    cta: 'Order Submarines',
+    headline: 'Toasted Submarines Packed With Prime Shaved Ribeye.',
+    description: 'Seared meats, smothered in bubbling provolone and house sauce inside crunchy golden rolls.',
+    cta: 'Explore Submarines',
     image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=1600&q=85',
     accent: '#8f1212'
   },
@@ -586,9 +586,9 @@ export const HERO_SLIDES = [
     id: 'slide-pizza',
     category: 'pizza',
     tagline: '48-Hour Sourdough Ferment',
-    headline: 'Cupping Beef Pepperoni With Hot Honey Chilli Drizzle',
+    headline: 'Cupping Beef Pepperoni & Spicy Hot Honey Drizzle.',
     description: 'Stone-baked with blistering sourdough crusts and premium imported Italian mozzarella.',
-    cta: 'Order Pizzas',
+    cta: 'Browse Pizzas',
     image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=1600&q=85',
     accent: '#550505'
   }
