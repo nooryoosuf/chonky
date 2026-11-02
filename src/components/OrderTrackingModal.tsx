@@ -51,6 +51,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   const [copiedId, setCopiedId] = useState(false);
   const [isReceiptExpanded, setIsReceiptExpanded] = useState(false);
   const [isFullPageMap, setIsFullPageMap] = useState(false);
+  const [isSheetCollapsed, setIsSheetCollapsed] = useState(true);
   
   // Real GPS & simulation state
   const [isSharingDeviceGps, setIsSharingDeviceGps] = useState(false);
@@ -595,13 +596,13 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         </div>
 
         {/* Floating Top Header: Close & Back to standard view */}
-        <div className="relative z-10 p-4 flex items-center justify-between pointer-events-none">
+        <div className="relative z-30 p-3.5 sm:p-4 flex items-center justify-between pointer-events-none">
           <button
             onClick={() => setIsFullPageMap(false)}
             className="px-3.5 py-2 rounded-full bg-[#101112]/90 hover:bg-black text-white text-xs font-bold backdrop-blur-md border border-white/15 flex items-center gap-2 shadow-lg transition active:scale-95 pointer-events-auto"
           >
             <Minimize2 className="w-3.5 h-3.5 text-chonky-peach" />
-            <span>Compact View</span>
+            <span>Card View</span>
           </button>
 
           <button
@@ -609,25 +610,92 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
               cleanupTracking();
               onClose();
             }}
-            className="w-10 h-10 rounded-full bg-[#101112]/90 hover:bg-black text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-95 pointer-events-auto"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#101112]/90 hover:bg-black text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-95 pointer-events-auto"
             aria-label="Close tracking"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* Spacer to allow full map visibility */}
         <div className="flex-1 pointer-events-none" />
 
-        {/* Floating Uber / Grab Style Slide-Up Bottom Drawer */}
-        <div className="relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col max-h-[70vh] sm:max-h-[64vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
-          {/* Subtle Grab Handle */}
-          <div className="w-full pt-3 pb-1 flex justify-center shrink-0">
-            <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-white/20" />
-          </div>
+        {/* Floating Uber / Grab Style Slide-Up Bottom Drawer with Compact / Expand toggle */}
+        <div className={`relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out ${
+          isSheetCollapsed ? 'max-h-[140px] pb-safe' : 'max-h-[70vh] sm:max-h-[64vh]'
+        }`}>
+          {/* Subtle Grab Handle / Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setIsSheetCollapsed(!isSheetCollapsed)}
+            className="w-full pt-3 pb-1.5 flex flex-col items-center justify-center shrink-0 hover:bg-black/5 dark:hover:bg-white/5 transition"
+            aria-label={isSheetCollapsed ? 'Expand details' : 'Compact details'}
+          >
+            <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-white/20 mb-1" />
+            <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-chonky-muted dark:text-gray-400">
+              {isSheetCollapsed ? (
+                <>
+                  <span>Show Full Details</span>
+                  <ChevronUp className="w-3.5 h-3.5 text-chonky-red dark:text-chonky-peach" />
+                </>
+              ) : (
+                <>
+                  <span>Compact & View Full Map</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-chonky-red dark:text-chonky-peach" />
+                </>
+              )}
+            </div>
+          </button>
 
-          {renderTrackingContent()}
-          {renderFooterActions()}
+          {isSheetCollapsed ? (
+            /* Compact Mode: Minimal card that leaves 85%+ of screen for the interactive map */
+            <div 
+              onClick={() => setIsSheetCollapsed(false)}
+              className="px-5 pb-4 flex items-center justify-between gap-3 cursor-pointer"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-black text-chonky-text dark:text-white leading-none">
+                    {getEstimatedMinutes()}
+                  </span>
+                  <span className="text-xs font-bold text-chonky-muted dark:text-gray-400">
+                    {currentStatus === 'delivered' ? 'Completed' : 'mins'}
+                  </span>
+                  {roadDistKm !== null && currentStatus === 'on_the_way' && (
+                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 ml-1">
+                      {roadDistKm} km
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs sm:text-sm font-extrabold text-chonky-text dark:text-white truncate mt-0.5">
+                  {getHeadline()}
+                </p>
+              </div>
+
+              {isDelivery && (
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-white/10 border border-chonky-border dark:border-white/10 text-xs font-bold shadow-xs">
+                    <Bike className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-[11px] font-black text-chonky-text dark:text-white">Ali</span>
+                  </div>
+                  <a
+                    href="tel:+9607771234"
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-600/30 flex items-center justify-center transition active:scale-95 shadow-xs"
+                    title="Call Driver Ali"
+                  >
+                    <Phone className="w-4 h-4" />
+                  </a>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Expanded Mode: Full Order Details */
+            <>
+              {renderTrackingContent()}
+              {renderFooterActions()}
+            </>
+          )}
         </div>
       </div>
     );
@@ -670,13 +738,13 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             className="w-full h-full"
           />
 
-          {/* Close Button Top Right */}
+          {/* Close Button Top Right (Clear of vertical map controls) */}
           <button
             onClick={() => {
               cleanupTracking();
               onClose();
             }}
-            className="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full bg-[#101112]/90 hover:bg-black text-gray-200 hover:text-white flex items-center justify-center shadow-md border border-white/10 transition active:scale-95"
+            className="absolute top-3.5 right-3.5 z-30 w-8.5 h-8.5 rounded-full bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white flex items-center justify-center shadow-lg border border-white/15 transition active:scale-90"
             aria-label="Close tracking"
           >
             <X className="w-4 h-4" />
