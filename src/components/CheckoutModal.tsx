@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
 import { PaymentMethod } from '../types';
 import { BMLTransferModal } from './BMLTransferModal';
+import { CardBrandRow } from './CardBrandLogos';
 import { 
   X, 
   Bike, 
@@ -515,10 +516,13 @@ Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMeth
                     : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:bg-chonky-subtle dark:hover:bg-white/10'
                 }`}
               >
-                <CreditCard className="w-5 h-5 text-chonky-red dark:text-chonky-peach mb-1.5" />
+                <div className="flex items-center justify-between mb-1.5">
+                  <CreditCard className="w-5 h-5 text-chonky-red dark:text-chonky-peach" />
+                  <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-blue-600 text-white">Cards</span>
+                </div>
                 <div>
                   <span className="font-extrabold text-xs text-chonky-text dark:text-white block">Card</span>
-                  <span className="text-[10px] text-chonky-muted dark:text-gray-400 leading-tight block">POS on Delivery</span>
+                  <span className="text-[10px] text-chonky-muted dark:text-gray-400 leading-tight block">Visa / Master / Amex</span>
                 </div>
               </button>
 
@@ -615,6 +619,31 @@ Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMeth
                 <span className="text-[10px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full shrink-0">
                   Instant
                 </span>
+              </div>
+            )}
+
+            {/* Contextual instruction for Card */}
+            {(paymentMethod === 'card' || paymentMethod === 'card_pos') && (
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 text-xs space-y-2 animate-in fade-in">
+                <div className="flex items-center justify-between font-bold text-chonky-text dark:text-white">
+                  <span className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-200">
+                    <CreditCard className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                    <span>Card Payment</span>
+                  </span>
+                  <span className="text-[10px] bg-amber-500/20 text-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-full font-bold">
+                    Bank of Maldives Gateway
+                  </span>
+                </div>
+
+                <div className="text-[11px] sm:text-xs space-y-0.5 text-amber-800 dark:text-amber-300 font-medium">
+                  <p className="font-bold">Visa / Mastercard — secure Bank of Maldives page</p>
+                  <p className="text-amber-700/90 dark:text-amber-300/80">You'll be taken to Bank of Maldives' secure page to pay.</p>
+                </div>
+
+                <div className="pt-2 border-t border-amber-500/20 flex items-center justify-between flex-wrap gap-2">
+                  <span className="text-[10px] uppercase font-bold text-amber-900/70 dark:text-amber-300/70">Accepted Cards:</span>
+                  <CardBrandRow size="sm" />
+                </div>
               </div>
             )}
           </div>

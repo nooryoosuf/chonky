@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PaymentMethod } from '../types';
 import { BMLTransferModal } from './BMLTransferModal';
+import { CardBrandRow } from './CardBrandLogos';
 import { 
   X, 
   Check, 
@@ -39,10 +40,8 @@ export const PAYMENT_METHODS: {
   {
     id: 'card',
     name: 'Card',
-    badge: 'Visa / MC / Amex',
-    badgeColor: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
-    description: 'Rider brings contactless POS machine to your doorstep.',
-    subtitle: 'Tap to pay with Debit/Credit Card',
+    subtitle: 'Visa / Mastercard — secure Bank of Maldives page',
+    description: "You'll be taken to Bank of Maldives' secure page to pay.",
     icon: CreditCard
   },
   {
@@ -146,8 +145,8 @@ export const PaymentPickerModal: React.FC<PaymentPickerModalProps> = ({ isOpen, 
                     : 'border-chonky-border/80 dark:border-white/10 bg-white dark:bg-[#150a0a] hover:border-chonky-red/40 dark:hover:border-white/20 hover:bg-chonky-peach-light/30 dark:hover:bg-white/5'
                 }`}
               >
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+                <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 ${
                     isSelected 
                       ? 'bg-chonky-red text-white shadow-xs' 
                       : 'bg-chonky-peach/60 dark:bg-white/10 text-chonky-red dark:text-chonky-peach'
@@ -155,7 +154,7 @@ export const PaymentPickerModal: React.FC<PaymentPickerModalProps> = ({ isOpen, 
                     <Icon className="w-5 h-5" />
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-extrabold text-sm sm:text-base text-chonky-text dark:text-white">
                         {pm.name}
@@ -166,14 +165,24 @@ export const PaymentPickerModal: React.FC<PaymentPickerModalProps> = ({ isOpen, 
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-chonky-muted dark:text-gray-400 mt-0.5 truncate">
+                    <p className={`text-xs mt-0.5 ${pm.id === 'card' ? 'text-amber-700 dark:text-amber-300 font-semibold' : 'text-chonky-muted dark:text-gray-400'}`}>
                       {pm.subtitle}
                     </p>
+                    {pm.description && (
+                      <p className={`text-[11px] mt-0.5 ${pm.id === 'card' ? 'text-amber-600/90 dark:text-amber-300/80' : 'text-chonky-muted/80 dark:text-gray-400'}`}>
+                        {pm.description}
+                      </p>
+                    )}
+                    {pm.id === 'card' && (
+                      <div className="mt-2.5 pt-1 flex items-center">
+                        <CardBrandRow size="sm" />
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Selection Radio / Checkmark */}
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all ${
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all mt-1 ${
                   isSelected
                     ? 'border-chonky-red bg-chonky-red text-white shadow-xs'
                     : 'border-chonky-border dark:border-white/20 bg-transparent'
