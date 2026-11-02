@@ -365,12 +365,12 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         {/* ========================================================= */}
         {/* BOTTOM SECTION: UBER / GRAB STYLE BOTTOM SHEET TRACKING   */}
         {/* ========================================================= */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-4.5 overscroll-contain flex-1">
+        <div className="p-5 sm:p-7 overflow-y-auto space-y-6 overscroll-contain flex-1">
           
-          {/* Uber/Grab Big Arrival Time & Dynamic Headline */}
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="flex items-baseline gap-1.5">
+          {/* 1. Uber/Grab Big Arrival Time & Dynamic Headline */}
+          <div className="flex items-start justify-between gap-4 pb-1">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-2">
                 <span className="text-3xl sm:text-4xl font-black text-chonky-text dark:text-white tracking-tight leading-none">
                   {getEstimatedMinutes()}
                 </span>
@@ -378,10 +378,10 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                   {currentStatus === 'delivered' ? 'Completed' : 'mins'}
                 </span>
               </div>
-              <h3 className="font-extrabold text-base sm:text-lg text-chonky-text dark:text-white mt-1 leading-snug">
+              <h3 className="font-extrabold text-lg sm:text-xl text-chonky-text dark:text-white mt-1.5 leading-snug">
                 {getHeadline()}
               </h3>
-              <p className="text-xs text-chonky-muted dark:text-gray-400 mt-0.5">
+              <p className="text-xs sm:text-sm text-chonky-muted dark:text-gray-400 mt-1 leading-relaxed">
                 {getSubHeadline()}
               </p>
             </div>
@@ -389,7 +389,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             {/* Quick Order ID Badge */}
             <button
               onClick={handleCopyOrderId}
-              className="px-2.5 py-1.5 rounded-xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border/70 dark:border-white/10 text-xs font-mono font-bold text-chonky-muted dark:text-gray-300 hover:text-chonky-red transition flex items-center gap-1.5 shrink-0"
+              className="px-3 py-2 rounded-2xl bg-white dark:bg-white/10 border border-chonky-border/80 dark:border-white/15 text-xs font-mono font-bold text-chonky-muted dark:text-gray-300 hover:text-chonky-red transition flex items-center gap-1.5 shrink-0 shadow-2xs active:scale-95"
               title="Copy Order Reference"
             >
               <span>{order.orderId}</span>
@@ -397,19 +397,19 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             </button>
           </div>
 
-          {/* Uber/Grab Segmented Linear Progress Meter */}
-          <div className="space-y-1.5">
-            <div className="grid grid-cols-4 gap-1.5">
+          {/* 2. Uber/Grab Segmented Linear Progress Meter (With Generous Margins) */}
+          <div className="py-2 space-y-2.5">
+            <div className="grid grid-cols-4 gap-2">
               {[1, 2, 3, 4].map((level) => {
                 const isPassed = activeLevel >= level;
                 const isCurrent = activeLevel === level;
                 return (
                   <div 
                     key={level}
-                    className={`h-2 rounded-full transition-all duration-500 overflow-hidden ${
+                    className={`h-2.5 rounded-full transition-all duration-500 overflow-hidden ${
                       isPassed 
                         ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-2xs' 
-                        : 'bg-gray-200 dark:bg-white/10'
+                        : 'bg-gray-200 dark:bg-white/15'
                     }`}
                   >
                     {isCurrent && (
@@ -419,7 +419,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                 );
               })}
             </div>
-            <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-chonky-muted dark:text-gray-400">
+            <div className="flex justify-between text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-chonky-muted dark:text-gray-400 px-0.5">
               <span className={activeLevel >= 1 ? 'text-emerald-700 dark:text-emerald-400' : ''}>Confirmed</span>
               <span className={activeLevel >= 2 ? 'text-emerald-700 dark:text-emerald-400' : ''}>Preparing</span>
               <span className={activeLevel >= 3 ? 'text-emerald-700 dark:text-emerald-400' : ''}>{isDelivery ? 'On the Way' : 'Ready'}</span>
@@ -427,13 +427,13 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             </div>
           </div>
 
-          {/* Uber / Grab Signature Courier Driver Card */}
+          {/* 3. Uber / Grab Signature Courier Driver Card (Ample Margins & Padding) */}
           {isDelivery && (
-            <div className="p-4 rounded-3xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 shadow-sm flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                {/* Driver Avatar with Badge */}
+            <div className="p-4.5 sm:p-5 rounded-3xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 shadow-sm flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                {/* Driver Avatar with Vehicle Badge */}
                 <div className="relative shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-sm shadow-md">
+                  <div className="w-13 h-13 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-base shadow-md">
                     AS
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white dark:border-[#120808]">
@@ -442,25 +442,25 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                 </div>
 
                 <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-extrabold text-sm sm:text-base text-chonky-text dark:text-white">
                       Ali Shafeeq
                     </span>
-                    <span className="text-[10px] font-black px-1.5 py-0.2 rounded-md bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200">
                       ★ 4.9
                     </span>
                   </div>
-                  <p className="text-xs text-chonky-muted dark:text-gray-400 truncate mt-0.5">
+                  <p className="text-xs text-chonky-muted dark:text-gray-400 truncate mt-1">
                     Honda Wave 125 · <strong className="text-chonky-text dark:text-gray-200 font-mono">AB1B-1234</strong>
                   </p>
                 </div>
               </div>
 
-              {/* Call & WhatsApp Quick Action Buttons (Uber / Grab standard) */}
-              <div className="flex items-center gap-2 shrink-0">
+              {/* Call & WhatsApp Quick Action Buttons */}
+              <div className="flex items-center gap-2.5 shrink-0">
                 <a
                   href="tel:+9607771234"
-                  className="w-10 h-10 rounded-full bg-chonky-subtle dark:bg-white/10 hover:bg-chonky-peach text-chonky-text dark:text-white flex items-center justify-center transition border border-chonky-border/60 dark:border-white/10 shadow-xs active:scale-95"
+                  className="w-11 h-11 rounded-full bg-chonky-subtle dark:bg-white/10 hover:bg-chonky-peach text-chonky-text dark:text-white flex items-center justify-center transition border border-chonky-border/60 dark:border-white/10 shadow-xs active:scale-95"
                   title="Call Driver"
                   aria-label="Call Driver Ali"
                 >
@@ -470,7 +470,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                   href={`https://wa.me/9607889900?text=Hi%20Ali%2C%20checking%20on%20my%20Chonky%20order%20${order.orderId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition shadow-xs active:scale-95"
+                  className="w-11 h-11 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition shadow-xs active:scale-95"
                   title="Message on WhatsApp"
                   aria-label="Message on WhatsApp"
                 >
@@ -480,62 +480,69 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             </div>
           )}
 
-          {/* Grab / Uber Delivery Security PIN & Destination Note */}
-          <div className="p-3.5 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-amber-500 text-black flex items-center justify-center font-bold shrink-0">
+          {/* 4. Grab / Uber Delivery Security PIN Note */}
+          <div className="p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-amber-500 text-black flex items-center justify-center font-bold shrink-0 shadow-2xs">
                 <Key className="w-4 h-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="font-extrabold text-amber-950 dark:text-amber-200">
-                  Delivery PIN: <span className="font-mono text-sm tracking-wider underline">4921</span>
+                <p className="font-extrabold text-amber-950 dark:text-amber-200 text-xs sm:text-sm">
+                  Delivery PIN: <span className="font-mono text-sm sm:text-base tracking-wider underline">4921</span>
                 </p>
-                <p className="text-[11px] text-amber-900/80 dark:text-amber-300">
+                <p className="text-[11px] text-amber-900/80 dark:text-amber-300 mt-0.5">
                   Share with rider upon arrival for contactless handoff
                 </p>
               </div>
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-200 bg-amber-500/20 px-2 py-0.5 rounded-full shrink-0">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-200 bg-amber-500/20 px-2.5 py-0.5 rounded-full shrink-0">
               Verified
             </span>
           </div>
 
-          {/* Delivery Address Details */}
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 text-xs space-y-1.5">
+          {/* 5. Delivery Address Details */}
+          <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 text-xs space-y-2 shadow-sm">
             <div className="flex items-center justify-between text-chonky-muted dark:text-gray-400">
-              <span className="font-bold flex items-center gap-1 text-chonky-text dark:text-white uppercase tracking-wider text-[10px]">
-                <MapPin className="w-3.5 h-3.5 text-chonky-red dark:text-chonky-peach" />
-                <span>Delivery Address</span>
+              <span className="font-extrabold flex items-center gap-1.5 text-chonky-text dark:text-white uppercase tracking-wider text-[11px]">
+                <MapPin className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
+                <span>Delivery Destination</span>
               </span>
-              <span className="font-bold text-[11px] text-emerald-600 dark:text-emerald-400">
+              <span className="font-extrabold text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md">
                 {order.area}
               </span>
             </div>
-            <p className="font-medium text-chonky-text dark:text-white">
+            <p className="font-bold text-sm text-chonky-text dark:text-white pt-1">
               {order.address || `${order.area}, Malé City`}
             </p>
             {order.deliveryNotes && (
-              <p className="text-[11px] text-chonky-muted dark:text-gray-400 italic">
+              <p className="text-xs text-chonky-muted dark:text-gray-400 italic bg-chonky-subtle dark:bg-white/5 p-2.5 rounded-xl border border-chonky-border/50 dark:border-white/5">
                 Note: {order.deliveryNotes}
               </p>
             )}
           </div>
 
-          {/* Expandable Order Receipt Drawer (Grab / Uber standard) */}
-          <div className="border border-chonky-border/70 dark:border-white/10 rounded-2xl overflow-hidden bg-white dark:bg-[#120808]">
+          {/* 6. Expandable Order Receipt Drawer (Grab / Uber standard) */}
+          <div className="border border-chonky-border/70 dark:border-white/10 rounded-3xl overflow-hidden bg-white dark:bg-[#120808] shadow-sm">
             <button
               type="button"
               onClick={() => setIsReceiptExpanded(!isReceiptExpanded)}
-              className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left hover:bg-chonky-subtle dark:hover:bg-white/5 transition"
+              className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-chonky-subtle dark:hover:bg-white/5 transition"
             >
-              <div className="flex items-center gap-2">
-                <ShoppingBag className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
-                <span className="font-extrabold text-xs sm:text-sm text-chonky-text dark:text-white">
-                  Order Details ({order.items.reduce((s, i) => s + i.quantity, 0)} items)
-                </span>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-chonky-peach/60 dark:bg-white/10 text-chonky-red dark:text-chonky-peach flex items-center justify-center shrink-0">
+                  <ShoppingBag className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="font-extrabold text-sm text-chonky-text dark:text-white block">
+                    Order Receipt
+                  </span>
+                  <span className="text-[11px] text-chonky-muted dark:text-gray-400">
+                    {order.items.reduce((s, i) => s + i.quantity, 0)} items in bag
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-sm text-chonky-red dark:text-[#ff6666]">
+                <span className="font-black text-base text-chonky-red dark:text-[#ff6666]">
                   MVR {order.total}
                 </span>
                 {isReceiptExpanded ? <ChevronUp className="w-4 h-4 text-chonky-muted" /> : <ChevronDown className="w-4 h-4 text-chonky-muted" />}
@@ -543,36 +550,36 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             </button>
 
             {isReceiptExpanded && (
-              <div className="p-3.5 sm:p-4 pt-0 border-t border-chonky-border/40 dark:border-white/10 space-y-2 text-xs">
+              <div className="p-4 sm:p-5 pt-0 border-t border-chonky-border/40 dark:border-white/10 space-y-3 text-xs">
                 {order.items.map((it, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-1.5 border-b border-chonky-border/30 dark:border-white/5 last:border-b-0 gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
+                  <div key={idx} className="flex items-center justify-between py-2 border-b border-chonky-border/30 dark:border-white/5 last:border-b-0 gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       {it.image && (
                         <img 
                           src={it.image} 
                           alt={it.productName} 
-                          className="w-9 h-9 rounded-lg object-cover border border-chonky-border/40 shrink-0" 
+                          className="w-10 h-10 rounded-xl object-cover border border-chonky-border/40 shrink-0" 
                         />
                       )}
                       <div className="min-w-0">
-                        <p className="font-bold text-chonky-text dark:text-white truncate">
+                        <p className="font-bold text-sm text-chonky-text dark:text-white truncate">
                           {it.quantity}x {it.productName}
                         </p>
                         {it.selectedOptions?.length > 0 && (
-                          <p className="text-[10px] text-chonky-muted dark:text-gray-400 truncate">
+                          <p className="text-[11px] text-chonky-muted dark:text-gray-400 truncate mt-0.5">
                             {it.selectedOptions.map(o => o.choiceName).join(', ')}
                           </p>
                         )}
                       </div>
                     </div>
-                    <span className="font-bold text-chonky-text dark:text-white shrink-0">
+                    <span className="font-bold text-sm text-chonky-text dark:text-white shrink-0">
                       MVR {it.totalPrice}
                     </span>
                   </div>
                 ))}
 
                 {/* Subtotals & Payment Info */}
-                <div className="pt-2 space-y-1 text-[11px] text-chonky-muted dark:text-gray-400">
+                <div className="pt-3 space-y-1.5 text-xs text-chonky-muted dark:text-gray-400 border-t border-dashed border-chonky-border/60">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span className="font-semibold text-chonky-text dark:text-white">MVR {order.subtotal}</span>
@@ -587,13 +594,13 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                     <span>Eco Packaging</span>
                     <span className="font-semibold text-chonky-text dark:text-white">MVR {order.packagingFee}</span>
                   </div>
-                  <div className="flex justify-between text-sm font-black text-chonky-text dark:text-white pt-1.5 border-t border-dashed border-chonky-border/50">
+                  <div className="flex justify-between text-base font-black text-chonky-text dark:text-white pt-2 border-t border-dashed border-chonky-border/50">
                     <span>Total Paid</span>
                     <span className="text-chonky-red dark:text-[#ff4d4d]">MVR {order.total}</span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-chonky-border/40 dark:border-white/10 flex items-center justify-between text-[11px]">
+                <div className="pt-2.5 border-t border-chonky-border/40 dark:border-white/10 flex items-center justify-between text-xs">
                   <span>Paid With: <strong className="text-chonky-text dark:text-white">{getPaymentName(order.paymentMethod)}</strong></span>
                   {order.paymentMethod === 'card' && <CardBrandRow size="xs" />}
                 </div>
@@ -601,7 +608,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-xs text-chonky-muted dark:text-gray-400 pt-1">
+          <div className="flex items-center justify-center gap-2 text-xs text-chonky-muted dark:text-gray-400 pt-2 pb-1">
             <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span>Bank of Maldives Verified · Live Kitchen POS</span>
           </div>
