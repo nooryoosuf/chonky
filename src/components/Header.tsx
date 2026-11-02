@@ -157,10 +157,10 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </nav>
 
-            {/* Right: Search (Desktop Only), Mobile Location & Profile */}
+            {/* Right: Search, Theme Toggle & Cart Trigger */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Expandable Search - Desktop / Tablet Only */}
-              <div className="hidden md:block relative">
+              {/* Expandable Search */}
+              <div className="relative">
                 {isSearchExpanded ? (
                   <div className="flex items-center">
                     <input

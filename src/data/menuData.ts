@@ -563,43 +563,33 @@ export const PRODUCTS: Product[] = [
 
 export const HERO_SLIDES = [
   {
-    id: 'slide-chicken',
-    category: 'sides',
-    tagline: 'HOT & CRISPY',
-    headline: 'Crave the Crispy Perfection!',
-    description: 'Golden buttermilk chicken tenders, hand-breaded and served piping hot.',
-    cta: 'Order Now',
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=1200&q=85',
-    accent: '#700808'
-  },
-  {
     id: 'slide-burgers',
     category: 'burgers',
-    tagline: 'HOT & SMASHED',
-    headline: 'The Chonky OG Smash Burger',
-    description: 'Double 100% Angus smash patties, gooey American cheese & secret sauce.',
-    cta: 'Order Now',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=85',
-    accent: '#5e0606'
-  },
-  {
-    id: 'slide-pizza',
-    category: 'pizza',
-    tagline: '48-HR SOURDOUGH',
-    headline: 'Hot Honey Double Pepperoni',
-    description: 'Stone-baked with blistering sourdough crusts and melted Italian mozzarella.',
-    cta: 'Order Now',
-    image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=1200&q=85',
-    accent: '#7a0a0a'
+    tagline: 'Fresh Griddle Smashed Daily',
+    headline: 'Double Angus. Melted Cheddar. The Chonky OG Smash.',
+    description: 'Crispy caramelized edges, double aged cheese, and pillowy potato buns. Handcrafted comfort that hits the spot.',
+    cta: 'Order Burgers',
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1600&q=85',
+    accent: '#700808'
   },
   {
     id: 'slide-submarines',
     category: 'submarines',
-    tagline: 'TOASTED HEARTH',
-    headline: 'Loaded Ribeye Submarine',
-    description: 'Seared shaved ribeye smothered in provolone on a crunchy hearth roll.',
-    cta: 'Order Now',
-    image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=1200&q=85',
-    accent: '#4e0505'
+    tagline: 'Artisan Hearth Bakes',
+    headline: 'Toasted Submarines Packed With Prime Shaved Ribeye.',
+    description: 'Seared meats, smothered in bubbling provolone and house sauce inside crunchy golden rolls.',
+    cta: 'Explore Submarines',
+    image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=1600&q=85',
+    accent: '#8f1212'
+  },
+  {
+    id: 'slide-pizza',
+    category: 'pizza',
+    tagline: '48-Hour Sourdough Ferment',
+    headline: 'Cupping Beef Pepperoni & Spicy Hot Honey Drizzle.',
+    description: 'Stone-baked with blistering sourdough crusts and premium imported Italian mozzarella.',
+    cta: 'Browse Pizzas',
+    image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=1600&q=85',
+    accent: '#550505'
   }
 ];
