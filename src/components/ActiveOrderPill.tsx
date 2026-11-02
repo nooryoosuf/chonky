@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { Bike, Flame, CheckCircle2, Sparkles, ChevronRight, X } from 'lucide-react';
+import { Bike, Flame, Sparkles, ChevronRight, X, Radio } from 'lucide-react';
 
 export const ActiveOrderPill: React.FC = () => {
   const { 
@@ -10,7 +10,8 @@ export const ActiveOrderPill: React.FC = () => {
     isCartOpen, 
     customizingProduct,
     openTracking,
-    isTrackingOpen
+    isTrackingOpen,
+    itemCount
   } = useCart();
 
   const [isDismissed, setIsDismissed] = useState(false);
@@ -26,68 +27,106 @@ export const ActiveOrderPill: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'preparing':
-        return <Flame className="w-4 h-4 text-amber-500 animate-bounce" />;
+        return <Flame className="w-5 h-5 text-amber-300 animate-bounce" />;
       case 'on_the_way':
-        return <Bike className="w-4 h-4 text-blue-500 animate-pulse" />;
+        return <Bike className="w-5 h-5 text-white animate-pulse" />;
       case 'delivered':
-        return <Sparkles className="w-4 h-4 text-emerald-500" />;
+        return <Sparkles className="w-5 h-5 text-[#F2E2C7]" />;
       default:
-        return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
+        return <Radio className="w-5 h-5 text-emerald-300 animate-pulse" />;
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
       case 'preparing':
-        return 'Kitchen Preparing 🔥';
+        return 'Kitchen Sizzling 🔥';
       case 'on_the_way':
-        return 'Out for Delivery 🛵';
+        return 'Ali is Heading Your Way 🛵';
       case 'delivered':
-        return 'Delivered 🎉';
+        return 'Order Delivered! 🎉';
       default:
         return 'Order Confirmed ✓';
     }
   };
 
+  const getSubText = (status: string) => {
+    switch (status) {
+      case 'on_the_way':
+        return 'Live GPS active · Tap to track route';
+      case 'preparing':
+        return 'Fresh patties on the grill · Tap to track';
+      case 'delivered':
+        return 'Enjoy your meal! Tap for receipt';
+      default:
+        return `${currentOrder.orderType === 'delivery' ? `Delivery to ${currentOrder.area}` : 'Counter Pickup'} · Live Map`;
+    }
+  };
+
+  // Safe bottom clearance on mobile:
+  // If cart bar is visible (itemCount > 0), float above the cart bar; otherwise float comfortably above the mobile bottom navigation bar with ample margin
+  const bottomPositionClass = itemCount > 0
+    ? 'bottom-[calc(9.75rem+env(safe-area-inset-bottom,16px))] sm:bottom-28'
+    : 'bottom-[calc(5.25rem+env(safe-area-inset-bottom,14px))] sm:bottom-8';
+
   return (
-    <div className="fixed bottom-18 md:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-auto z-40 animate-in slide-in-from-bottom duration-300">
+    <div 
+      className={`fixed ${bottomPositionClass} left-4 right-4 sm:left-auto sm:right-8 sm:w-auto z-40 max-w-md mx-auto sm:max-w-none animate-in slide-in-from-bottom duration-300 pointer-events-auto`}
+    >
+      {/* Outer Glowing Red Card */}
       <div 
         onClick={() => openTracking(currentOrder)}
-        className="w-full sm:w-auto bg-[#0F0808]/95 dark:bg-[#160B0B]/95 text-white backdrop-blur-xl border border-red-500/30 hover:border-red-500/60 rounded-2xl sm:rounded-full p-2.5 sm:px-4 sm:py-2.5 shadow-2xl flex items-center justify-between gap-3 cursor-pointer group transition-all transform hover:scale-102 active:scale-98"
+        className="relative w-full sm:w-auto bg-gradient-to-r from-[#700808] via-[#8A0A0A] to-[#A30D0D] text-white rounded-3xl sm:rounded-full p-3.5 sm:px-5 sm:py-3.5 shadow-[0_12px_40px_rgba(229,57,69,0.55),0_0_24px_rgba(229,57,69,0.35)] hover:shadow-[0_16px_50px_rgba(229,57,69,0.7),0_0_30px_rgba(229,57,69,0.5)] border-2 border-[#E53945]/80 hover:border-[#E53945] flex items-center justify-between gap-3 sm:gap-4 cursor-pointer group transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+        role="button"
+        tabIndex={0}
+        aria-label="View live order tracking map"
       >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-red-600/30 border border-red-500/50 flex items-center justify-center shrink-0">
+        {/* Left Icon with Live Radar Beacon */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative w-11 h-11 rounded-2xl sm:rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
             {getStatusIcon(currentOrder.status || 'received')}
+            
+            {/* Live GPS Radar Pulse Beacon */}
+            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-[#700808] shadow-xs" />
+            </span>
           </div>
+
+          {/* Headline & Subtext */}
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[10px] font-mono font-bold text-red-300">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] font-mono font-extrabold px-1.5 py-0.5 rounded-md bg-black/35 text-[#F2E2C7] border border-white/10 shrink-0">
                 {currentOrder.orderId}
               </span>
-              <span className="text-[11px] font-black text-white truncate">
+              <span className="text-xs sm:text-sm font-black text-white tracking-tight truncate">
                 {getStatusText(currentOrder.status || 'received')}
               </span>
             </div>
-            <p className="text-[10px] text-gray-400 truncate">
-              {currentOrder.orderType === 'delivery' ? `To ${currentOrder.area}` : 'Counter Pickup'} · Tap to track live
+            <p className="text-[11px] text-[#F2E2C7]/90 font-medium truncate mt-0.5">
+              {getSubText(currentOrder.status || 'received')}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
-          <span className="hidden sm:inline-block text-[11px] font-extrabold text-chonky-peach group-hover:underline">
-            Track Live
-          </span>
-          <ChevronRight className="w-4 h-4 text-chonky-peach group-hover:translate-x-0.5 transition-transform" />
+        {/* Right Action Button & Close */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Glowing Track Live Pill */}
+          <div className="px-3.5 py-1.5 rounded-full bg-white text-[#700808] font-black text-xs shadow-md flex items-center gap-1 group-hover:bg-[#F2E2C7] transition-colors">
+            <span>Track</span>
+            <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#700808] group-hover:translate-x-0.5 transition-transform" />
+          </div>
+
+          {/* Dismiss Button */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               setIsDismissed(true);
             }}
-            className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition ml-1"
-            title="Dismiss tracker pill"
-            aria-label="Dismiss tracker pill"
+            className="w-7 h-7 rounded-full bg-black/25 hover:bg-black/45 text-white/80 hover:text-white flex items-center justify-center transition active:scale-90 ml-0.5"
+            title="Dismiss tracker popup"
+            aria-label="Dismiss tracker popup"
           >
             <X className="w-3.5 h-3.5" />
           </button>
