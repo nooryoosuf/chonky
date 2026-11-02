@@ -223,13 +223,16 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                 </p>
               </div>
 
-              {/* Status Graphic Badge */}
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex flex-col items-center justify-center text-center shrink-0 shadow-inner">
-                {currentStatus === 'received' && <CheckCircle2 className="w-7 h-7 text-emerald-300 stroke-[2.2]" />}
-                {currentStatus === 'preparing' && <Flame className="w-7 h-7 text-amber-300 animate-bounce stroke-[2.2]" />}
-                {currentStatus === 'on_the_way' && <Bike className="w-7 h-7 text-blue-300 animate-pulse stroke-[2.2]" />}
-                {currentStatus === 'delivered' && <Sparkles className="w-7 h-7 text-emerald-300 stroke-[2.2]" />}
-                <span className="text-[9px] font-bold uppercase tracking-wider text-white/90 mt-1">
+              {/* Status Graphic & Label Outside the Icon Boundary */}
+              <div className="flex flex-col items-center sm:items-end justify-center shrink-0">
+                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg">
+                  {currentStatus === 'received' && <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-300 stroke-[2.5]" />}
+                  {currentStatus === 'preparing' && <Flame className="w-7 h-7 sm:w-8 sm:h-8 text-amber-300 animate-bounce stroke-[2.5]" />}
+                  {currentStatus === 'on_the_way' && <Bike className="w-7 h-7 sm:w-8 sm:h-8 text-blue-200 animate-pulse stroke-[2.5]" />}
+                  {currentStatus === 'delivered' && <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-300 stroke-[2.5]" />}
+                </div>
+                {/* Text clearly outside the icon boundary */}
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-white/95 mt-1.5 px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-xs">
                   {currentStatus.replace('_', ' ')}
                 </span>
               </div>
@@ -283,60 +286,88 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             </div>
           </div>
 
-          {/* Detailed Timeline Steps */}
+          {/* Detailed Timeline Steps with 100% Solid, Opaque Circles */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 space-y-4 shadow-xs">
-            <h4 className="font-black text-xs uppercase tracking-wider text-chonky-muted dark:text-gray-400">
-              Live Order Milestones
-            </h4>
+            <div className="flex items-center justify-between pb-1 border-b border-chonky-border/40 dark:border-white/10">
+              <h4 className="font-black text-xs uppercase tracking-wider text-chonky-muted dark:text-gray-400">
+                Live Order Milestones
+              </h4>
+              <span className="text-[11px] font-bold text-chonky-red dark:text-chonky-peach">
+                Step {currentIndex + 1} of {steps.length}
+              </span>
+            </div>
 
-            <div className="relative pl-6 space-y-5">
-              {/* Connecting vertical background line */}
-              <div className="absolute left-[11px] top-2 bottom-3 w-0.5 bg-chonky-border/80 dark:border-white/10" />
+            <div className="relative pt-1 pb-1">
+              {/* Background Connecting Track Line (Sits behind the solid circles) */}
+              <div className="absolute left-[18px] top-4 bottom-4 w-1 bg-gray-200 dark:bg-white/15 z-0 rounded-full" />
 
-              {steps.map((step, idx) => {
-                const Icon = step.icon;
-                const isCompleted = idx <= currentIndex;
-                const isCurrent = idx === currentIndex;
+              {/* Active Progress Track Line */}
+              <div 
+                className="absolute left-[18px] top-4 w-1 bg-gradient-to-b from-emerald-500 to-chonky-red z-0 rounded-full transition-all duration-500"
+                style={{ 
+                  height: `${currentIndex === 0 ? 0 : (currentIndex / (steps.length - 1)) * 100}%`,
+                  maxHeight: 'calc(100% - 32px)'
+                }}
+              />
 
-                return (
-                  <div key={step.id} className="relative flex items-start gap-3 text-xs">
-                    {/* Node Circle */}
-                    <div className={`absolute -left-6 w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                      isCurrent
-                        ? `${step.accentColor} border-2 ring-4 ring-chonky-red/20 font-black`
-                        : isCompleted
-                        ? 'bg-emerald-600 text-white font-black'
-                        : 'bg-chonky-subtle dark:bg-white/10 text-chonky-muted dark:text-gray-500 border border-chonky-border/80'
-                    }`}>
-                      {isCompleted && !isCurrent ? (
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      ) : (
-                        <Icon className="w-3.5 h-3.5" />
-                      )}
-                    </div>
+              <div className="space-y-6 relative z-10">
+                {steps.map((step, idx) => {
+                  const Icon = step.icon;
+                  const isCompleted = idx < currentIndex;
+                  const isCurrent = idx === currentIndex;
+                  const isPending = idx > currentIndex;
 
-                    <div className="min-w-0 flex-1 pl-2">
-                      <div className="flex items-center justify-between">
-                        <span className={`font-extrabold text-sm ${
-                          isCurrent 
-                            ? 'text-chonky-red dark:text-chonky-peach' 
-                            : isCompleted 
-                            ? 'text-chonky-text dark:text-white' 
-                            : 'text-chonky-muted dark:text-gray-500'
-                        }`}>
-                          {step.title}
-                        </span>
-                        <span className="text-[11px] font-semibold text-chonky-muted dark:text-gray-400">
-                          {isCurrent ? 'In Progress' : isCompleted ? 'Completed' : step.time}
-                        </span>
+                  return (
+                    <div key={step.id} className="flex items-start gap-3.5">
+                      {/* 100% SOLID CIRCLE NODE */}
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all font-black shadow-xs ring-4 ring-white dark:ring-[#120808] ${
+                        isCurrent
+                          ? 'bg-chonky-red text-white shadow-md scale-110 ring-chonky-red/25'
+                          : isCompleted
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-gray-200 dark:bg-[#251515] text-gray-500 dark:text-gray-400 border-2 border-gray-300 dark:border-white/20'
+                      }`}>
+                        {isCompleted ? (
+                          <Check className="w-4 h-4 stroke-[3]" />
+                        ) : (
+                          <Icon className="w-4 h-4 stroke-[2.3]" />
+                        )}
                       </div>
-                      <p className="text-xs text-chonky-muted dark:text-gray-400 mt-0.5">
-                        {step.subtitle}
-                      </p>
+
+                      {/* Content Details */}
+                      <div className="min-w-0 flex-1 pt-0.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className={`font-extrabold text-sm ${
+                            isCurrent 
+                              ? 'text-chonky-red dark:text-chonky-peach' 
+                              : isCompleted 
+                              ? 'text-chonky-text dark:text-white' 
+                              : 'text-gray-400 dark:text-gray-500'
+                          }`}>
+                            {step.title}
+                          </span>
+                          <span className={`text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0 ${
+                            isCurrent
+                              ? 'bg-chonky-red text-white shadow-2xs'
+                              : isCompleted
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                              : 'bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500'
+                          }`}>
+                            {isCurrent ? 'In Progress' : isCompleted ? 'Completed' : step.time}
+                          </span>
+                        </div>
+                        <p className={`text-xs mt-0.5 leading-relaxed ${
+                          isPending 
+                            ? 'text-gray-400 dark:text-gray-600' 
+                            : 'text-chonky-muted dark:text-gray-300'
+                        }`}>
+                          {step.subtitle}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
 
