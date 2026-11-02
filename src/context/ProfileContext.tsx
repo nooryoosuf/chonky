@@ -6,10 +6,10 @@ interface ProfileContextType {
   profile: UserProfile;
   orders: OrderDetails[];
   isProfileOpen: boolean;
-  openProfile: (tab?: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings') => void;
+  openProfile: (tab?: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' | 'categories') => void;
   closeProfile: () => void;
-  activeProfileTab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings';
-  setActiveProfileTab: (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings') => void;
+  activeProfileTab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' | 'categories';
+  setActiveProfileTab: (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' | 'categories') => void;
   updateProfileInfo: (info: { name: string; phone: string; email: string }) => void;
   addAddress: (addr: Omit<SavedAddress, 'id'>) => void;
   removeAddress: (id: string) => void;
@@ -166,7 +166,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeProfileTab, setActiveProfileTab] = useState<'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings'>('overview');
+  const [activeProfileTab, setActiveProfileTab] = useState<'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' | 'categories'>('overview');
 
   useEffect(() => {
     try {
@@ -184,7 +184,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [orders]);
 
-  const openProfile = (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' = 'overview') => {
+  const openProfile = (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' | 'categories' = 'overview') => {
     setActiveProfileTab(tab);
     setIsProfileOpen(true);
   };

@@ -1,12 +1,14 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useProfile } from '../context/ProfileContext';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 
 export const CartBar: React.FC = () => {
   const { itemCount, subtotal, openCart, isCartOpen, isCheckoutOpen, customizingProduct } = useCart();
+  const { isProfileOpen } = useProfile();
 
-  // Hide bar if cart is empty or if modal/drawer is already open
-  if (itemCount === 0 || isCartOpen || isCheckoutOpen || customizingProduct) {
+  // Hide bar if cart is empty or if modal/drawer is already open or profile page is active
+  if (itemCount === 0 || isCartOpen || isCheckoutOpen || customizingProduct || isProfileOpen) {
     return null;
   }
 
@@ -14,23 +16,20 @@ export const CartBar: React.FC = () => {
     <>
       {/* Soft Bottom Gradient Fade behind floating dock */}
       <div 
-        className="fixed bottom-0 left-0 right-0 h-28 pointer-events-none z-30 bg-gradient-to-t from-white via-white/70 to-transparent dark:from-[#050303] dark:via-[#050303]/70 dark:to-transparent" 
+        className="fixed bottom-0 left-0 right-0 h-32 pointer-events-none z-30 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-[#050303] dark:via-[#050303]/80 dark:to-transparent" 
         aria-hidden="true" 
       />
 
-      {/* Floating Cart Action Pill with Guaranteed Bottom Clearance on Mobile (above bottom nav) and Desktop */}
+      {/* Floating Cart Action Pill with Guaranteed Bottom Clearance on Mobile (comfortably above bottom nav) and Desktop */}
       <aside 
         key={itemCount > 0 ? 'cart-bar-active' : 'cart-bar-empty'}
-        className="fixed left-0 right-0 z-40 px-4 sm:px-6 pointer-events-none flex justify-center bottom-[76px] sm:bottom-7"
-        style={{
-          bottom: 'max(4.75rem, calc(4.25rem + env(safe-area-inset-bottom, 0px)))'
-        }}
+        className="fixed left-0 right-0 z-40 px-4 sm:px-6 pointer-events-none flex justify-center bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:bottom-8"
         aria-label="Floating cart action"
       >
         <div className="w-full max-w-md sm:max-w-lg pointer-events-auto animate-fluid-cart-pop">
           <button
             onClick={openCart}
-            className="w-full h-[62px] sm:h-[66px] px-5 sm:px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black shadow-[0_12px_36px_rgba(112,8,8,0.5)] dark:shadow-[0_16px_45px_rgba(0,0,0,0.9)] flex items-center justify-between active:scale-[0.98] transition-all transform duration-200 border border-white/20 group animate-glow-pulse"
+            className="w-full h-[60px] sm:h-[66px] px-5 sm:px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black shadow-[0_12px_36px_rgba(112,8,8,0.5)] dark:shadow-[0_16px_45px_rgba(0,0,0,0.9)] flex items-center justify-between active:scale-[0.98] transition-all transform duration-200 border border-white/20 group animate-glow-pulse"
             aria-label={`View cart with ${itemCount} items, total MVR ${subtotal}`}
           >
             {/* Left badge & count */}

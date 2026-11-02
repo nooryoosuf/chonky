@@ -9,7 +9,7 @@ interface MobileNavBarProps {
 
 export const MobileNavBar: React.FC<MobileNavBarProps> = () => {
   const { itemCount, subtotal, openCart, isCheckoutOpen, customizingProduct } = useCart();
-  const { openProfile, isProfileOpen, profile } = useProfile();
+  const { openProfile, closeProfile, isProfileOpen, profile } = useProfile();
 
   // If product customizer or checkout is full-screen on mobile, we can keep or hide.
   // When modal is open, keep hidden to avoid stacking
@@ -18,29 +18,39 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = () => {
   }
 
   const scrollToMenu = () => {
-    const el = document.getElementById('menu-section');
-    if (el) {
-      const offset = 80;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      window.scrollTo({
-        top: elementRect - bodyRect - offset,
-        behavior: 'smooth'
-      });
+    if (isProfileOpen) {
+      closeProfile();
     }
+    setTimeout(() => {
+      const el = document.getElementById('menu-section');
+      if (el) {
+        const offset = 80;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = el.getBoundingClientRect().top;
+        window.scrollTo({
+          top: elementRect - bodyRect - offset,
+          behavior: 'smooth'
+        });
+      }
+    }, isProfileOpen ? 50 : 0);
   };
 
   const scrollToDeals = () => {
-    const el = document.getElementById('deals-section');
-    if (el) {
-      const offset = 80;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      window.scrollTo({
-        top: elementRect - bodyRect - offset,
-        behavior: 'smooth'
-      });
+    if (isProfileOpen) {
+      closeProfile();
     }
+    setTimeout(() => {
+      const el = document.getElementById('deals-section');
+      if (el) {
+        const offset = 80;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = el.getBoundingClientRect().top;
+        window.scrollTo({
+          top: elementRect - bodyRect - offset,
+          behavior: 'smooth'
+        });
+      }
+    }, isProfileOpen ? 50 : 0);
   };
 
   return (

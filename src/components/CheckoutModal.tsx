@@ -128,7 +128,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
   // 1. ORDER CONFIRMATION VIEW
   if (completedOrder) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-4 font-sans h-[100dvh] max-h-[100dvh] overflow-hidden">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-5 font-sans overflow-hidden">
         <div 
           className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
           onClick={() => {
@@ -137,7 +137,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           }}
         />
 
-        <div className="relative w-full max-w-lg bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[88dvh] sm:max-h-[86vh] flex flex-col border border-chonky-border/70 dark:border-white/10 my-auto">
+        <div className="relative w-full max-w-lg bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[82vh] sm:max-h-[85vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
           {/* Header */}
           <div className="p-5 sm:p-6 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 text-center border-b border-emerald-100 dark:border-emerald-900/40 relative shrink-0">
             <div className="w-13 h-13 sm:w-14 sm:h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-2.5 shadow-md">
@@ -236,14 +236,14 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
 
   // 2. CHECKOUT FORM VIEW
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-4 font-sans h-[100dvh] max-h-[100dvh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-5 font-sans overflow-hidden">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
         onClick={closeCheckout}
       />
 
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[88dvh] sm:max-h-[86vh] flex flex-col border border-chonky-border/70 dark:border-white/10 my-auto">
+      <div className="relative w-full max-w-xl bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[82vh] sm:max-h-[85vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5 shrink-0">
           <div className="flex items-center gap-2">
@@ -504,7 +504,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
         </form>
 
         {/* Sticky Bottom Action Dock - Clean Equal Margin */}
-        <div className="shrink-0 p-4 sm:p-5 border-t border-chonky-border/70 dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl">
+        <div className="shrink-0 p-4 sm:p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-5 border-t border-chonky-border/70 dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl">
           <button
             type="submit"
             form="checkout-form"

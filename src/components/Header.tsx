@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   } = useCart();
 
   const { theme } = useTheme();
-  const { openProfile, profile } = useProfile();
+  const { openProfile, closeProfile, isProfileOpen, profile } = useProfile();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -87,6 +87,9 @@ export const Header: React.FC<HeaderProps> = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
+                  if (isProfileOpen) {
+                    closeProfile();
+                  }
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 className="flex items-center group select-none py-1"
@@ -122,13 +125,19 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Middle: Desktop Navigation Links */}
             <nav className="hidden md:flex items-center gap-7 text-sm font-black text-chonky-text dark:text-gray-200">
               <button
-                onClick={() => scrollToSection('menu-section')}
+                onClick={() => {
+                  if (isProfileOpen) closeProfile();
+                  setTimeout(() => scrollToSection('menu-section'), isProfileOpen ? 50 : 0);
+                }}
                 className="hover:text-chonky-red dark:hover:text-chonky-peach transition relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-chonky-red dark:after:bg-chonky-peach after:absolute after:bottom-0 after:left-0 after:transition-all"
               >
                 Menu
               </button>
               <button
-                onClick={() => scrollToSection('deals-section')}
+                onClick={() => {
+                  if (isProfileOpen) closeProfile();
+                  setTimeout(() => scrollToSection('deals-section'), isProfileOpen ? 50 : 0);
+                }}
                 className="hover:text-chonky-red dark:hover:text-chonky-peach transition relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-chonky-red dark:after:bg-chonky-peach after:absolute after:bottom-0 after:left-0 after:transition-all flex items-center gap-1.5"
               >
                 <span>Deals</span>
@@ -137,7 +146,10 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </button>
               <button
-                onClick={() => scrollToSection('about-section')}
+                onClick={() => {
+                  if (isProfileOpen) closeProfile();
+                  setTimeout(() => scrollToSection('about-section'), isProfileOpen ? 50 : 0);
+                }}
                 className="hover:text-chonky-red dark:hover:text-chonky-peach transition relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-chonky-red dark:after:bg-chonky-peach after:absolute after:bottom-0 after:left-0 after:transition-all"
               >
                 About Chonky

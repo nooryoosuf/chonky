@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { ProfileProvider } from './context/ProfileContext';
+import { ProfileProvider, useProfile } from './context/ProfileContext';
 import { Header } from './components/Header';
 import { HeroCarousel } from './components/HeroCarousel';
-import { CategoryNav } from './components/CategoryNav';
 import { ProductGrid } from './components/ProductGrid';
 import { DealsSection } from './components/DealsSection';
 import { AboutSection } from './components/AboutSection';
@@ -13,7 +12,7 @@ import { ProductDetailSheet } from './components/ProductDetailSheet';
 import { CartDrawer } from './components/CartDrawer';
 import { CartBar } from './components/CartBar';
 import { MobileNavBar } from './components/MobileNavBar';
-import { ProfileModal } from './components/ProfileModal';
+import { ProfilePage } from './components/ProfilePage';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
 import { PRODUCTS } from './data/menuData';
@@ -23,6 +22,7 @@ export function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('menu');
+  const { isProfileOpen, closeProfile } = useProfile();
 
   const handleCategorySelect = (categoryId: CategoryId) => {
     setSelectedCategory(categoryId);
@@ -62,40 +62,52 @@ export function AppContent() {
           setActiveSection={setActiveSection}
         />
 
-        {/* 2. Hero Promotional Carousel */}
-        <HeroCarousel onSelectCategory={handleCategorySelect} />
-
-        {/* 3. Horizontal Category Navigation */}
-        <CategoryNav
-          activeCategory={selectedCategory}
-          onSelectCategory={handleCategorySelect}
-        />
-
-        {/* 4. Main Menu & Food Merchandising */}
-        <main className="flex-1">
-          <ProductGrid
-            products={PRODUCTS}
-            selectedCategory={selectedCategory}
-            searchQuery={searchQuery}
-            onClearSearch={() => setSearchQuery('')}
+        {/* Conditional View: Dedicated Profile Page vs Home Storefront */}
+        {isProfileOpen ? (
+          <ProfilePage
+            onBackToHome={() => closeProfile()}
+            onSelectCategory={(catId) => {
+              handleCategorySelect(catId);
+              closeProfile();
+              setTimeout(() => {
+                const el = document.getElementById('menu-section');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }, 50);
+            }}
           />
+        ) : (
+          <>
+            {/* 2. Hero Promotional Carousel */}
+            <HeroCarousel onSelectCategory={handleCategorySelect} />
 
-          {/* 5. Combos & Deals Section */}
-          <DealsSection />
+            {/* 3. Main Menu & Food Merchandising */}
+            <main className="flex-1">
+              <ProductGrid
+                products={PRODUCTS}
+                selectedCategory={selectedCategory}
+                searchQuery={searchQuery}
+                onClearSearch={() => setSearchQuery('')}
+              />
 
-          {/* 6. Editorial Brand Story & About */}
-          <AboutSection />
-        </main>
+              {/* 4. Combos & Deals Section */}
+              <DealsSection />
 
-        {/* 7. Footer */}
-        <Footer />
+              {/* 5. Editorial Brand Story & About */}
+              <AboutSection />
+            </main>
+
+            {/* 6. Footer */}
+            <Footer />
+          </>
+        )}
 
         {/* Modals & Overlays */}
         <ProductDetailSheet />
         <CartDrawer />
         <CartBar />
         <MobileNavBar />
-        <ProfileModal />
         <CheckoutModal />
         <LocationSelectorModal />
       </div>

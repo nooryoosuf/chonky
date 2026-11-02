@@ -36,7 +36,7 @@ export const CartDrawer: React.FC = () => {
   const freeDeliveryPercent = Math.min(100, (subtotal / freeDeliveryThreshold) * 100);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end font-sans overflow-hidden h-[100dvh] max-h-[100dvh]">
+    <div className="fixed inset-0 z-50 flex justify-end font-sans overflow-hidden">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -44,7 +44,7 @@ export const CartDrawer: React.FC = () => {
       />
 
       {/* Drawer Panel */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] h-[100dvh] max-h-[100dvh] shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 border-l border-chonky-border/70 dark:border-white/10 overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 border-l border-chonky-border/70 dark:border-white/10 overflow-hidden">
         
         {/* Header */}
         <div className="p-5 border-b border-chonky-border dark:border-white/10 flex items-center justify-between bg-chonky-peach-light/40 dark:bg-white/5">
@@ -231,7 +231,7 @@ export const CartDrawer: React.FC = () => {
 
         {/* Footer Order Summary & Checkout Trigger */}
         {items.length > 0 && (
-          <div className="shrink-0 p-5 sm:p-6 pb-[max(2rem,env(safe-area-inset-bottom,32px))] sm:pb-6 border-t border-chonky-border dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl shadow-sheet space-y-4">
+          <div className="shrink-0 p-4 sm:p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] sm:pb-6 border-t border-chonky-border dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl shadow-sheet space-y-3.5">
             {/* Breakdown */}
             <div className="space-y-2 text-xs text-chonky-muted dark:text-gray-400">
               <div className="flex justify-between">
