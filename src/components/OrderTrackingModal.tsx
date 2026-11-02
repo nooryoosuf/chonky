@@ -223,16 +223,15 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                 </p>
               </div>
 
-              {/* Status Graphic & Label Outside the Icon Boundary */}
+              {/* Status Graphic & Label (No circle or boundary box, pure icon and text) */}
               <div className="flex flex-col items-center sm:items-end justify-center shrink-0">
-                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg">
-                  {currentStatus === 'received' && <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-300 stroke-[2.5]" />}
-                  {currentStatus === 'preparing' && <Flame className="w-7 h-7 sm:w-8 sm:h-8 text-amber-300 animate-bounce stroke-[2.5]" />}
-                  {currentStatus === 'on_the_way' && <Bike className="w-7 h-7 sm:w-8 sm:h-8 text-blue-200 animate-pulse stroke-[2.5]" />}
-                  {currentStatus === 'delivered' && <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-300 stroke-[2.5]" />}
+                <div className="flex items-center justify-center">
+                  {currentStatus === 'received' && <CheckCircle2 className="w-10 h-10 sm:w-11 sm:h-11 text-emerald-300 stroke-[2.3] drop-shadow-md" />}
+                  {currentStatus === 'preparing' && <Flame className="w-10 h-10 sm:w-11 sm:h-11 text-amber-300 animate-bounce stroke-[2.3] drop-shadow-md" />}
+                  {currentStatus === 'on_the_way' && <Bike className="w-10 h-10 sm:w-11 sm:h-11 text-blue-200 animate-pulse stroke-[2.3] drop-shadow-md" />}
+                  {currentStatus === 'delivered' && <Sparkles className="w-10 h-10 sm:w-11 sm:h-11 text-emerald-300 stroke-[2.3] drop-shadow-md" />}
                 </div>
-                {/* Text clearly outside the icon boundary */}
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-white/95 mt-1.5 px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-xs">
+                <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-white mt-1.5 drop-shadow-xs">
                   {currentStatus.replace('_', ' ')}
                 </span>
               </div>
