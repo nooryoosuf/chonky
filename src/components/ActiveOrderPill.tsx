@@ -72,73 +72,79 @@ export const ActiveOrderPill: React.FC = () => {
   };
 
   // =========================================================================
-  // VIEW MODE 1: MINIMIZED STICKY BANNER (Sits flush right above bottom nav)
+  // VIEW MODE 1: MINIMIZED RECTANGULAR FULL-WIDTH BANNER (Above bottom nav)
   // =========================================================================
   if (isMinimized) {
     const bannerBottomClass = itemCount > 0
-      ? 'bottom-[calc(8.8rem+env(safe-area-inset-bottom,8px))] sm:bottom-24'
-      : 'bottom-[calc(4.25rem+env(safe-area-inset-bottom,4px))] sm:bottom-4';
+      ? 'bottom-[calc(8.4rem+env(safe-area-inset-bottom,8px))] md:bottom-16'
+      : 'bottom-[calc(3.85rem+env(safe-area-inset-bottom,10px))] md:bottom-0';
 
     return (
       <div 
-        className={`fixed ${bannerBottomClass} left-3 right-3 sm:left-auto sm:right-6 sm:w-auto z-40 max-w-md mx-auto sm:max-w-none animate-in slide-in-from-bottom duration-200 pointer-events-auto`}
+        className={`fixed ${bannerBottomClass} left-0 right-0 w-full z-40 animate-in slide-in-from-bottom duration-200 pointer-events-auto`}
       >
         <div 
           onClick={() => openTracking(currentOrder)}
-          className="w-full sm:w-auto h-11 px-3.5 rounded-full bg-gradient-to-r from-[#700808] via-[#850B0B] to-[#990D0D] border-2 border-[#E53945]/70 shadow-[0_6px_25px_rgba(229,57,69,0.5),0_0_15px_rgba(229,57,69,0.3)] text-white flex items-center justify-between gap-3 cursor-pointer group hover:scale-[1.01] active:scale-[0.99] transition-all"
+          className="w-full bg-gradient-to-r from-[#700808] via-[#850B0B] to-[#990D0D] border-t-2 border-[#E53945] shadow-[0_-4px_25px_rgba(229,57,69,0.45)] text-white py-2.5 px-4 sm:px-6 cursor-pointer select-none transition-colors"
           role="button"
           tabIndex={0}
           aria-label="Active order tracking banner. Tap to open live tracking."
         >
-          {/* Left: Live Radar Pulse Beacon & Status */}
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="relative flex h-2.5 w-2.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-white" />
-            </span>
-            <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded-md bg-black/35 text-[#F2E2C7] border border-white/10 shrink-0">
-              {currentOrder.orderId}
-            </span>
-            <span className="text-xs font-black text-white truncate">
-              {getStatusText(currentOrder.status || 'received')}
-            </span>
-          </div>
-
-          {/* Right: Expand to card, Track button & Dismiss */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            {/* Expand to Full Card */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMinimized(false);
-              }}
-              className="w-7 h-7 rounded-full bg-black/25 hover:bg-black/45 text-[#F2E2C7] flex items-center justify-center transition active:scale-90"
-              title="Expand to full card"
-              aria-label="Expand to full card"
-            >
-              <ChevronUp className="w-3.5 h-3.5" />
-            </button>
-
-            {/* Glowing Track Pill */}
-            <div className="px-2.5 py-1 rounded-full bg-white text-[#700808] font-black text-[11px] shadow-xs flex items-center gap-1 group-hover:bg-[#F2E2C7] transition-colors">
-              <span>Track</span>
-              <ChevronRight className="w-3 h-3 stroke-[3] text-[#700808]" />
+          <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
+            {/* Left: Live Indicator Beacon & Order Status */}
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-white" />
+              </span>
+              <span className="text-[10.5px] font-mono font-black px-2 py-0.5 rounded-md bg-black/40 text-[#F2E2C7] border border-white/10 shrink-0">
+                {currentOrder.orderId}
+              </span>
+              <span className="text-xs sm:text-sm font-black text-white truncate">
+                {getStatusText(currentOrder.status || 'received')}
+              </span>
+              <span className="hidden sm:inline text-xs text-[#F2E2C7]/80 truncate">
+                · {currentOrder.orderType === 'delivery' ? `Delivery to ${currentOrder.area}` : 'Counter Pickup'}
+              </span>
             </div>
 
-            {/* Dismiss X */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDismissed(true);
-              }}
-              className="p-1 rounded-full text-white/70 hover:text-white hover:bg-black/25 transition ml-0.5 active:scale-90"
-              title="Dismiss banner"
-              aria-label="Dismiss banner"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
+            {/* Right: Expand to card, Track button & Dismiss */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Expand to Full Card */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMinimized(false);
+                }}
+                className="h-8 px-2.5 rounded-lg bg-black/30 hover:bg-black/50 text-[#F2E2C7] flex items-center gap-1 text-[11px] font-bold transition active:scale-95"
+                title="Expand to full card"
+                aria-label="Expand to full card"
+              >
+                <ChevronUp className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">Card</span>
+              </button>
+
+              {/* Glowing Track Pill */}
+              <div className="h-8 px-3 rounded-lg bg-white text-[#700808] font-black text-xs shadow-sm flex items-center gap-1 hover:bg-[#F2E2C7] transition-colors">
+                <span>Track</span>
+                <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#700808]" />
+              </div>
+
+              {/* Dismiss X */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDismissed(true);
+                }}
+                className="w-8 h-8 rounded-lg text-white/70 hover:text-white hover:bg-black/30 flex items-center justify-center transition active:scale-95"
+                title="Dismiss banner"
+                aria-label="Dismiss banner"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
