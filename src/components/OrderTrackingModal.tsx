@@ -62,6 +62,34 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   const simulationIntervalRef = useRef<number | null>(null);
   const stopGpsWatchRef = useRef<(() => void) | null>(null);
 
+  // Touch Drag gestures for Mobile Bottom Sheet (swipe up to expand, swipe down to compact)
+  const touchStartY = useRef<number | null>(null);
+  const touchCurrentY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    touchCurrentY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchCurrentY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartY.current !== null && touchCurrentY.current !== null) {
+      const deltaY = touchCurrentY.current - touchStartY.current;
+      if (deltaY > 40) {
+        // Swiped down -> compact
+        setIsSheetCollapsed(true);
+      } else if (deltaY < -30) {
+        // Swiped up -> show full
+        setIsSheetCollapsed(false);
+      }
+    }
+    touchStartY.current = null;
+    touchCurrentY.current = null;
+  };
+
   useEffect(() => {
     if (order) {
       setCurrentStatus(order.status || 'received');
@@ -620,72 +648,80 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         {/* Spacer to allow full map visibility */}
         <div className="flex-1 pointer-events-none" />
 
-        {/* Floating Uber / Grab Style Slide-Up Bottom Drawer with Compact / Expand toggle */}
-        <div className={`relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out ${
-          isSheetCollapsed ? 'max-h-[140px] pb-safe' : 'max-h-[70vh] sm:max-h-[64vh]'
-        }`}>
-          {/* Subtle Grab Handle / Toggle Button */}
-          <button
-            type="button"
+        {/* Floating Uber / Grab Style Slide-Up Bottom Drawer with Drag & Compact/Expand toggle */}
+        <div 
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className={`relative z-20 w-full max-w-xl mx-auto bg-[#FAF8F5] dark:bg-[#0A0505] text-chonky-text dark:text-[#F7F3EE] rounded-t-[2.5rem] shadow-2xl border-t border-x border-chonky-border/70 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out ${
+            isSheetCollapsed ? 'max-h-[145px] pb-safe' : 'max-h-[70vh] sm:max-h-[64vh]'
+          }`}
+        >
+          {/* Subtle Clean Grab Handle (Draggable & Tappable, No text clutter) */}
+          <div
             onClick={() => setIsSheetCollapsed(!isSheetCollapsed)}
-            className="w-full pt-3 pb-1.5 flex flex-col items-center justify-center shrink-0 hover:bg-black/5 dark:hover:bg-white/5 transition"
-            aria-label={isSheetCollapsed ? 'Expand details' : 'Compact details'}
+            className="w-full pt-3 pb-2 flex items-center justify-center shrink-0 cursor-grab active:cursor-grabbing hover:bg-black/5 dark:hover:bg-white/5 transition"
+            aria-label="Drag or tap to toggle order details"
           >
-            <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-white/20 mb-1" />
-            <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-chonky-muted dark:text-gray-400">
-              {isSheetCollapsed ? (
-                <>
-                  <span>Show Full Details</span>
-                  <ChevronUp className="w-3.5 h-3.5 text-chonky-red dark:text-chonky-peach" />
-                </>
-              ) : (
-                <>
-                  <span>Compact & View Full Map</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-chonky-red dark:text-chonky-peach" />
-                </>
-              )}
-            </div>
-          </button>
+            <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-white/25 hover:bg-gray-400 transition-colors" />
+          </div>
 
           {isSheetCollapsed ? (
-            /* Compact Mode: Minimal card that leaves 85%+ of screen for the interactive map */
+            /* Compact Mode: Card with Estimate Time, Headline, Driver Icon, and Call Button */
             <div 
               onClick={() => setIsSheetCollapsed(false)}
-              className="px-5 pb-4 flex items-center justify-between gap-3 cursor-pointer"
+              className="px-5 pb-5 pt-1 flex items-center justify-between gap-4 cursor-pointer select-none active:bg-black/5 dark:active:bg-white/5 transition-colors"
             >
+              {/* Estimated Time & Dynamic Status Headline */}
               <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-black text-chonky-text dark:text-white leading-none">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black text-chonky-text dark:text-white leading-none tracking-tight">
                     {getEstimatedMinutes()}
                   </span>
-                  <span className="text-xs font-bold text-chonky-muted dark:text-gray-400">
+                  <span className="text-xs sm:text-sm font-extrabold text-chonky-muted dark:text-gray-400">
                     {currentStatus === 'delivered' ? 'Completed' : 'mins'}
                   </span>
                   {roadDistKm !== null && currentStatus === 'on_the_way' && (
-                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 ml-1">
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                       {roadDistKm} km
                     </span>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm font-extrabold text-chonky-text dark:text-white truncate mt-0.5">
+                <p className="text-xs sm:text-sm font-extrabold text-chonky-text dark:text-white truncate mt-1">
                   {getHeadline()}
+                </p>
+                <p className="text-[11px] text-chonky-muted dark:text-gray-400 truncate">
+                  {isDelivery ? `To ${order.area.split(',')[0]} · Swipe up for full details` : 'Counter Pickup'}
                 </p>
               </div>
 
-              {isDelivery && (
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-white/10 border border-chonky-border dark:border-white/10 text-xs font-bold shadow-xs">
-                    <Bike className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-[11px] font-black text-chonky-text dark:text-white">Ali</span>
+              {/* Driver Icon & Call Button */}
+              {isDelivery ? (
+                <div className="flex items-center gap-3 shrink-0">
+                  {/* Driver Avatar with Vehicle Badge */}
+                  <div className="relative shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-800 text-white flex items-center justify-center font-black text-sm shadow-md border-2 border-white dark:border-[#0A0505]">
+                      AS
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white dark:border-[#0A0505] shadow-xs">
+                      <Bike className="w-3 h-3 stroke-[2.5]" />
+                    </div>
                   </div>
+
+                  {/* Direct Call Button */}
                   <a
                     href="tel:+9607771234"
                     onClick={(e) => e.stopPropagation()}
-                    className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-600/30 flex items-center justify-center transition active:scale-95 shadow-xs"
+                    className="w-12 h-12 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center transition shadow-md shrink-0"
                     title="Call Driver Ali"
+                    aria-label="Call Driver Ali"
                   >
-                    <Phone className="w-4 h-4" />
+                    <Phone className="w-5 h-5" />
                   </a>
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-chonky-subtle dark:bg-white/10 text-chonky-red dark:text-chonky-peach flex items-center justify-center shrink-0">
+                  <ShoppingBag className="w-6 h-6" />
                 </div>
               )}
             </div>
