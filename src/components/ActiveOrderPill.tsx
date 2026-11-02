@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useCart } from '../context/CartContext';
 import { Bike, Flame, Sparkles, ChevronRight, X, Radio } from 'lucide-react';
 
@@ -15,6 +15,13 @@ export const ActiveOrderPill: React.FC = () => {
   } = useCart();
 
   const [isDismissed, setIsDismissed] = useState(false);
+  
+  // Fluid vertical drag positioning
+  const [offsetY, setOffsetY] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const dragStartY = useRef<number>(0);
+  const startOffsetY = useRef<number>(0);
+  const hasMoved = useRef<boolean>(false);
 
   // The displayed order is either completedOrder or activeOrder
   const currentOrder = completedOrder || activeOrder;
@@ -53,34 +60,100 @@ export const ActiveOrderPill: React.FC = () => {
   const getSubText = (status: string) => {
     switch (status) {
       case 'on_the_way':
-        return 'Live GPS active · Tap to track route';
+        return 'Live GPS active · Drag to reposition';
       case 'preparing':
-        return 'Fresh patties on the grill · Tap to track';
+        return 'Fresh patties on the grill · Drag to move';
       case 'delivered':
-        return 'Enjoy your meal! Tap for receipt';
+        return 'Enjoy your meal! Drag to move';
       default:
-        return `${currentOrder.orderType === 'delivery' ? `Delivery to ${currentOrder.area}` : 'Counter Pickup'} · Live Map`;
+        return `${currentOrder.orderType === 'delivery' ? `Delivery to ${currentOrder.area}` : 'Counter Pickup'} · Drag to move`;
     }
   };
 
   // Safe bottom clearance on mobile:
-  // If cart bar is visible (itemCount > 0), float above the cart bar; otherwise float comfortably above the mobile bottom navigation bar with ample margin
   const bottomPositionClass = itemCount > 0
     ? 'bottom-[calc(9.75rem+env(safe-area-inset-bottom,16px))] sm:bottom-28'
     : 'bottom-[calc(5.25rem+env(safe-area-inset-bottom,14px))] sm:bottom-8';
 
+  // --- Fluid Drag Gesture Handlers ---
+  const handlePointerDown = (e: React.PointerEvent) => {
+    // If clicked on close button, let click pass through
+    if ((e.target as HTMLElement).closest('button')) {
+      return;
+    }
+    dragStartY.current = e.clientY;
+    startOffsetY.current = offsetY;
+    hasMoved.current = false;
+    setIsDragging(true);
+
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    const delta = e.clientY - dragStartY.current;
+    if (Math.abs(delta) > 5) {
+      hasMoved.current = true;
+    }
+
+    // Clamp vertical drag: can move up to 75% of viewport height, and down slightly
+    const maxUp = -(window.innerHeight * 0.76);
+    const maxDown = 35;
+    const clamped = Math.min(maxDown, Math.max(maxUp, startOffsetY.current + delta));
+    setOffsetY(clamped);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleCardClick = () => {
+    // Only open tracking if user tapped, not if they dragged the card
+    if (!hasMoved.current) {
+      openTracking(currentOrder);
+    }
+  };
+
   return (
     <div 
-      className={`fixed ${bottomPositionClass} left-4 right-4 sm:left-auto sm:right-8 sm:w-auto z-40 max-w-md mx-auto sm:max-w-none animate-in slide-in-from-bottom duration-300 pointer-events-auto`}
+      className={`fixed ${bottomPositionClass} left-4 right-4 sm:left-auto sm:right-8 sm:w-auto z-40 max-w-md mx-auto sm:max-w-none pointer-events-auto`}
+      style={{
+        transform: `translate3d(0, ${offsetY}px, 0)`,
+        touchAction: 'none',
+        transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1)'
+      }}
     >
-      {/* Outer Glowing Red Card */}
+      {/* Outer Glowing Red Card with Fluid Drag Affordance */}
       <div 
-        onClick={() => openTracking(currentOrder)}
-        className="relative w-full sm:w-auto bg-gradient-to-r from-[#700808] via-[#8A0A0A] to-[#A30D0D] text-white rounded-3xl sm:rounded-full p-3.5 sm:px-5 sm:py-3.5 shadow-[0_12px_40px_rgba(229,57,69,0.55),0_0_24px_rgba(229,57,69,0.35)] hover:shadow-[0_16px_50px_rgba(229,57,69,0.7),0_0_30px_rgba(229,57,69,0.5)] border-2 border-[#E53945]/80 hover:border-[#E53945] flex items-center justify-between gap-3 sm:gap-4 cursor-pointer group transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClick={handleCardClick}
+        className={`relative w-full sm:w-auto bg-gradient-to-r from-[#700808] via-[#8A0A0A] to-[#A30D0D] text-white rounded-3xl sm:rounded-full p-3.5 sm:px-5 sm:py-3.5 shadow-[0_12px_40px_rgba(229,57,69,0.55),0_0_24px_rgba(229,57,69,0.35)] hover:shadow-[0_16px_50px_rgba(229,57,69,0.7),0_0_30px_rgba(229,57,69,0.5)] border-2 border-[#E53945]/80 hover:border-[#E53945] flex items-center justify-between gap-2.5 sm:gap-4 select-none ${
+          isDragging ? 'cursor-grabbing scale-[1.02] shadow-[0_20px_50px_rgba(229,57,69,0.75)]' : 'cursor-grab hover:scale-[1.01] active:scale-[0.99]'
+        }`}
         role="button"
         tabIndex={0}
-        aria-label="View live order tracking map"
+        aria-label="View live order tracking map. Drag up or down to reposition."
       >
+        {/* Drag Grip Handle Affordance */}
+        <div className="flex flex-col gap-1 py-1 opacity-50 shrink-0 cursor-grab active:cursor-grabbing pl-0.5 pr-1">
+          <div className="w-1 h-1 rounded-full bg-white" />
+          <div className="w-1 h-1 rounded-full bg-white" />
+          <div className="w-1 h-1 rounded-full bg-white" />
+        </div>
+
         {/* Left Icon with Live Radar Beacon */}
         <div className="flex items-center gap-3 min-w-0">
           <div className="relative w-11 h-11 rounded-2xl sm:rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
@@ -110,11 +183,11 @@ export const ActiveOrderPill: React.FC = () => {
         </div>
 
         {/* Right Action Button & Close */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0 pl-1">
           {/* Glowing Track Live Pill */}
-          <div className="px-3.5 py-1.5 rounded-full bg-white text-[#700808] font-black text-xs shadow-md flex items-center gap-1 group-hover:bg-[#F2E2C7] transition-colors">
+          <div className="px-3.5 py-1.5 rounded-full bg-white text-[#700808] font-black text-xs shadow-md flex items-center gap-1 group-hover:bg-[#F2E2C7] transition-colors pointer-events-none">
             <span>Track</span>
-            <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#700808] group-hover:translate-x-0.5 transition-transform" />
+            <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#700808]" />
           </div>
 
           {/* Dismiss Button */}
