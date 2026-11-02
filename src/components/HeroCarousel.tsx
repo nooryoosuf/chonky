@@ -1,63 +1,57 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { HERO_SLIDES } from '../data/menuData';
-import { ArrowRight, Flame, Sparkles, ChevronLeft, ChevronRight, Star, Clock } from 'lucide-react';
+import { ArrowRight, Flame, ChevronLeft, ChevronRight, Search, X, SlidersHorizontal } from 'lucide-react';
 import { CategoryId } from '../types';
 
 interface HeroCarouselProps {
   onSelectCategory: (category: CategoryId) => void;
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
 }
 
-export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) => {
+export const HeroCarousel: React.FC<HeroCarouselProps> = ({ 
+  onSelectCategory,
+  searchQuery = '',
+  setSearchQuery 
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [progress, setProgress] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
-  const SLIDE_DURATION = 6000; // ms
+  const SLIDE_DURATION = 5000; // 5 seconds per slide
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    setProgress(0);
   }, []);
 
   const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
-    setProgress(0);
   }, []);
 
-  // Smooth progress bar tick
+  // Auto-advance timer (pauses on hover or touch)
   useEffect(() => {
     if (isPaused) return;
-
-    const interval = 50; // ms
-    const step = (interval / SLIDE_DURATION) * 100;
-
     const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return prev + step;
-      });
-    }, interval);
-
+      nextSlide();
+    }, SLIDE_DURATION);
     return () => clearInterval(timer);
   }, [isPaused, nextSlide]);
 
-  // Touch Swipe Handlers
+  // Touch Swipe Handlers for mobile gestures
   const handleTouchStart = (e: React.TouchEvent) => {
+    setIsPaused(true);
     touchStartX.current = e.touches[0].clientX;
   };
   const handleTouchMove = (e: React.TouchEvent) => {
     touchEndX.current = e.touches[0].clientX;
   };
   const handleTouchEnd = () => {
+    setIsPaused(false);
     if (!touchStartX.current || !touchEndX.current) return;
     const diff = touchStartX.current - touchEndX.current;
-    if (diff > 50) nextSlide();
-    else if (diff < -50) prevSlide();
+    if (diff > 40) nextSlide();
+    else if (diff < -40) prevSlide();
     touchStartX.current = null;
     touchEndX.current = null;
   };
@@ -66,7 +60,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
     onSelectCategory(category as CategoryId);
     const element = document.getElementById('menu-section');
     if (element) {
-      const offset = 85;
+      const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       window.scrollTo({
@@ -78,197 +72,150 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onSelectCategory }) 
 
   const slide = HERO_SLIDES[currentSlide];
 
-  // Key perks/tags per slide
-  const slideHighlights: Record<number, string[]> = {
-    0: ['100% Angus Beef', 'Double Smashed', 'Potato Bun'],
-    1: ['Prime Shaved Ribeye', 'Toasted Hearth Roll', 'Real Provolone Melt'],
-    2: ['48-hr Sourdough', 'Cupping Pepperoni', 'Hot Honey Drizzle']
-  };
-
   return (
-    <section
-      className="relative w-full overflow-hidden bg-transparent dark:bg-transparent pt-4 pb-8 sm:pt-6 sm:pb-12"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      aria-label="Promotional highlights carousel"
+    <section 
+      className="w-full pt-3 pb-4 sm:pt-4 sm:pb-6"
+      aria-label="Promotions and search"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Main Fluid Carousel Card Container */}
-        <div className="relative rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-to-br from-[#100505] via-[#160707] to-[#060303] text-white overflow-hidden shadow-hover border border-white/10 dark:border-chonky-red/30 min-h-[460px] sm:min-h-[490px] md:min-h-[520px] flex flex-col justify-between p-6 sm:p-10 md:p-12 transition-all">
-          
-          {/* Subtle Ambient Radial Glow Behind Food */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] bg-chonky-red/25 rounded-full blur-3xl pointer-events-none -mr-20" />
-          <div className="absolute left-10 top-10 w-72 h-72 bg-chonky-red/10 rounded-full blur-2xl pointer-events-none" />
-
-          {/* Top Row: Slide Switcher Tabs with Progress Bars */}
-          <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10">
-            {/* Slide Category Pills */}
-            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1">
-              {HERO_SLIDES.map((s, idx) => {
-                const isActive = idx === currentSlide;
-                return (
-                  <button
-                    key={s.id}
-                    onClick={() => {
-                      setCurrentSlide(idx);
-                      setProgress(0);
-                    }}
-                    className={`relative px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
-                      isActive
-                        ? 'bg-white/15 text-white shadow-xs border border-white/20'
-                        : 'bg-black/20 text-gray-400 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    {/* Live Progress Bar Fill inside active pill */}
-                    {isActive && (
-                      <div
-                        className="absolute inset-0 bg-chonky-peach/20 origin-left transition-all duration-75"
-                        style={{ width: `${progress}%` }}
-                      />
-                    )}
-                    <span className="relative z-10 flex items-center gap-1.5">
-                      <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-chonky-peach' : 'bg-gray-500'}`} />
-                      <span className="capitalize">{s.category}</span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Micro rating & prep pill */}
-            <div className="hidden sm:flex items-center gap-3 text-xs text-gray-300">
-              <span className="flex items-center gap-1 text-amber-300 font-bold">
-                <Star className="w-3.5 h-3.5 fill-amber-300" />
-                4.9 / 5.0
-              </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-chonky-peach" />
-                25-35m Island Delivery
-              </span>
+        {/* 1. SEARCH BAR ABOVE HERO (Prominent mobile-first search) */}
+        {setSearchQuery && (
+          <div className="mb-3.5 sm:mb-4">
+            <div className="relative flex items-center">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-chonky-red dark:text-chonky-peach absolute left-3.5 sm:left-4 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for your favorite cravings, burgers, pizza..."
+                className="w-full h-11 sm:h-12 pl-10 sm:pl-12 pr-11 rounded-2xl bg-white dark:bg-[#120808] text-xs sm:text-sm font-medium text-chonky-text dark:text-white placeholder:text-chonky-muted dark:placeholder:text-gray-500 border border-chonky-border/80 dark:border-white/10 shadow-xs focus:outline-none focus:ring-2 focus:ring-chonky-red/30 focus:border-chonky-red transition-all"
+              />
+              {searchQuery ? (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 p-1 rounded-full text-chonky-muted hover:text-chonky-text dark:text-gray-400 dark:hover:text-white transition"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              ) : (
+                <div 
+                  className="absolute right-3.5 p-1 text-chonky-muted dark:text-gray-400 pointer-events-none"
+                  title="Filter cravings"
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                </div>
+              )}
             </div>
           </div>
+        )}
 
-          {/* Center Stage: Split Grid Layout */}
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-6 sm:py-8 my-auto">
-            
-            {/* Left Column: Dynamic Typography & CTAs (7 cols) */}
-            <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-left animate-in fade-in duration-500 key={slide.id}">
+        {/* 2. COMPACT 2:4 HORIZONTAL HERO CAROUSEL BANNER */}
+        <div
+          className="relative group"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Banner Card with 2:4 / ~2:1 Horizontal Proportion */}
+          <div 
+            className="relative w-full h-[175px] xs:h-[185px] sm:h-[215px] md:h-[245px] rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#700808] via-[#560606] to-[#1c0202] dark:from-[#4a0606] dark:via-[#300303] dark:to-[#0f0101] text-white overflow-hidden shadow-lg border border-white/10 dark:border-chonky-red/30 transition-all duration-300"
+          >
+            {/* Subtle background ambient blur */}
+            <div className="absolute -left-12 -top-12 w-48 h-48 bg-chonky-red/40 rounded-full blur-2xl pointer-events-none" />
+
+            {/* Left Content Area (58% width on mobile, 52% on desktop) */}
+            <div className="relative z-10 w-[58%] sm:w-[54%] md:w-[50%] h-full flex flex-col justify-between p-3.5 sm:p-6 md:p-8 select-none">
               
-              {/* Tagline Pill */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-chonky-peach/15 border border-chonky-peach/30 text-chonky-peach text-xs font-black uppercase tracking-wider backdrop-blur-md">
-                <Flame className="w-3.5 h-3.5 text-chonky-peach animate-pulse" />
-                <span>{slide.tagline}</span>
+              {/* Top Tag Pill */}
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-chonky-peach text-[9px] sm:text-[11px] font-black uppercase tracking-wider w-fit shadow-xs">
+                <Flame className="w-3 h-3 text-amber-400 fill-amber-400 animate-pulse shrink-0" />
+                <span className="truncate">{slide.tagline}</span>
               </div>
 
-              {/* Punchy Headline */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] font-sans">
-                {slide.headline}
-              </h1>
-
-              {/* Supporting sentence */}
-              <p className="text-sm sm:text-base text-gray-300 max-w-xl leading-relaxed font-normal">
-                {slide.description}
-              </p>
-
-              {/* Ingredient Highlight Chips */}
-              <div className="flex flex-wrap gap-2 pt-1">
-                {slideHighlights[currentSlide]?.map((hl, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1 rounded-xl bg-white/10 backdrop-blur-xs text-xs font-semibold text-gray-200 border border-white/10"
-                  >
-                    {hl}
-                  </span>
-                ))}
+              {/* Middle Headline & Description */}
+              <div className="my-auto py-0.5">
+                <h2 className="text-sm xs:text-base sm:text-2xl md:text-3xl font-black text-white leading-tight tracking-tight line-clamp-2 drop-shadow-xs font-sans">
+                  {slide.headline}
+                </h2>
+                <p className="hidden xs:block text-[10px] sm:text-xs text-chonky-peach/90 mt-0.5 sm:mt-1 font-medium line-clamp-1 max-w-sm">
+                  {slide.description}
+                </p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="pt-2 sm:pt-4 flex flex-wrap items-center gap-4">
+              {/* Bottom Action Button */}
+              <div>
                 <button
                   onClick={() => handleCtaClick(slide.category)}
-                  className="px-7 py-3.5 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-extrabold text-sm sm:text-base flex items-center gap-3 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-glow-red group"
+                  className="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white text-chonky-red hover:bg-chonky-peach dark:bg-chonky-peach dark:text-chonky-red font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md active:scale-95 transition-all transform hover:scale-102 group/btn"
                 >
                   <span>{slide.cta}</span>
-                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleCtaClick('all')}
-                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all duration-200 border border-white/15"
-                >
-                  Explore All Menu
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5] group-hover/btn:translate-x-0.5 transition-transform" />
                 </button>
               </div>
 
             </div>
 
-            {/* Right Column: Hero Visual Frame (5 cols) */}
-            <div className="lg:col-span-5 relative flex items-center justify-center">
+            {/* Right Food Photo Section with Soft Lateral Blend */}
+            <div className="absolute right-0 top-0 bottom-0 w-[46%] sm:w-[50%] md:w-[52%] h-full overflow-hidden select-none">
+              <img
+                src={slide.image}
+                alt={slide.headline}
+                key={slide.id}
+                className="w-full h-full object-cover object-center transform hover:scale-105 transition-all duration-700 ease-out animate-in fade-in"
+              />
               
-              {/* Layered Decorative Backdrop Pill */}
-              <div className="relative w-full max-w-md aspect-square sm:aspect-[4/3] lg:aspect-square rounded-[2.5rem] overflow-hidden p-3 bg-gradient-to-tr from-white/10 to-white/5 border border-white/15 shadow-2xl backdrop-blur-md group">
-                
-                {/* Photo with subtle hover tilt */}
-                <div className="w-full h-full rounded-[2rem] overflow-hidden relative">
-                  <img
-                    src={slide.image}
-                    alt={slide.headline}
-                    className="w-full h-full object-cover object-center transform scale-102 group-hover:scale-110 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
-
-                  {/* Floating Price Pill */}
-                  <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-white/20 text-left">
-                    <p className="text-[10px] uppercase font-bold text-chonky-peach tracking-wider">Starting at</p>
-                    <p className="text-base font-black text-white">MVR 135</p>
-                  </div>
-
-                  {/* Floating Chef Badge */}
-                  <div className="absolute top-4 right-4 bg-chonky-red/90 text-white backdrop-blur-md px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-soft">
-                    <Sparkles className="w-3 h-3 text-chonky-peach" />
-                    <span>Top Rated</span>
-                  </div>
-                </div>
-
-              </div>
-
+              {/* Soft Gradient Mask Blending Photo Into The Card Background */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-r from-[#700808] via-[#700808]/30 to-transparent pointer-events-none" 
+                aria-hidden="true" 
+              />
+              <div 
+                className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" 
+                aria-hidden="true" 
+              />
             </div>
 
-          </div>
-
-          {/* Bottom Bar: Prev/Next Quick Controls & Counter */}
-          <div className="relative z-20 flex items-center justify-between pt-4 border-t border-white/10 text-xs text-gray-400">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-white font-black text-sm">
-                0{currentSlide + 1}
-              </span>
-              <span>/</span>
-              <span className="font-mono">
-                0{HERO_SLIDES.length}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
+            {/* Desktop Quick Nav Arrows (Visible on hover on desktop) */}
+            <div className="hidden sm:flex absolute inset-y-0 left-2 right-2 items-center justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
               <button
                 onClick={prevSlide}
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition border border-white/10 active:scale-90"
+                className="w-8 h-8 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-sm pointer-events-auto transition active:scale-90 border border-white/20"
                 aria-label="Previous slide"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={nextSlide}
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition border border-white/10 active:scale-90"
+                className="w-8 h-8 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-sm pointer-events-auto transition active:scale-90 border border-white/20"
                 aria-label="Next slide"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
+
+          </div>
+
+          {/* Dots Indicator Beneath Banner */}
+          <div className="flex items-center justify-center gap-1.5 pt-2 sm:pt-2.5">
+            {HERO_SLIDES.map((_, idx) => {
+              const isActive = idx === currentSlide;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`transition-all duration-300 rounded-full ${
+                    isActive
+                      ? 'w-5 sm:w-6 h-1.5 bg-chonky-red dark:bg-chonky-peach'
+                      : 'w-1.5 h-1.5 bg-chonky-border dark:bg-white/25 hover:bg-chonky-red/50'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              );
+            })}
           </div>
 
         </div>

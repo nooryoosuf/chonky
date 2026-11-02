@@ -79,8 +79,12 @@ export function AppContent() {
           />
         ) : (
           <>
-            {/* 2. Hero Promotional Carousel */}
-            <HeroCarousel onSelectCategory={handleCategorySelect} />
+            {/* 2. Hero Promotional Carousel with Search Bar on Top */}
+            <HeroCarousel 
+              onSelectCategory={handleCategorySelect}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
 
             {/* 3. Main Menu & Food Merchandising */}
             <main className="flex-1">
