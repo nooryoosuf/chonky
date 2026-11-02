@@ -6,10 +6,10 @@ interface ProfileContextType {
   profile: UserProfile;
   orders: OrderDetails[];
   isProfileOpen: boolean;
-  openProfile: (tab?: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit') => void;
+  openProfile: (tab?: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings') => void;
   closeProfile: () => void;
-  activeProfileTab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit';
-  setActiveProfileTab: (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit') => void;
+  activeProfileTab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings';
+  setActiveProfileTab: (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings') => void;
   updateProfileInfo: (info: { name: string; phone: string; email: string }) => void;
   addAddress: (addr: Omit<SavedAddress, 'id'>) => void;
   removeAddress: (id: string) => void;
@@ -18,6 +18,7 @@ interface ProfileContextType {
   removePaymentCard: (id: string) => void;
   setDefaultPaymentCard: (id: string) => void;
   recordNewOrder: (order: OrderDetails) => void;
+  logout: () => void;
 }
 
 const PROFILE_STORAGE_KEY = 'chonky_profile_v1';
@@ -165,7 +166,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeProfileTab, setActiveProfileTab] = useState<'overview' | 'orders' | 'addresses' | 'payments' | 'edit'>('overview');
+  const [activeProfileTab, setActiveProfileTab] = useState<'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings'>('overview');
 
   useEffect(() => {
     try {
@@ -183,12 +184,29 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [orders]);
 
-  const openProfile = (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' = 'overview') => {
+  const openProfile = (tab: 'overview' | 'orders' | 'addresses' | 'payments' | 'edit' | 'settings' = 'overview') => {
     setActiveProfileTab(tab);
     setIsProfileOpen(true);
   };
 
   const closeProfile = () => {
+    setIsProfileOpen(false);
+  };
+
+  const logout = () => {
+    // Reset to demo guest state or default user
+    setProfile({
+      name: 'Guest Eater',
+      phone: '+960 700-0000',
+      email: 'guest@chonky.mv',
+      addresses: [],
+      paymentCards: [],
+      loyaltyPoints: 0,
+      tier: 'Chonky Scout',
+      totalOrdersCount: 0,
+      totalSpent: 0
+    });
+    setOrders([]);
     setIsProfileOpen(false);
   };
 
@@ -306,7 +324,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
         addPaymentCard,
         removePaymentCard,
         setDefaultPaymentCard,
-        recordNewOrder
+        recordNewOrder,
+        logout
       }}
     >
       {children}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProfile } from '../context/ProfileContext';
+import { useTheme } from '../context/ThemeContext';
 import { 
   X, 
   User, 
@@ -16,7 +17,14 @@ import {
   Trash2, 
   Check, 
   ShieldCheck,
-  ReceiptText
+  ReceiptText,
+  Settings,
+  Sun,
+  Moon,
+  LogOut,
+  Bell,
+  Smartphone,
+  Info
 } from 'lucide-react';
 
 export const ProfileModal: React.FC = () => {
@@ -33,8 +41,16 @@ export const ProfileModal: React.FC = () => {
     setDefaultAddress,
     addPaymentCard,
     removePaymentCard,
-    setDefaultPaymentCard
+    setDefaultPaymentCard,
+    logout
   } = useProfile();
+
+  const { theme, toggleTheme } = useTheme();
+
+  // Settings Toggles State
+  const [orderSmsUpdates, setOrderSmsUpdates] = useState(true);
+  const [promoAlerts, setPromoAlerts] = useState(true);
+  const [isConfirmingLogout, setIsConfirmingLogout] = useState(false);
 
   // Edit Profile Form State
   const [name, setName] = useState(profile.name);
@@ -191,6 +207,17 @@ export const ProfileModal: React.FC = () => {
             }`}
           >
             Edit Profile
+          </button>
+          <button
+            onClick={() => setActiveProfileTab('settings')}
+            className={`px-3.5 py-1.5 rounded-full font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
+              activeProfileTab === 'settings'
+                ? 'bg-chonky-red text-white shadow-xs'
+                : 'text-chonky-muted dark:text-gray-400 hover:text-chonky-text dark:hover:text-white'
+            }`}
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span>Settings</span>
           </button>
         </div>
 
@@ -759,6 +786,161 @@ export const ProfileModal: React.FC = () => {
                 </button>
               </div>
             </form>
+          )}
+
+          {/* TAB 6: SETTINGS, APPEARANCE & LOGOUT */}
+          {activeProfileTab === 'settings' && (
+            <div className="space-y-6">
+              
+              {/* Section 1: Appearance & Theme */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black uppercase tracking-wider text-chonky-muted dark:text-gray-400">
+                  Appearance & Display
+                </h4>
+                
+                <div className="p-4 rounded-2xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-chonky-text dark:text-white">Color Theme</p>
+                      <p className="text-xs text-chonky-muted dark:text-gray-400">
+                        Currently: <strong className="capitalize text-chonky-red dark:text-chonky-peach">{theme} Mode</strong>
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 p-1 rounded-2xl bg-chonky-subtle dark:bg-white/10 border border-chonky-border dark:border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => theme !== 'light' && toggleTheme()}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                          theme === 'light'
+                            ? 'bg-white text-chonky-red shadow-xs'
+                            : 'text-chonky-muted dark:text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        <Sun className="w-3.5 h-3.5" />
+                        <span>Light</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => theme !== 'dark' && toggleTheme()}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                          theme === 'dark'
+                            ? 'bg-[#1E1111] text-amber-300 shadow-xs'
+                            : 'text-chonky-muted dark:text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        <Moon className="w-3.5 h-3.5" />
+                        <span>Dark</span>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <p className="text-[11px] text-chonky-muted dark:text-gray-400 leading-relaxed border-t border-chonky-border/40 dark:border-white/5 pt-2">
+                    Dark mode features deep obsidian backgrounds with warm crimson ambient glow backlights.
+                  </p>
+                </div>
+              </div>
+
+              {/* Section 2: Notifications & SMS */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black uppercase tracking-wider text-chonky-muted dark:text-gray-400">
+                  Notification Preferences
+                </h4>
+
+                <div className="p-4 rounded-2xl bg-white dark:bg-[#120808] border border-chonky-border/70 dark:border-white/10 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-chonky-peach/40 dark:bg-white/10 text-chonky-red dark:text-chonky-peach flex items-center justify-center">
+                        <Smartphone className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm font-bold text-chonky-text dark:text-white">Order SMS Updates</p>
+                        <p className="text-[11px] text-chonky-muted dark:text-gray-400">Rider tracking & arrival messages</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setOrderSmsUpdates(!orderSmsUpdates)}
+                      className={`w-11 h-6 rounded-full transition-colors p-0.5 flex items-center ${
+                        orderSmsUpdates ? 'bg-chonky-red justify-end' : 'bg-gray-300 dark:bg-white/20 justify-start'
+                      }`}
+                    >
+                      <div className="w-5 h-5 rounded-full bg-white shadow-xs" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-chonky-border/40 dark:border-white/5 pt-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-chonky-peach/40 dark:bg-white/10 text-chonky-red dark:text-chonky-peach flex items-center justify-center">
+                        <Bell className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm font-bold text-chonky-text dark:text-white">VIP Promo & Secret Drops</p>
+                        <p className="text-[11px] text-chonky-muted dark:text-gray-400">Weekend specials & double loyalty points</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPromoAlerts(!promoAlerts)}
+                      className={`w-11 h-6 rounded-full transition-colors p-0.5 flex items-center ${
+                        promoAlerts ? 'bg-chonky-red justify-end' : 'bg-gray-300 dark:bg-white/20 justify-start'
+                      }`}
+                    >
+                      <div className="w-5 h-5 rounded-full bg-white shadow-xs" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: App & Business Info */}
+              <div className="p-4 rounded-2xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border/70 dark:border-white/10 text-xs space-y-2">
+                <div className="flex items-center gap-2 font-bold text-chonky-text dark:text-white">
+                  <Info className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
+                  <span>About Chonky Maldives</span>
+                </div>
+                <p className="text-chonky-muted dark:text-gray-400 leading-relaxed">
+                  Version 2.4.0 (Fresh Sourdough Release) · Kitchen: Roashanee Magu, Henveiru, Malé. Daily 12:00 PM – 1:00 AM.
+                </p>
+              </div>
+
+              {/* Section 4: Log Out Danger Zone */}
+              <div className="pt-2">
+                {isConfirmingLogout ? (
+                  <div className="p-4 rounded-2xl border border-rose-300 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 space-y-3">
+                    <p className="text-xs font-bold text-rose-900 dark:text-rose-200">
+                      Are you sure you want to log out of your Chonky profile?
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={logout}
+                        className="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition"
+                      >
+                        Yes, Log Out
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsConfirmingLogout(false)}
+                        className="flex-1 py-2 rounded-xl bg-white dark:bg-white/10 text-chonky-text dark:text-white font-bold text-xs border border-chonky-border dark:border-white/10"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsConfirmingLogout(true)}
+                    className="w-full py-3.5 px-4 rounded-2xl border border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Log Out of Account</span>
+                  </button>
+                )}
+              </div>
+
+            </div>
           )}
 
         </div>
