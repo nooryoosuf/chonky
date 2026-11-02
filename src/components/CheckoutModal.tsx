@@ -4,6 +4,7 @@ import { useProfile } from '../context/ProfileContext';
 import { PaymentMethod } from '../types';
 import { BMLTransferModal } from './BMLTransferModal';
 import { CardBrandRow } from './CardBrandLogos';
+import { OrderTrackingModal } from './OrderTrackingModal';
 import { 
   X, 
   Bike, 
@@ -17,9 +18,6 @@ import {
   ArrowRightLeft,
   Building,
   UploadCloud,
-  CheckCircle2, 
-  AlertCircle, 
-  Copy, 
   Check, 
   ArrowLeft,
   ArrowRight 
@@ -41,6 +39,7 @@ export const CheckoutModal: React.FC = () => {
     placeOrder,
     completedOrder,
     resetCompletedOrder,
+    updateOrderStatus,
     paymentMethod: cartPaymentMethod,
     setPaymentMethod: setCartPaymentMethod,
     transferSlip
@@ -49,24 +48,6 @@ export const CheckoutModal: React.FC = () => {
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
 
   const { profile, recordNewOrder } = useProfile();
-
-  // Helper for human-readable payment method
-  const getPaymentLabel = (method: PaymentMethod) => {
-    switch (method) {
-      case 'bml_pay':
-        return 'BML Pay';
-      case 'card':
-      case 'card_pos':
-        return 'Card on Delivery';
-      case 'cash':
-        return 'Cash on Delivery';
-      case 'transfer':
-      case 'bml_transfer':
-        return 'BML Account Transfer';
-      default:
-        return 'BML Pay';
-    }
-  };
 
   // Form states initialized with profile defaults
   const [customerName, setCustomerName] = useState(profile.name);
@@ -94,7 +75,6 @@ export const CheckoutModal: React.FC = () => {
   // Validation and Submission
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
 
   if (!isCheckoutOpen && !completedOrder) return null;
 
@@ -141,143 +121,24 @@ export const CheckoutModal: React.FC = () => {
     }, 900);
   };
 
-  const handleCopySummary = () => {
-    if (!completedOrder) return;
-    const text = `🍽️ CHONKY ORDER #${completedOrder.orderId}
-👤 ${completedOrder.customerName} (${completedOrder.customerPhone})
-📍 Type: ${completedOrder.orderType.toUpperCase()} - ${completedOrder.area}
-${completedOrder.address ? `🏠 Address: ${completedOrder.address}\n` : ''}
-Items:
-${completedOrder.items.map(i => `• ${i.quantity}x ${i.productName} (MVR ${i.totalPrice})`).join('\n')}
-Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMethod)})`;
-
-    navigator.clipboard.writeText(text);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
-
-  // 1. ORDER CONFIRMATION VIEW
+  // 1. ORDER CONFIRMATION & LIVE TRACKING VIEW
   if (completedOrder) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-5 font-sans overflow-hidden">
-        <div 
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
-          onClick={() => {
-            resetCompletedOrder();
-            closeCheckout();
-          }}
-        />
-
-        <div className="relative w-full max-w-lg bg-white dark:bg-[#080404] text-chonky-text dark:text-[#F7F3EE] rounded-3xl shadow-modal dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden animate-in zoom-in-95 duration-200 max-h-[82vh] sm:max-h-[85vh] flex flex-col border border-chonky-border/70 dark:border-white/10">
-          {/* Header */}
-          <div className="p-5 sm:p-6 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 text-center border-b border-emerald-100 dark:border-emerald-900/40 relative shrink-0">
-            <div className="w-13 h-13 sm:w-14 sm:h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-2.5 shadow-md">
-              <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2.5]" />
-            </div>
-            <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-100">
-              Order Received
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black mt-2">Order Confirmed!</h2>
-            <p className="text-xs text-emerald-800 dark:text-emerald-300 mt-1">
-              Order Reference: <strong className="font-mono text-emerald-950 dark:text-emerald-100">{completedOrder.orderId}</strong>
-            </p>
-          </div>
-
-          {/* Details */}
-          <div className="p-5 sm:p-6 flex-1 min-h-0 overflow-y-auto space-y-5 text-sm overscroll-contain">
-            <div className="p-3.5 rounded-2xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border/70 dark:border-white/10 text-xs flex items-center justify-between">
-              <div>
-                <p className="text-chonky-muted dark:text-gray-400">Estimated Prep & Delivery</p>
-                <p className="font-bold text-chonky-text dark:text-white text-sm">
-                  {completedOrder.orderType === 'delivery' ? '25–35 minutes' : '15–20 minutes'}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-chonky-muted dark:text-gray-400">Status</p>
-                <p className="font-bold text-amber-600 dark:text-amber-400">Kitchen Preparing 🔥</p>
-              </div>
-            </div>
-
-            {/* Order Items summary */}
-            <div>
-              <h4 className="font-bold text-chonky-text dark:text-white mb-2 text-xs uppercase tracking-wider text-chonky-muted dark:text-gray-400">
-                Order Items ({completedOrder.items.length})
-              </h4>
-              <div className="space-y-2 border border-chonky-border dark:border-white/10 rounded-2xl p-3 bg-white dark:bg-[#0D0707]">
-                {completedOrder.items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center text-xs py-1 border-b border-chonky-border/40 dark:border-white/10 last:border-b-0">
-                    <span className="font-medium text-chonky-text dark:text-gray-200">
-                      <strong className="text-chonky-red dark:text-chonky-peach font-bold">{item.quantity}x</strong> {item.productName}
-                    </span>
-                    <span className="font-bold text-chonky-text dark:text-white">MVR {item.totalPrice}</span>
-                  </div>
-                ))}
-                <div className="pt-2 flex justify-between font-black text-sm text-chonky-text dark:text-white border-t border-dashed border-chonky-border dark:border-white/10">
-                  <span>Grand Total</span>
-                  <span className="text-chonky-red dark:text-[#ff4d4d]">MVR {completedOrder.total}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Customer Details */}
-            <div className="space-y-1 text-xs text-chonky-muted dark:text-gray-300 bg-chonky-peach-light/40 dark:bg-white/5 p-3.5 rounded-2xl border border-chonky-peach-dark/30 dark:border-white/10">
-              <p><strong className="text-chonky-text dark:text-white">Customer:</strong> {completedOrder.customerName} ({completedOrder.customerPhone})</p>
-              <p><strong className="text-chonky-text dark:text-white">Zone:</strong> {completedOrder.area}</p>
-              {completedOrder.address && (
-                <p><strong className="text-chonky-text dark:text-white">Address:</strong> {completedOrder.address}</p>
-              )}
-              {completedOrder.deliveryNotes && (
-                <p><strong className="text-chonky-text dark:text-white">Notes:</strong> {completedOrder.deliveryNotes}</p>
-              )}
-              <p><strong className="text-chonky-text dark:text-white">Payment:</strong> {getPaymentLabel(completedOrder.paymentMethod)}</p>
-              {completedOrder.transferSlip && (
-                <div className="pt-2 mt-1 border-t border-chonky-border/40 dark:border-white/10 flex items-center justify-between">
-                  <span className="font-bold text-chonky-text dark:text-white">Transfer Slip:</span>
-                  {completedOrder.transferSlip.startsWith('data:image') ? (
-                    <img 
-                      src={completedOrder.transferSlip} 
-                      alt="Attached Transfer Slip" 
-                      className="w-12 h-12 object-cover rounded-lg border border-emerald-500/50 shadow-xs" 
-                    />
-                  ) : (
-                    <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-md">
-                      Slip Attached ✓
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Clear Demo Notice */}
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200/80 dark:border-amber-800/40 text-[11px] text-amber-900 dark:text-amber-200 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
-              <span>
-                <strong>Customer Preview Mode:</strong> This frontend order flow demonstrates real validation, fee calculations, and persistent cart management. A live kitchen POS or SMS gateway integration would attach to this confirmation trigger.
-              </span>
-            </div>
-          </div>
-
-          {/* Footer Actions */}
-          <div className="shrink-0 p-4 sm:p-5 border-t border-chonky-border dark:border-white/10 bg-white/95 dark:bg-[#0A0505]/95 backdrop-blur-xl flex items-center gap-3">
-            <button
-              onClick={handleCopySummary}
-              className="flex-1 h-[48px] sm:h-[52px] px-4 rounded-full border border-chonky-border dark:border-white/10 hover:bg-chonky-subtle dark:hover:bg-white/5 text-chonky-text dark:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition active:scale-95"
-            >
-              {isCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-              <span>{isCopied ? 'Summary Copied!' : 'Copy Summary'}</span>
-            </button>
-            <button
-              onClick={() => {
-                resetCompletedOrder();
-                closeCheckout();
-              }}
-              className="flex-1 h-[48px] sm:h-[52px] px-4 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-bold text-xs sm:text-sm text-center transition shadow-glow-red active:scale-95"
-            >
-              Order More Food
-            </button>
-          </div>
-        </div>
-      </div>
+      <OrderTrackingModal
+        order={completedOrder}
+        isOpen={true}
+        onClose={() => {
+          resetCompletedOrder();
+          closeCheckout();
+        }}
+        onUpdateStatus={(id, status) => {
+          updateOrderStatus(id, status);
+        }}
+        onOrderMore={() => {
+          resetCompletedOrder();
+          closeCheckout();
+        }}
+      />
     );
   }
 

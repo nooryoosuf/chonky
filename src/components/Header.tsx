@@ -27,7 +27,10 @@ export const Header: React.FC<HeaderProps> = ({
   const { 
     selectedLocation, 
     openLocationSelector,
-    orderType 
+    orderType,
+    activeOrder,
+    completedOrder,
+    openTracking 
   } = useCart();
 
   const { theme } = useTheme();
@@ -202,6 +205,20 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <MapPin className="w-4 h-4 text-chonky-red dark:text-chonky-peach" />
               </button>
+
+              {/* Active Order Tracker Pill */}
+              {(completedOrder || activeOrder) && (
+                <button
+                  onClick={() => openTracking(completedOrder || activeOrder || undefined)}
+                  className="px-2.5 sm:px-3 py-1.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-800 dark:text-emerald-300 font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-2xs"
+                  title="Track Live Order"
+                  aria-label="Track Live Order"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="hidden sm:inline">Track</span>
+                  <span className="font-mono text-[11px]">{(completedOrder || activeOrder)?.orderId}</span>
+                </button>
+              )}
 
               {/* Profile Account Icon Button */}
               <button

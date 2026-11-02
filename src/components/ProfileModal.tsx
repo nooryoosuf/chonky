@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProfile } from '../context/ProfileContext';
+import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { 
   X, 
@@ -24,10 +25,12 @@ import {
   LogOut,
   Bell,
   Smartphone,
-  Info
+  Info,
+  Bike
 } from 'lucide-react';
 
 export const ProfileModal: React.FC = () => {
+  const { openTracking } = useCart();
   const { 
     profile, 
     orders, 
@@ -425,10 +428,17 @@ export const ProfileModal: React.FC = () => {
                     </div>
 
                     <div className="pt-2 flex items-center justify-between text-xs text-chonky-muted dark:text-gray-400 border-t border-dashed border-chonky-border/40 dark:border-white/10">
-                      <span>Delivered to {ord.area}</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                        +{Math.floor(ord.total / 10) + 20} PTS Earned
-                      </span>
+                      <span>{ord.area}</span>
+                      <button
+                        onClick={() => {
+                          closeProfile();
+                          openTracking(ord);
+                        }}
+                        className="px-2.5 py-1 rounded-full bg-chonky-red/10 hover:bg-chonky-red text-chonky-red hover:text-white transition font-black text-[11px] flex items-center gap-1 active:scale-95 shadow-xs"
+                      >
+                        <Bike className="w-3.5 h-3.5" />
+                        <span>Track Order</span>
+                      </button>
                     </div>
                   </div>
                 ))

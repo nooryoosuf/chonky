@@ -18,6 +18,7 @@ interface ProfileContextType {
   removePaymentCard: (id: string) => void;
   setDefaultPaymentCard: (id: string) => void;
   recordNewOrder: (order: OrderDetails) => void;
+  updateOrderStatus: (orderId: string, status: OrderDetails['status']) => void;
   logout: () => void;
 }
 
@@ -307,6 +308,10 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   };
 
+  const updateOrderStatus = (orderId: string, status: OrderDetails['status']) => {
+    setOrders(prev => prev.map(o => o.orderId === orderId ? { ...o, status } : o));
+  };
+
   return (
     <ProfileContext.Provider
       value={{
@@ -325,6 +330,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
         removePaymentCard,
         setDefaultPaymentCard,
         recordNewOrder,
+        updateOrderStatus,
         logout
       }}
     >

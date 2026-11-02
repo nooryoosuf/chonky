@@ -27,6 +27,13 @@ interface CartContextType {
   customizingProduct: Product | null;
   editingCartItem: CartItem | null;
   completedOrder: OrderDetails | null;
+  activeOrder: OrderDetails | null;
+  setActiveOrder: (order: OrderDetails | null) => void;
+  isTrackingOpen: boolean;
+  trackingOrder: OrderDetails | null;
+  openTracking: (order?: OrderDetails) => void;
+  closeTracking: () => void;
+  updateOrderStatus: (orderId: string, status: OrderDetails['status']) => void;
   orderType: OrderType;
   setOrderType: (type: OrderType) => void;
   paymentMethod: PaymentMethod;
@@ -69,6 +76,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'chonky_cart_v1';
 const LOCATION_STORAGE_KEY = 'chonky_location_v1';
+const ACTIVE_ORDER_STORAGE_KEY = 'chonky_active_order_v1';
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
@@ -103,6 +111,47 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [customizingProduct, setCustomizingProduct] = useState<Product | null>(null);
   const [editingCartItem, setEditingCartItem] = useState<CartItem | null>(null);
   const [completedOrder, setCompletedOrder] = useState<OrderDetails | null>(null);
+  const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(() => {
+    try {
+      const saved = localStorage.getItem(ACTIVE_ORDER_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isTrackingOpen, setIsTrackingOpen] = useState(false);
+  const [trackingOrder, setTrackingOrder] = useState<OrderDetails | null>(null);
+
+  // Sync active order to localStorage
+  useEffect(() => {
+    try {
+      if (activeOrder) {
+        localStorage.setItem(ACTIVE_ORDER_STORAGE_KEY, JSON.stringify(activeOrder));
+      } else {
+        localStorage.removeItem(ACTIVE_ORDER_STORAGE_KEY);
+      }
+    } catch (e) {
+      console.error('Failed to save active order', e);
+    }
+  }, [activeOrder]);
+
+  const openTracking = (orderToTrack?: OrderDetails) => {
+    const target = orderToTrack || completedOrder || activeOrder;
+    if (target) {
+      setTrackingOrder(target);
+      setIsTrackingOpen(true);
+    }
+  };
+
+  const closeTracking = () => {
+    setIsTrackingOpen(false);
+  };
+
+  const updateOrderStatus = (orderId: string, newStatus: OrderDetails['status']) => {
+    setActiveOrder(prev => (prev && prev.orderId === orderId ? { ...prev, status: newStatus } : prev));
+    setCompletedOrder(prev => (prev && prev.orderId === orderId ? { ...prev, status: newStatus } : prev));
+    setTrackingOrder(prev => (prev && prev.orderId === orderId ? { ...prev, status: newStatus } : prev));
+  };
 
   // Save to local storage on changes
   useEffect(() => {
@@ -317,6 +366,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     setCompletedOrder(newOrder);
+    setActiveOrder(newOrder);
+    setTrackingOrder(newOrder);
     clearCart();
     return newOrder;
   };
@@ -343,6 +394,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         customizingProduct,
         editingCartItem,
         completedOrder,
+        activeOrder,
+        setActiveOrder,
+        isTrackingOpen,
+        trackingOrder,
+        openTracking,
+        closeTracking,
+        updateOrderStatus,
         orderType,
         setOrderType,
         paymentMethod,

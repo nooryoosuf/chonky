@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CartProvider } from './context/CartContext';
+import { CartProvider, useCart } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ProfileProvider, useProfile } from './context/ProfileContext';
 import { Header } from './components/Header';
@@ -11,10 +11,12 @@ import { Footer } from './components/Footer';
 import { ProductDetailSheet } from './components/ProductDetailSheet';
 import { CartDrawer } from './components/CartDrawer';
 import { CartBar } from './components/CartBar';
+import { ActiveOrderPill } from './components/ActiveOrderPill';
 import { MobileNavBar } from './components/MobileNavBar';
 import { ProfilePage } from './components/ProfilePage';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
+import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { PRODUCTS } from './data/menuData';
 import { CategoryId } from './types';
 
@@ -23,6 +25,7 @@ export function AppContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('menu');
   const { isProfileOpen, closeProfile } = useProfile();
+  const { isTrackingOpen, trackingOrder, closeTracking, updateOrderStatus } = useCart();
 
   const handleCategorySelect = (categoryId: CategoryId) => {
     setSelectedCategory(categoryId);
@@ -107,9 +110,17 @@ export function AppContent() {
         <ProductDetailSheet />
         <CartDrawer />
         <CartBar />
+        <ActiveOrderPill />
         <MobileNavBar />
         <CheckoutModal />
         <LocationSelectorModal />
+        <OrderTrackingModal
+          order={trackingOrder}
+          isOpen={isTrackingOpen}
+          onClose={closeTracking}
+          onUpdateStatus={updateOrderStatus}
+          onOrderMore={closeTracking}
+        />
       </div>
     </div>
   );

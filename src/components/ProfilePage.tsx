@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useProfile } from '../context/ProfileContext';
+import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { CATEGORIES } from '../data/menuData';
 import { CategoryId } from '../types';
@@ -17,20 +18,21 @@ import {
   Plus, 
   Trash2, 
   Check, 
-  ShieldCheck,
-  ReceiptText,
-  Settings,
-  Sun,
-  Moon,
-  LogOut,
-  Bell,
-  Smartphone,
-  Utensils,
-  Sandwich,
-  Pizza,
-  Cookie,
-  CupSoda,
-  Tag
+  ShieldCheck, 
+  ReceiptText, 
+  Settings, 
+  Sun, 
+  Moon, 
+  LogOut, 
+  Bell, 
+  Smartphone, 
+  Utensils, 
+  Sandwich, 
+  Pizza, 
+  Cookie, 
+  CupSoda, 
+  Tag, 
+  Bike 
 } from 'lucide-react';
 
 interface ProfilePageProps {
@@ -39,6 +41,7 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToHome, onSelectCategory }) => {
+  const { openTracking } = useCart();
   const { 
     profile, 
     orders, 
@@ -472,10 +475,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToHome, onSelect
                   </div>
 
                   <div className="pt-3 flex items-center justify-between text-xs text-chonky-muted dark:text-gray-400 border-t border-dashed border-chonky-border/40 dark:border-white/10">
-                    <span>Delivered to {ord.area}</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                      +{Math.floor(ord.total / 10) + 20} PTS Earned
-                    </span>
+                    <span>{ord.area}</span>
+                    <button
+                      onClick={() => openTracking(ord)}
+                      className="px-3 py-1.5 rounded-full bg-chonky-red/10 hover:bg-chonky-red text-chonky-red hover:text-white transition font-black text-xs flex items-center gap-1.5 active:scale-95 shadow-xs"
+                    >
+                      <Bike className="w-3.5 h-3.5" />
+                      <span>Track Order</span>
+                    </button>
                   </div>
                 </div>
               ))
