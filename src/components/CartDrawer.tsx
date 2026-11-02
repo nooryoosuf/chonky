@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { PaymentPickerModal, getPaymentMethodInfo } from './PaymentPickerModal';
 import { 
   X, 
   Trash2, 
@@ -9,7 +10,8 @@ import {
   ArrowRight, 
   Bike, 
   Sparkles,
-  Edit2
+  Edit2,
+  ChevronDown
 } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
@@ -28,8 +30,13 @@ export const CartDrawer: React.FC = () => {
     freeDeliveryThreshold,
     freeDeliveryRemaining,
     openEditCustomizer,
-    orderType
+    orderType,
+    paymentMethod
   } = useCart();
+
+  const [isPaymentPickerOpen, setIsPaymentPickerOpen] = useState(false);
+  const paymentInfo = getPaymentMethodInfo(paymentMethod);
+  const PaymentIcon = paymentInfo.icon;
 
   if (!isCartOpen) return null;
 
@@ -258,21 +265,50 @@ export const CartDrawer: React.FC = () => {
               </div>
             </div>
 
-            {/* Checkout Action Button with Equal Heights and Spacing */}
-            <button
-              onClick={openCheckout}
-              className="w-full h-[54px] sm:h-[56px] px-6 rounded-full bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
-            >
-              <span>Proceed to Checkout</span>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-base sm:text-lg">MVR {total}</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </div>
-            </button>
+            {/* Action Row: Payment Selector Button (Left) + Checkout Button (Right) */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Payment Method Selector on Left side of Checkout button */}
+              <button
+                type="button"
+                onClick={() => setIsPaymentPickerOpen(true)}
+                className="h-[52px] sm:h-[56px] px-3 sm:px-4 rounded-2xl bg-chonky-subtle dark:bg-white/10 hover:bg-chonky-peach-light/70 dark:hover:bg-white/15 border border-chonky-border/80 dark:border-white/15 text-chonky-text dark:text-white flex items-center gap-2 transition active:scale-95 shrink-0 shadow-xs group"
+                title="Select Payment Method"
+                aria-label={`Current payment method: ${paymentInfo.name}. Click to change.`}
+              >
+                <div className="w-8 h-8 rounded-full bg-chonky-red text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <PaymentIcon className="w-4 h-4" />
+                </div>
+                <div className="text-left hidden xs:block">
+                  <p className="text-[9px] uppercase font-bold text-chonky-muted dark:text-gray-400 leading-none">Pay With</p>
+                  <p className="text-xs sm:text-sm font-black text-chonky-text dark:text-white leading-tight mt-0.5 whitespace-nowrap">
+                    {paymentInfo.name}
+                  </p>
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-chonky-muted group-hover:text-chonky-text transition-transform" />
+              </button>
+
+              {/* Checkout Action Button */}
+              <button
+                onClick={openCheckout}
+                className="flex-1 h-[52px] sm:h-[56px] px-4 sm:px-6 rounded-2xl bg-chonky-red hover:bg-chonky-red-light text-white font-black text-sm sm:text-base flex items-center justify-between transition-all transform active:scale-98 shadow-glow-red"
+              >
+                <span>Checkout</span>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="font-black text-base sm:text-lg">MVR {total}</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </div>
+              </button>
+            </div>
           </div>
         )}
 
       </div>
+
+      {/* Payment Method Selector Modal */}
+      <PaymentPickerModal 
+        isOpen={isPaymentPickerOpen} 
+        onClose={() => setIsPaymentPickerOpen(false)} 
+      />
     </div>
   );
 };

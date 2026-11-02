@@ -12,6 +12,7 @@ import {
   CreditCard, 
   Banknote, 
   QrCode, 
+  ArrowRightLeft,
   CheckCircle2, 
   AlertCircle, 
   Copy, 
@@ -35,10 +36,30 @@ export const CheckoutModal: React.FC = () => {
     total,
     placeOrder,
     completedOrder,
-    resetCompletedOrder
+    resetCompletedOrder,
+    paymentMethod: cartPaymentMethod,
+    setPaymentMethod: setCartPaymentMethod
   } = useCart();
 
   const { profile, recordNewOrder } = useProfile();
+
+  // Helper for human-readable payment method
+  const getPaymentLabel = (method: PaymentMethod) => {
+    switch (method) {
+      case 'bml_pay':
+        return 'BML Pay';
+      case 'card':
+      case 'card_pos':
+        return 'Card on Delivery';
+      case 'cash':
+        return 'Cash on Delivery';
+      case 'transfer':
+      case 'bml_transfer':
+        return 'BML Account Transfer';
+      default:
+        return 'BML Pay';
+    }
+  };
 
   // Form states initialized with profile defaults
   const [customerName, setCustomerName] = useState(profile.name);
@@ -46,9 +67,9 @@ export const CheckoutModal: React.FC = () => {
   const defaultAddr = profile.addresses.find(a => a.isDefault) || profile.addresses[0];
   const [address, setAddress] = useState(defaultAddr?.address || '');
   const [deliveryNotes, setDeliveryNotes] = useState(defaultAddr?.notes || '');
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bml_transfer');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(cartPaymentMethod || 'bml_pay');
 
-  // Sync profile when opened
+  // Sync profile & payment method when opened
   useEffect(() => {
     if (isCheckoutOpen) {
       if (!customerName) setCustomerName(profile.name);
@@ -57,8 +78,11 @@ export const CheckoutModal: React.FC = () => {
         setAddress(defaultAddr.address);
         if (defaultAddr.notes) setDeliveryNotes(defaultAddr.notes);
       }
+      if (cartPaymentMethod) {
+        setPaymentMethod(cartPaymentMethod);
+      }
     }
-  }, [isCheckoutOpen, profile]);
+  }, [isCheckoutOpen, profile, cartPaymentMethod]);
 
   // Validation and Submission
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -118,7 +142,7 @@ export const CheckoutModal: React.FC = () => {
 ${completedOrder.address ? `🏠 Address: ${completedOrder.address}\n` : ''}
 Items:
 ${completedOrder.items.map(i => `• ${i.quantity}x ${i.productName} (MVR ${i.totalPrice})`).join('\n')}
-Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', ' ').toUpperCase()})`;
+Total: MVR ${completedOrder.total} (${getPaymentLabel(completedOrder.paymentMethod)})`;
 
     navigator.clipboard.writeText(text);
     setIsCopied(true);
@@ -198,7 +222,7 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
               {completedOrder.deliveryNotes && (
                 <p><strong className="text-chonky-text dark:text-white">Notes:</strong> {completedOrder.deliveryNotes}</p>
               )}
-              <p><strong className="text-chonky-text dark:text-white">Payment:</strong> {completedOrder.paymentMethod.replace('_', ' ').toUpperCase()}</p>
+              <p><strong className="text-chonky-text dark:text-white">Payment:</strong> {getPaymentLabel(completedOrder.paymentMethod)}</p>
             </div>
 
             {/* Clear Demo Notice */}
@@ -427,54 +451,126 @@ Total: MVR ${completedOrder.total} (${completedOrder.paymentMethod.replace('_', 
           )}
 
           {/* Payment Method Selector */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-chonky-muted dark:text-gray-400">
               Payment Method
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {/* 1. BML Pay */}
               <button
                 type="button"
-                onClick={() => setPaymentMethod('cash')}
-                className={`p-3 rounded-xl border text-left flex flex-col justify-between transition ${
-                  paymentMethod === 'cash'
-                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
+                onClick={() => {
+                  setPaymentMethod('bml_pay');
+                  setCartPaymentMethod('bml_pay');
+                }}
+                className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition ${
+                  paymentMethod === 'bml_pay' || paymentMethod === 'bml_transfer'
+                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-2 ring-chonky-red shadow-sm'
                     : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:bg-chonky-subtle dark:hover:bg-white/10'
                 }`}
               >
-                <Banknote className="w-5 h-5 text-chonky-red dark:text-chonky-peach mb-1.5" />
-                <span className="font-bold text-xs text-chonky-text dark:text-white">Cash on Delivery</span>
-                <span className="text-[10px] text-chonky-muted dark:text-gray-400">Pay driver directly</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <QrCode className="w-5 h-5 text-chonky-red dark:text-chonky-peach" />
+                  <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-red-500 text-white">Fast</span>
+                </div>
+                <div>
+                  <span className="font-extrabold text-xs text-chonky-text dark:text-white block">BML Pay</span>
+                  <span className="text-[10px] text-chonky-muted dark:text-gray-400 leading-tight block">App QR Pay</span>
+                </div>
               </button>
 
+              {/* 2. Card */}
               <button
                 type="button"
-                onClick={() => setPaymentMethod('bml_transfer')}
-                className={`p-3 rounded-xl border text-left flex flex-col justify-between transition ${
-                  paymentMethod === 'bml_transfer'
-                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
-                    : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:bg-chonky-subtle dark:hover:bg-white/10'
-                }`}
-              >
-                <QrCode className="w-5 h-5 text-chonky-red dark:text-chonky-peach mb-1.5" />
-                <span className="font-bold text-xs text-chonky-text dark:text-white">BML Transfer / QR</span>
-                <span className="text-[10px] text-chonky-muted dark:text-gray-400">Bank of Maldives App</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('card_pos')}
-                className={`p-3 rounded-xl border text-left flex flex-col justify-between transition ${
-                  paymentMethod === 'card_pos'
-                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-1 ring-chonky-red'
+                onClick={() => {
+                  setPaymentMethod('card');
+                  setCartPaymentMethod('card');
+                }}
+                className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition ${
+                  paymentMethod === 'card' || paymentMethod === 'card_pos'
+                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-2 ring-chonky-red shadow-sm'
                     : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:bg-chonky-subtle dark:hover:bg-white/10'
                 }`}
               >
                 <CreditCard className="w-5 h-5 text-chonky-red dark:text-chonky-peach mb-1.5" />
-                <span className="font-bold text-xs text-chonky-text dark:text-white">Card on Delivery</span>
-                <span className="text-[10px] text-chonky-muted dark:text-gray-400">Rider brings POS terminal</span>
+                <div>
+                  <span className="font-extrabold text-xs text-chonky-text dark:text-white block">Card</span>
+                  <span className="text-[10px] text-chonky-muted dark:text-gray-400 leading-tight block">POS on Delivery</span>
+                </div>
+              </button>
+
+              {/* 3. Cash on Delivery */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentMethod('cash');
+                  setCartPaymentMethod('cash');
+                }}
+                className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition ${
+                  paymentMethod === 'cash'
+                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-2 ring-chonky-red shadow-sm'
+                    : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:bg-chonky-subtle dark:hover:bg-white/10'
+                }`}
+              >
+                <Banknote className="w-5 h-5 text-chonky-red dark:text-chonky-peach mb-1.5" />
+                <div>
+                  <span className="font-extrabold text-xs text-chonky-text dark:text-white block">Cash on Delivery</span>
+                  <span className="text-[10px] text-chonky-muted dark:text-gray-400 leading-tight block">Pay driver directly</span>
+                </div>
+              </button>
+
+              {/* 4. Transfer */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentMethod('transfer');
+                  setCartPaymentMethod('transfer');
+                }}
+                className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition ${
+                  paymentMethod === 'transfer'
+                    ? 'border-chonky-red bg-chonky-red/5 dark:bg-chonky-red/20 ring-2 ring-chonky-red shadow-sm'
+                    : 'border-chonky-border dark:border-white/10 bg-white dark:bg-white/5 hover:bg-chonky-subtle dark:hover:bg-white/10'
+                }`}
+              >
+                <ArrowRightLeft className="w-5 h-5 text-chonky-red dark:text-chonky-peach mb-1.5" />
+                <div>
+                  <span className="font-extrabold text-xs text-chonky-text dark:text-white block">Transfer</span>
+                  <span className="text-[10px] text-chonky-muted dark:text-gray-400 leading-tight block">Bank of Maldives</span>
+                </div>
               </button>
             </div>
+
+            {/* Contextual instruction for Transfer */}
+            {paymentMethod === 'transfer' && (
+              <div className="p-3.5 rounded-2xl bg-chonky-subtle dark:bg-white/5 border border-chonky-border dark:border-white/10 text-xs space-y-1 animate-in fade-in">
+                <div className="flex items-center justify-between font-bold text-chonky-text dark:text-white">
+                  <span>BML Account Details</span>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 px-2 py-0.5 rounded-full font-bold">MVR</span>
+                </div>
+                <p className="text-chonky-muted dark:text-gray-300">Name: <strong className="text-chonky-text dark:text-white">Chonky Burgers MV</strong></p>
+                <p className="text-chonky-muted dark:text-gray-300">Account: <strong className="text-chonky-text dark:text-white font-mono text-sm">7730000123456</strong></p>
+                <p className="text-[11px] text-chonky-red dark:text-chonky-peach font-medium pt-0.5">Please add your phone number in transfer remarks.</p>
+              </div>
+            )}
+
+            {/* Contextual instruction for BML Pay */}
+            {(paymentMethod === 'bml_pay' || paymentMethod === 'bml_transfer') && (
+              <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs flex items-center justify-between animate-in fade-in">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center font-black text-[10px] shadow-xs shrink-0">
+                    BML
+                  </div>
+                  <div>
+                    <p className="font-bold text-chonky-text dark:text-white">Instant BML Mobile Pay</p>
+                    <p className="text-[11px] text-chonky-muted dark:text-gray-400">Scan QR or tap to open Bank of Maldives App</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full shrink-0">
+                  Instant
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Order Summary Box */}

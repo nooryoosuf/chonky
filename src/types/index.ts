@@ -70,7 +70,7 @@ export interface CartItem {
 
 export type OrderType = 'delivery' | 'pickup';
 
-export type PaymentMethod = 'cash' | 'bml_transfer' | 'card_pos';
+export type PaymentMethod = 'bml_pay' | 'card' | 'cash' | 'transfer' | 'bml_transfer' | 'card_pos';
 
 export interface DeliveryLocation {
   id: string;

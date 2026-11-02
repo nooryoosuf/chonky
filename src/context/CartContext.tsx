@@ -29,6 +29,8 @@ interface CartContextType {
   completedOrder: OrderDetails | null;
   orderType: OrderType;
   setOrderType: (type: OrderType) => void;
+  paymentMethod: PaymentMethod;
+  setPaymentMethod: (pm: PaymentMethod) => void;
   setSelectedLocation: (location: DeliveryLocation) => void;
   openCart: () => void;
   closeCart: () => void;
@@ -91,6 +93,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const [orderType, setOrderType] = useState<OrderType>('delivery');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bml_pay');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLocationSelectorOpen, setIsLocationSelectorOpen] = useState(false);
@@ -338,6 +341,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         completedOrder,
         orderType,
         setOrderType,
+        paymentMethod,
+        setPaymentMethod,
         setSelectedLocation,
         openCart,
         closeCart,
