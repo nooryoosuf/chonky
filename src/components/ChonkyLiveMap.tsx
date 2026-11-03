@@ -50,7 +50,7 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
   isFullPage = false,
   onToggleFullPage,
   onRouteCalculated,
-  className = ''
+  className = 'w-full h-full'
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<maplibregl.Map | null>(null);
@@ -260,7 +260,19 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
       fitMapBounds(CHONKY_KITCHEN_COORDS, destinationCoords.current);
     });
 
+    // ResizeObserver ensures WebGL canvas always stretches to 100% of parent container
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        mapInstanceRef.current?.resize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
+
     return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -277,7 +289,9 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
       bounds.extend(coordB);
 
       map.fitBounds(bounds, {
-        padding: isFullPage ? { top: 90, bottom: 220, left: 60, right: 60 } : { top: 40, bottom: 40, left: 40, right: 40 },
+        padding: isFullPage 
+          ? { top: 90, bottom: 220, left: 60, right: 60 } 
+          : { top: 60, bottom: 90, left: 60, right: 60 },
         maxZoom: 16.5,
         duration: 900
       });
@@ -373,12 +387,11 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
   };
 
   return (
-    <div className={`relative w-full overflow-hidden bg-[#101112] select-none ${className}`}>
-      {/* MapLibre WebGL Canvas Container */}
+    <div className={`relative w-full h-full overflow-hidden bg-[#101112] select-none ${className}`}>
+      {/* MapLibre WebGL Canvas Container - fills 100% of parent */}
       <div 
         ref={mapContainerRef} 
-        className="w-full h-full"
-        style={{ minHeight: isFullPage ? '100%' : '240px' }}
+        className="w-full h-full absolute inset-0"
       />
 
       {/* Top Floating Overlay: Live GPS Telemetry Pill */}
