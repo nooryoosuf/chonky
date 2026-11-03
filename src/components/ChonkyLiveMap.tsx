@@ -27,6 +27,7 @@ interface ChonkyLiveMapProps {
   onToggleFullPage?: () => void;
   onRouteCalculated?: (distanceKm: number, durationMinutes: number) => void;
   className?: string;
+  hasCloseButton?: boolean;
 }
 
 // Chonky Dark Map Theme Palette
@@ -50,7 +51,8 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
   isFullPage = false,
   onToggleFullPage,
   onRouteCalculated,
-  className = 'w-full h-full'
+  className = 'w-full h-full',
+  hasCloseButton = false
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<maplibregl.Map | null>(null);
@@ -395,26 +397,30 @@ export const ChonkyLiveMap: React.FC<ChonkyLiveMapProps> = ({
       />
 
       {/* Top Floating Overlay: Live GPS Telemetry Pill */}
-      <div className="absolute top-3.5 left-3.5 sm:left-4 z-10 flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#101112]/95 backdrop-blur-md border border-white/15 shadow-lg text-xs pointer-events-auto">
+      <div className="absolute top-3 left-3 sm:left-4 z-10 flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-[#101112]/95 backdrop-blur-md border border-white/15 shadow-lg text-xs pointer-events-auto">
         <span className="relative flex h-2.5 w-2.5">
           <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isStale ? 'bg-amber-400 opacity-75' : 'bg-emerald-400 opacity-75'}`} />
           <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isStale ? 'bg-amber-500' : 'bg-emerald-500'}`} />
         </span>
         <div className="flex items-center gap-1.5 text-xs font-black tracking-wide text-white">
-          <span>{orderStatus === 'delivered' ? 'ARRIVED & DELIVERED' : isGpsActive ? 'LIVE DRIVER GPS' : 'KITCHEN DISPATCH'}</span>
+          <span className="hidden xs:inline">{orderStatus === 'delivered' ? 'ARRIVED & DELIVERED' : isGpsActive ? 'LIVE DRIVER GPS' : 'KITCHEN DISPATCH'}</span>
           <span className="text-[11px] text-gray-400 font-normal">· {timeAgo}</span>
         </div>
       </div>
 
-      {/* Floating Map Action Toolbar: Consistent Sizing in ONE LINE */}
-      <div className={`absolute ${isFullPage ? 'bottom-40 sm:bottom-44' : 'bottom-3'} right-3 sm:right-4 z-20 flex items-center gap-2.5 pointer-events-auto`}>
-        {/* Recenter Button */}
+      {/* Top Floating Map Action Toolbar: Locate, Zoom In, Zoom Out, Fullscreen Toggle */}
+      <div 
+        className={`absolute top-3 sm:top-3.5 ${
+          hasCloseButton ? 'right-16 sm:right-18' : 'right-3 sm:right-4'
+        } z-20 flex items-center gap-2 pointer-events-auto`}
+      >
+        {/* Recenter / Locate Button */}
         <button
           type="button"
           onClick={handleRecenter}
           className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#101112]/95 hover:bg-black text-gray-200 hover:text-white backdrop-blur-md border border-white/15 flex items-center justify-center shadow-lg transition active:scale-90"
-          title="Recenter Map"
-          aria-label="Recenter Map"
+          title="Locate & Recenter Map"
+          aria-label="Locate & Recenter Map"
         >
           <Navigation className="w-5 h-5 text-chonky-peach" />
         </button>

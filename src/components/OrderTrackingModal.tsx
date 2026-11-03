@@ -529,6 +529,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             customerArea={order.area}
             customerAddress={order.address}
             isFullPage={true}
+            hasCloseButton={true}
             onToggleFullPage={() => setIsFullPageMap(false)}
             onRouteCalculated={(distKm, durMin) => {
               setRoadDistKm(distKm);
@@ -684,6 +685,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             customerArea={order.area}
             customerAddress={order.address}
             isFullPage={false}
+            hasCloseButton={true}
             onToggleFullPage={() => setIsFullPageMap(true)}
             onRouteCalculated={(distKm, durMin) => {
               setRoadDistKm(distKm);
