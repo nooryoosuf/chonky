@@ -1131,40 +1131,44 @@ const KdsCard: React.FC<KdsCardProps> = ({
         </div>
       )}
 
-      {/* Action Footer (Big, easy-to-tap buttons) */}
-      <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-        {onRollback ? (
-          <button
-            type="button"
-            onClick={onRollback}
-            className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition active:scale-90"
-            title="Step back to previous stage"
-          >
-            <Undo2 className="w-4 h-4" />
-          </button>
-        ) : <div />}
+      {/* Action Footer (Consistent h-11 heights, no broken wrapping) */}
+      <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-2.5">
+        {/* Left Secondary Action Buttons: Rollback & Fleet Map */}
+        <div className="flex items-center gap-2 shrink-0">
+          {onRollback && (
+            <button
+              type="button"
+              onClick={onRollback}
+              className="h-11 w-11 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition active:scale-90 flex items-center justify-center shrink-0"
+              title="Step back to previous stage"
+              aria-label="Step back to previous stage"
+            >
+              <Undo2 className="w-4 h-4" />
+            </button>
+          )}
 
-        <div className="flex items-center gap-2.5">
           {onFleetMap && (
             <button
               type="button"
               onClick={onFleetMap}
-              className="px-3.5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-[#F2E2C7] text-xs sm:text-sm font-bold transition flex items-center gap-1.5 active:scale-95"
+              className="h-11 px-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-emerald-400 hover:text-white text-xs sm:text-sm font-bold transition flex items-center gap-1.5 active:scale-95 shrink-0"
+              title="Open in Fleet Map"
             >
-              <Bike className="w-4 h-4 text-emerald-400" />
+              <Bike className="w-4 h-4" />
               <span>Map</span>
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={onAdvance}
-            className={`px-5 py-3 rounded-2xl bg-gradient-to-r ${advanceColor} text-white text-xs sm:text-sm font-black shadow-lg hover:brightness-110 active:scale-95 transition flex items-center gap-2`}
-          >
-            <span>{advanceLabel}</span>
-            <ChevronRight className="w-4 h-4 stroke-[3]" />
-          </button>
         </div>
+
+        {/* Right Primary Action Button: Uniform h-11 height, whitespace-nowrap */}
+        <button
+          type="button"
+          onClick={onAdvance}
+          className={`h-11 px-5 rounded-2xl bg-gradient-to-r ${advanceColor} text-white text-xs sm:text-sm font-black shadow-md hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2 whitespace-nowrap ml-auto shrink-0`}
+        >
+          <span>{advanceLabel}</span>
+          <ChevronRight className="w-4 h-4 stroke-[3]" />
+        </button>
       </div>
     </div>
   );
