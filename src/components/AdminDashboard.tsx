@@ -34,7 +34,8 @@ import {
   Navigation,
   Undo2,
   ChevronRight,
-  Radio
+  Radio,
+  ExternalLink
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -185,7 +186,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         latitude: currentLat,
         timestamp: Date.now(),
         isRealGps: false,
-        statusText: `Simulated Fleet Telemetry (${Math.round(progress * 100)}%)`
+        statusText: `Live Rider GPS (${Math.round(progress * 100)}%)`
       };
       publishDriverLocation(loc);
     }, 1500);
@@ -238,7 +239,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   }, [orders, searchQuery, filterType]);
 
-  const selectedFleetOrder = orders.find(o => o.orderId === selectedFleetOrderId) || orders[0];
+  const deliveryOrders = useMemo(() => {
+    return orders.filter(o => o.orderType === 'delivery');
+  }, [orders]);
+
+  const selectedFleetOrder = deliveryOrders.find(o => o.orderId === selectedFleetOrderId) || deliveryOrders[0] || orders[0];
 
   const getElapsedMinutes = (dateStr: string) => {
     const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
@@ -246,55 +251,55 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] text-[#F7F3EE] flex flex-col font-sans selection:bg-[#E53945] selection:text-white">
+    <div className="min-h-screen bg-[#08090B] text-[#F7F3EE] flex flex-col font-sans selection:bg-[#E53945] selection:text-white">
       
-      {/* 1. TOP ADMIN APP BAR */}
-      <header className="sticky top-0 z-40 bg-[#121417]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+      {/* 1. TOP ADMIN APP BAR (Spacious, bold, high-contrast) */}
+      <header className="sticky top-0 z-40 bg-[#121417]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         
         {/* Left: Brand & Return Button */}
-        <div className="flex items-center gap-3 sm:gap-5">
+        <div className="flex items-center gap-4 sm:gap-6">
           <button
             onClick={onBackToStorefront}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-[#F2E2C7] transition active:scale-95"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-bold text-[#F2E2C7] transition active:scale-95"
             title="Return to Customer Storefront"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Storefront</span>
           </button>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#700808] to-[#E53945] flex items-center justify-center shadow-md">
-              <ChefHat className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#700808] to-[#E53945] flex items-center justify-center shadow-lg shadow-[#E53945]/20">
+              <ChefHat className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-sm tracking-wide text-white uppercase">Chonky HQ</span>
-                <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md bg-[#E53945]/20 text-[#E53945] border border-[#E53945]/30">
+              <div className="flex items-center gap-2.5">
+                <span className="font-black text-base sm:text-lg tracking-wide text-white uppercase">Chonky HQ</span>
+                <span className="text-xs font-black uppercase px-2 py-0.5 rounded-lg bg-[#E53945]/25 text-[#E53945] border border-[#E53945]/30">
                   Kitchen & Fleet
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[11px] text-[#F2E2C7]/70">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Live System Active · {metrics.active} in queue</span>
+              <div className="flex items-center gap-2 text-xs text-[#F2E2C7]/80 mt-0.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Live System Online · <strong className="text-white font-extrabold">{metrics.active} in prep/transit</strong></span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Center: Primary Tab Switcher */}
-        <div className="flex items-center bg-[#181B1E] p-1 rounded-2xl border border-white/10 shadow-inner">
+        <div className="flex items-center bg-[#17191D] p-1.5 rounded-2xl border border-white/10 shadow-inner">
           <button
             onClick={() => setActiveTab('kds')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition ${
               activeTab === 'kds'
-                ? 'bg-gradient-to-r from-[#700808] to-[#9E0D0D] text-white shadow-md'
+                ? 'bg-gradient-to-r from-[#700808] to-[#A80D0D] text-white shadow-lg shadow-[#700808]/40'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Flame className="w-3.5 h-3.5 text-amber-400" />
+            <Flame className="w-4 h-4 text-amber-400" />
             <span>Kitchen KDS</span>
             {orders.filter(o => o.status === 'received' || o.status === 'preparing').length > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white text-[#700808] font-black">
+              <span className="ml-1 px-2 py-0.5 rounded-full text-xs bg-white text-[#700808] font-black">
                 {orders.filter(o => o.status === 'received' || o.status === 'preparing').length}
               </span>
             )}
@@ -302,16 +307,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <button
             onClick={() => setActiveTab('fleet')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition ${
               activeTab === 'fleet'
-                ? 'bg-gradient-to-r from-[#700808] to-[#9E0D0D] text-white shadow-md'
+                ? 'bg-gradient-to-r from-[#700808] to-[#A80D0D] text-white shadow-lg shadow-[#700808]/40'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Bike className="w-3.5 h-3.5 text-emerald-400" />
+            <Bike className="w-4 h-4 text-emerald-400" />
             <span>Fleet & Live Map</span>
             {orders.filter(o => o.orderType === 'delivery' && o.status === 'on_the_way').length > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-white font-black">
+              <span className="ml-1 px-2 py-0.5 rounded-full text-xs bg-emerald-500 text-white font-black">
                 {orders.filter(o => o.orderType === 'delivery' && o.status === 'on_the_way').length}
               </span>
             )}
@@ -319,42 +324,42 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <button
             onClick={() => setActiveTab('orders')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition ${
               activeTab === 'orders'
-                ? 'bg-gradient-to-r from-[#700808] to-[#9E0D0D] text-white shadow-md'
+                ? 'bg-gradient-to-r from-[#700808] to-[#A80D0D] text-white shadow-lg shadow-[#700808]/40'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Package className="w-3.5 h-3.5 text-blue-400" />
+            <Package className="w-4 h-4 text-blue-400" />
             <span>All Orders ({orders.length})</span>
           </button>
         </div>
 
         {/* Right: Quick Action Buttons (Chime, Simulate Order, Reset) */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {/* Sound Mute / Unmute */}
           <button
             onClick={() => {
               setSoundEnabled(!soundEnabled);
               if (!soundEnabled) orderStoreService.playKitchenChime();
             }}
-            className={`p-2 rounded-xl border transition ${
+            className={`p-2.5 rounded-2xl border transition ${
               soundEnabled 
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20' 
                 : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
             }`}
             title={soundEnabled ? 'Kitchen chime active' : 'Kitchen chime muted'}
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
 
           {/* Quick Simulate Order */}
           <button
             onClick={handleCreateTestOrder}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#E53945] to-[#C02631] text-white text-xs font-black shadow-md hover:brightness-110 active:scale-95 transition"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#E53945] to-[#B81F2B] text-white text-xs sm:text-sm font-black shadow-lg shadow-[#E53945]/30 hover:brightness-110 active:scale-95 transition"
             title="Create a sample incoming customer order"
           >
-            <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            <Plus className="w-4 h-4 stroke-[3]" />
             <span className="hidden md:inline">Test Order</span>
           </button>
 
@@ -366,7 +371,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 setOrders(orderStoreService.getOrders());
               }
             }}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition"
+            className="p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition"
             title="Reset to default demo orders"
           >
             <RefreshCw className="w-4 h-4" />
@@ -384,43 +389,45 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="space-y-6">
             
             {/* Header info bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 bg-[#141619] p-4 rounded-3xl border border-white/10">
-              <div className="flex items-center gap-3">
-                <Flame className="w-6 h-6 text-amber-500 animate-pulse" />
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-[#141619] p-5 rounded-3xl border border-white/10 shadow-lg">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center">
+                  <Flame className="w-6 h-6 text-amber-500 animate-pulse" />
+                </div>
                 <div>
-                  <h2 className="text-base font-black text-white">Live Kitchen Prep Line</h2>
-                  <p className="text-xs text-gray-400">Smash grill & hearth stations. Click cards to advance cooking stages.</p>
+                  <h2 className="text-lg font-black text-white">Live Kitchen Prep Line</h2>
+                  <p className="text-xs sm:text-sm text-gray-400">Smash grill & hearth stations. Click cards to advance cooking stages.</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="px-3 py-1.5 rounded-xl bg-[#251010] text-amber-400 border border-amber-500/20 font-bold">
+              <div className="flex items-center gap-2.5 text-xs sm:text-sm font-bold">
+                <span className="px-3.5 py-2 rounded-2xl bg-[#281212] text-amber-400 border border-amber-500/20">
                   🔥 {orders.filter(o => o.status === 'preparing').length} Burgers Sizzling
                 </span>
-                <span className="px-3 py-1.5 rounded-xl bg-[#102518] text-emerald-400 border border-emerald-500/20 font-bold">
+                <span className="px-3.5 py-2 rounded-2xl bg-[#11261B] text-emerald-400 border border-emerald-500/20">
                   🛵 {orders.filter(o => o.status === 'on_the_way').length} With Riders
                 </span>
               </div>
             </div>
 
             {/* Kanban Columns */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
               {/* COLUMN 1: NEW / RECEIVED */}
-              <div className="flex flex-col rounded-3xl bg-[#121417] border border-white/10 overflow-hidden shadow-lg">
-                <div className="p-4 bg-[#1A1112] border-b border-[#E53945]/30 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#E53945] animate-ping" />
-                    <h3 className="font-black text-sm uppercase text-white">1. New Orders</h3>
+              <div className="flex flex-col rounded-3xl bg-[#131518] border border-white/10 overflow-hidden shadow-xl">
+                <div className="p-4 sm:p-5 bg-[#1C1213] border-b border-[#E53945]/30 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-3 h-3 rounded-full bg-[#E53945] animate-ping" />
+                    <h3 className="font-black text-base uppercase tracking-wide text-white">1. New Orders</h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-md bg-[#E53945]/20 text-[#E53945] text-xs font-black">
+                  <span className="px-2.5 py-1 rounded-lg bg-[#E53945]/20 text-[#E53945] text-xs font-black">
                     {orders.filter(o => o.status === 'received').length}
                   </span>
                 </div>
 
-                <div className="p-3.5 space-y-3.5 flex-1 overflow-y-auto max-h-[calc(100vh-280px)]">
+                <div className="p-4 space-y-4 flex-1 overflow-y-auto max-h-[calc(100vh-280px)]">
                   {orders.filter(o => o.status === 'received').length === 0 ? (
-                    <div className="p-8 text-center text-gray-500 text-xs">
-                      No pending orders. Good job!
+                    <div className="p-12 text-center text-gray-500 text-sm font-bold">
+                      No pending orders. Grill is clear!
                     </div>
                   ) : (
                     orders.filter(o => o.status === 'received').map(order => (
@@ -438,21 +445,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* COLUMN 2: IN KITCHEN (PREPARING) */}
-              <div className="flex flex-col rounded-3xl bg-[#121417] border border-white/10 overflow-hidden shadow-lg">
-                <div className="p-4 bg-[#1A1811] border-b border-amber-500/30 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Flame className="w-4 h-4 text-amber-400 animate-bounce" />
-                    <h3 className="font-black text-sm uppercase text-white">2. Sizzling on Grill</h3>
+              <div className="flex flex-col rounded-3xl bg-[#131518] border border-white/10 overflow-hidden shadow-xl">
+                <div className="p-4 sm:p-5 bg-[#1D1812] border-b border-amber-500/30 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Flame className="w-5 h-5 text-amber-400 animate-bounce" />
+                    <h3 className="font-black text-base uppercase tracking-wide text-white">2. Sizzling on Grill</h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 text-xs font-black">
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-black">
                     {orders.filter(o => o.status === 'preparing').length}
                   </span>
                 </div>
 
-                <div className="p-3.5 space-y-3.5 flex-1 overflow-y-auto max-h-[calc(100vh-280px)]">
+                <div className="p-4 space-y-4 flex-1 overflow-y-auto max-h-[calc(100vh-280px)]">
                   {orders.filter(o => o.status === 'preparing').length === 0 ? (
-                    <div className="p-8 text-center text-gray-500 text-xs">
-                      Grill is idle.
+                    <div className="p-12 text-center text-gray-500 text-sm font-bold">
+                      Grill is currently idle.
                     </div>
                   ) : (
                     orders.filter(o => o.status === 'preparing').map(order => (
@@ -471,20 +478,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* COLUMN 3: OUT FOR DELIVERY / DISPATCHED */}
-              <div className="flex flex-col rounded-3xl bg-[#121417] border border-white/10 overflow-hidden shadow-lg">
-                <div className="p-4 bg-[#111A15] border-b border-emerald-500/30 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Bike className="w-4 h-4 text-emerald-400 animate-pulse" />
-                    <h3 className="font-black text-sm uppercase text-white">3. With Riders / Counter</h3>
+              <div className="flex flex-col rounded-3xl bg-[#131518] border border-white/10 overflow-hidden shadow-xl">
+                <div className="p-4 sm:p-5 bg-[#121B16] border-b border-emerald-500/30 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Bike className="w-5 h-5 text-emerald-400 animate-pulse" />
+                    <h3 className="font-black text-base uppercase tracking-wide text-white">3. With Riders / Counter</h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-xs font-black">
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-black">
                     {orders.filter(o => o.status === 'on_the_way').length}
                   </span>
                 </div>
 
-                <div className="p-3.5 space-y-3.5 flex-1 overflow-y-auto max-h-[calc(100vh-280px)]">
+                <div className="p-4 space-y-4 flex-1 overflow-y-auto max-h-[calc(100vh-280px)]">
                   {orders.filter(o => o.status === 'on_the_way').length === 0 ? (
-                    <div className="p-8 text-center text-gray-500 text-xs">
+                    <div className="p-12 text-center text-gray-500 text-sm font-bold">
                       No active rides right now.
                     </div>
                   ) : (
@@ -512,210 +519,209 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 2: FLEET & LIVE MAP TRACKING                                          */}
+        {/* TAB 2: FLEET & LIVE MAP (EXPANSIVE FULL CARD MAP EXPERIENCE)              */}
         {/* ========================================================================= */}
         {activeTab === 'fleet' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)] min-h-[600px]">
+          <div className="space-y-4">
             
-            {/* Left Column: Active Rides List (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col bg-[#121417] rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-              
-              {/* Header */}
-              <div className="p-4 bg-[#181B1E] border-b border-white/10 flex items-center justify-between">
-                <div>
-                  <h3 className="font-black text-sm text-white flex items-center gap-2">
-                    <Bike className="w-4 h-4 text-emerald-400" />
-                    <span>Delivery Ride Dispatch</span>
-                  </h3>
-                  <p className="text-[11px] text-gray-400">Select order to inspect GPS & turn-by-turn route</p>
+            {/* Top: Active Delivery Orders Selector Bar */}
+            <div className="bg-[#121417] p-3 sm:p-4 rounded-3xl border border-white/10 shadow-lg">
+              <div className="flex items-center justify-between mb-3 px-1">
+                <div className="flex items-center gap-2.5">
+                  <Bike className="w-5 h-5 text-emerald-400" />
+                  <h3 className="text-base font-black text-white">Active Delivery Fleet</h3>
+                  <span className="text-xs text-gray-400">· Select an order to monitor road route & GPS</span>
                 </div>
-                <span className="px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
-                  {orders.filter(o => o.orderType === 'delivery' && o.status === 'on_the_way').length} Active
+                <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  {deliveryOrders.filter(o => o.status === 'on_the_way').length} in transit
                 </span>
               </div>
 
-              {/* List of Deliveries */}
-              <div className="flex-1 overflow-y-auto p-3.5 space-y-3">
-                {orders.filter(o => o.orderType === 'delivery').map(order => {
-                  const isSelected = order.orderId === selectedFleetOrderId;
-                  const isSimulating = !!isSimulatingGps[order.orderId];
-                  const isRealGps = isRealGpsActive === order.orderId;
-
+              {/* Horizontal Scrollable Order Cards */}
+              <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
+                {deliveryOrders.map(order => {
+                  const isSelected = order.orderId === selectedFleetOrder?.orderId;
                   return (
-                    <div
+                    <button
                       key={order.orderId}
+                      type="button"
                       onClick={() => setSelectedFleetOrderId(order.orderId)}
-                      className={`p-4 rounded-2xl border transition cursor-pointer select-none ${
+                      className={`px-4 py-3 rounded-2xl border text-left transition shrink-0 flex items-center gap-3.5 select-none ${
                         isSelected 
-                          ? 'bg-[#1D2126] border-[#E53945] shadow-lg ring-1 ring-[#E53945]/40' 
-                          : 'bg-[#16181B] border-white/5 hover:border-white/20'
+                          ? 'bg-[#20242A] border-[#E53945] shadow-lg ring-2 ring-[#E53945]/40 text-white' 
+                          : 'bg-[#16181B] border-white/5 hover:border-white/20 text-gray-300'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono font-black text-xs px-2 py-0.5 rounded bg-black/40 text-[#F2E2C7] border border-white/10">
-                              {order.orderId}
-                            </span>
-                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                              order.status === 'on_the_way'
-                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                : order.status === 'preparing'
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                : order.status === 'delivered'
-                                ? 'bg-blue-500/20 text-blue-400'
-                                : 'bg-gray-700 text-gray-300'
-                            }`}>
-                              {order.status.replace('_', ' ')}
-                            </span>
-                          </div>
-                          <h4 className="font-black text-sm text-white mt-1.5">{order.customerName}</h4>
-                          <div className="flex items-center gap-1.5 text-xs text-[#F2E2C7]/80 mt-0.5">
-                            <MapPin className="w-3.5 h-3.5 text-[#E53945] shrink-0" />
-                            <span className="truncate">{order.area}</span>
-                          </div>
-                          {order.address && (
-                            <p className="text-[11px] text-gray-400 truncate pl-5">{order.address}</p>
-                          )}
-                        </div>
-
-                        <div className="text-right shrink-0">
-                          <p className="font-black text-xs text-white">MVR {order.total}</p>
-                          <p className="text-[10px] text-gray-400 font-mono capitalize">{order.paymentMethod.replace('_', ' ')}</p>
-                        </div>
+                      <div className="w-9 h-9 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0">
+                        <Bike className={`w-4 h-4 ${isSelected ? 'text-[#E53945]' : 'text-gray-400'}`} />
                       </div>
-
-                      {/* Driver & Telemetry Controls if Selected */}
-                      {isSelected && (
-                        <div className="mt-3.5 pt-3.5 border-t border-white/10 space-y-2.5">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-gray-400 flex items-center gap-1">
-                              <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-                              Rider: <strong>Ali (Scooter AB1B-1234)</strong>
-                            </span>
-                            <a
-                              href={`tel:${order.customerPhone}`}
-                              className="text-[#F2E2C7] hover:text-white flex items-center gap-1 font-bold bg-white/5 px-2 py-1 rounded-lg"
-                            >
-                              <Phone className="w-3 h-3 text-[#E53945]" />
-                              <span>Call Customer</span>
-                            </a>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2 pt-1">
-                            {/* Live Simulation Button */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleGpsSimulation(order.orderId);
-                              }}
-                              className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${
-                                isSimulating 
-                                  ? 'bg-amber-500 text-black font-black' 
-                                  : 'bg-white/10 text-white hover:bg-white/15'
-                              }`}
-                            >
-                              <Navigation className="w-3.5 h-3.5" />
-                              <span>{isSimulating ? 'Simulating...' : 'Simulate GPS'}</span>
-                            </button>
-
-                            {/* Real Phone GPS Button */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleRealGps(order.orderId);
-                              }}
-                              className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${
-                                isRealGps 
-                                  ? 'bg-emerald-500 text-black font-black' 
-                                  : 'bg-white/10 text-white hover:bg-white/15'
-                              }`}
-                            >
-                              <Radio className="w-3.5 h-3.5" />
-                              <span>{isRealGps ? 'Phone GPS On' : 'Use Phone GPS'}</span>
-                            </button>
-                          </div>
-
-                          {/* Status changer buttons */}
-                          <div className="flex items-center justify-between gap-2 pt-1">
-                            {order.status !== 'on_the_way' && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleUpdateStatus(order.orderId, 'on_the_way');
-                                }}
-                                className="flex-1 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
-                              >
-                                Dispatch Rider 🛵
-                              </button>
-                            )}
-                            {order.status === 'on_the_way' && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleUpdateStatus(order.orderId, 'delivered');
-                                }}
-                                className="flex-1 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
-                              >
-                                Complete Delivery ✓
-                              </button>
-                            )}
-                            {onOpenCustomerTracking && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onOpenCustomerTracking(order);
-                                }}
-                                className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#F2E2C7] text-xs font-bold transition"
-                                title="Open customer tracking view"
-                              >
-                                Customer View ↗
-                              </button>
-                            )}
-                          </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-black text-xs px-2 py-0.5 rounded bg-black/40 text-[#F2E2C7] border border-white/10">
+                            {order.orderId}
+                          </span>
+                          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                            order.status === 'on_the_way'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : 'bg-amber-500/20 text-amber-400'
+                          }`}>
+                            {order.status.replace('_', ' ')}
+                          </span>
                         </div>
-                      )}
-                    </div>
+                        <p className="text-sm font-black text-white mt-1 truncate max-w-[150px]">
+                          {order.customerName}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate max-w-[150px]">
+                          {order.area}
+                        </p>
+                      </div>
+                    </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Right Column: Live Map (7 cols) */}
-            <div className="lg:col-span-7 rounded-3xl overflow-hidden border border-white/10 relative shadow-2xl bg-[#0F1012] flex flex-col">
+            {/* EXPANSIVE FULL-CARD MAP CONTAINER */}
+            <div className="w-full h-[620px] sm:h-[700px] lg:h-[740px] rounded-3xl overflow-hidden border border-white/10 relative shadow-2xl bg-[#0F1012] flex flex-col">
               {selectedFleetOrder ? (
-                <div className="relative w-full h-full flex-1">
-                  <ChonkyLiveMap
-                    orderId={selectedFleetOrder.orderId}
-                    customerArea={selectedFleetOrder.area}
-                    customerAddress={selectedFleetOrder.address}
-                    orderStatus={selectedFleetOrder.status}
-                    isFullPage={false}
-                  />
+                <>
+                  {/* The Vector Dark Map Libre Canvas */}
+                  <div className="relative w-full h-full flex-1">
+                    <ChonkyLiveMap
+                      orderId={selectedFleetOrder.orderId}
+                      customerArea={selectedFleetOrder.area}
+                      customerAddress={selectedFleetOrder.address}
+                      orderStatus={selectedFleetOrder.status}
+                      isFullPage={false}
+                    />
 
-                  {/* Floating Map Info Overlay Pill */}
-                  <div className="absolute top-4 left-4 z-10 bg-[#121417]/90 backdrop-blur-md border border-white/15 p-3 rounded-2xl shadow-xl max-w-sm pointer-events-auto">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-black text-[#F2E2C7]">
-                        {selectedFleetOrder.orderId}
-                      </span>
-                      <span className="text-xs font-bold text-white truncate">
-                        {selectedFleetOrder.customerName}
-                      </span>
+                    {/* Top Floating Order Banner (Clear & Legible) */}
+                    <div className="absolute top-4 left-4 z-10 bg-[#121417]/95 backdrop-blur-md border border-white/15 p-4 rounded-3xl shadow-2xl max-w-md pointer-events-auto">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-sm font-black px-2.5 py-1 rounded-xl bg-black/50 text-[#F2E2C7] border border-white/10">
+                            {selectedFleetOrder.orderId}
+                          </span>
+                          <span className={`text-xs font-black uppercase px-2.5 py-1 rounded-xl ${
+                            selectedFleetOrder.status === 'on_the_way'
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                              : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          }`}>
+                            {selectedFleetOrder.status.replace('_', ' ')}
+                          </span>
+                        </div>
+                        <span className="text-sm font-black text-white">
+                          MVR {selectedFleetOrder.total}
+                        </span>
+                      </div>
+
+                      <div className="mt-2.5">
+                        <h4 className="text-base font-black text-white">{selectedFleetOrder.customerName}</h4>
+                        <div className="flex items-center gap-1.5 text-xs text-gray-300 mt-0.5">
+                          <MapPin className="w-3.5 h-3.5 text-[#E53945] shrink-0" />
+                          <span className="font-bold text-white">{selectedFleetOrder.area}</span>
+                          {selectedFleetOrder.address && (
+                            <span className="text-gray-400 truncate">· {selectedFleetOrder.address}</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {selectedFleetOrder.deliveryNotes && (
+                        <p className="mt-2 text-[11px] text-[#F2E2C7]/80 bg-white/5 p-2 rounded-xl border border-white/5">
+                          Note: {selectedFleetOrder.deliveryNotes}
+                        </p>
+                      )}
                     </div>
-                    <p className="text-[11px] text-gray-300 truncate mt-0.5">
-                      Destination: {selectedFleetOrder.area}
-                    </p>
+
+                    {/* Bottom Floating Fleet Control Console HUD */}
+                    <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-10 bg-[#121417]/95 backdrop-blur-md border border-white/15 p-4 sm:p-5 rounded-3xl shadow-2xl max-w-lg pointer-events-auto">
+                      <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-gray-300 pb-3 border-b border-white/10">
+                        <span className="flex items-center gap-2">
+                          <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+                          <span>Rider: <strong className="text-white">Ali (Scooter AB1B-1234)</strong></span>
+                        </span>
+                        <a
+                          href={`tel:${selectedFleetOrder.customerPhone}`}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition active:scale-95"
+                        >
+                          <Phone className="w-3.5 h-3.5 text-[#E53945]" />
+                          <span>Call Customer</span>
+                        </a>
+                      </div>
+
+                      {/* GPS & Dispatch Buttons */}
+                      <div className="grid grid-cols-2 gap-2.5 pt-3">
+                        {/* Live Simulation Button */}
+                        <button
+                          type="button"
+                          onClick={() => toggleGpsSimulation(selectedFleetOrder.orderId)}
+                          className={`py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition ${
+                            isSimulatingGps[selectedFleetOrder.orderId] 
+                              ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' 
+                              : 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
+                          }`}
+                        >
+                          <Navigation className="w-4 h-4" />
+                          <span>{isSimulatingGps[selectedFleetOrder.orderId] ? 'Simulating GPS...' : 'Simulate GPS'}</span>
+                        </button>
+
+                        {/* Real Phone GPS Button */}
+                        <button
+                          type="button"
+                          onClick={() => toggleRealGps(selectedFleetOrder.orderId)}
+                          className={`py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition ${
+                            isRealGpsActive === selectedFleetOrder.orderId 
+                              ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' 
+                              : 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
+                          }`}
+                        >
+                          <Radio className="w-4 h-4" />
+                          <span>{isRealGpsActive === selectedFleetOrder.orderId ? 'Phone GPS Active' : 'Use Phone GPS'}</span>
+                        </button>
+                      </div>
+
+                      {/* Primary Status Advancement Bar */}
+                      <div className="flex items-center gap-2.5 pt-2.5">
+                        {selectedFleetOrder.status !== 'on_the_way' && (
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateStatus(selectedFleetOrder.orderId, 'on_the_way')}
+                            className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95"
+                          >
+                            <Bike className="w-4 h-4" />
+                            <span>Dispatch Rider 🛵</span>
+                          </button>
+                        )}
+                        {selectedFleetOrder.status === 'on_the_way' && (
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateStatus(selectedFleetOrder.orderId, 'delivered')}
+                            className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                            <span>Complete Delivery ✓</span>
+                          </button>
+                        )}
+                        {onOpenCustomerTracking && (
+                          <button
+                            type="button"
+                            onClick={() => onOpenCustomerTracking(selectedFleetOrder)}
+                            className="px-3.5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#F2E2C7] text-xs sm:text-sm font-bold transition flex items-center gap-1.5"
+                            title="Open customer tracking view"
+                          >
+                            <span>Customer View</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
                   </div>
-                </div>
+                </>
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                  Select an active delivery ride from the left list.
+                <div className="flex flex-col items-center justify-center h-full text-gray-500 text-base">
+                  <Bike className="w-12 h-12 text-gray-600 mb-2" />
+                  <p>No delivery orders to show on the map.</p>
                 </div>
               )}
             </div>
@@ -729,77 +735,77 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {activeTab === 'orders' && (
           <div className="space-y-6">
             
-            {/* Stat Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-sm">
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+            {/* Stat Summary Cards (Larger, clearer metrics) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+              <div className="bg-[#121417] p-5 rounded-3xl border border-white/10 shadow-lg">
+                <p className="text-xs sm:text-sm text-gray-400 font-extrabold uppercase tracking-wider flex items-center gap-2">
+                  <DollarSign className="w-4 h-4 text-emerald-400" />
                   Today Revenue
                 </p>
-                <p className="text-xl sm:text-2xl font-black text-white mt-1">
+                <p className="text-2xl sm:text-3xl font-black text-white mt-1.5">
                   MVR {metrics.revenue.toLocaleString()}
                 </p>
-                <p className="text-[11px] text-emerald-400 mt-0.5">✓ Verified orders</p>
+                <p className="text-xs text-emerald-400 mt-1">✓ Verified orders</p>
               </div>
 
-              <div className="bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-sm">
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <div className="bg-[#121417] p-5 rounded-3xl border border-white/10 shadow-lg">
+                <p className="text-xs sm:text-sm text-gray-400 font-extrabold uppercase tracking-wider flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-400" />
                   Active Queue
                 </p>
-                <p className="text-xl sm:text-2xl font-black text-amber-400 mt-1">
+                <p className="text-2xl sm:text-3xl font-black text-amber-400 mt-1.5">
                   {metrics.active}
                 </p>
-                <p className="text-[11px] text-gray-400 mt-0.5">Needs prep/dispatch</p>
+                <p className="text-xs text-gray-400 mt-1">Needs prep / dispatch</p>
               </div>
 
-              <div className="bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-sm">
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="bg-[#121417] p-5 rounded-3xl border border-white/10 shadow-lg">
+                <p className="text-xs sm:text-sm text-gray-400 font-extrabold uppercase tracking-wider flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400" />
                   Delivered
                 </p>
-                <p className="text-xl sm:text-2xl font-black text-white mt-1">
+                <p className="text-2xl sm:text-3xl font-black text-white mt-1.5">
                   {metrics.delivered}
                 </p>
-                <p className="text-[11px] text-gray-400 mt-0.5">Completed rides</p>
+                <p className="text-xs text-gray-400 mt-1">Completed rides</p>
               </div>
 
-              <div className="bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-sm">
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  <Package className="w-3.5 h-3.5 text-blue-400" />
+              <div className="bg-[#121417] p-5 rounded-3xl border border-white/10 shadow-lg">
+                <p className="text-xs sm:text-sm text-gray-400 font-extrabold uppercase tracking-wider flex items-center gap-2">
+                  <Package className="w-4 h-4 text-blue-400" />
                   Total Orders
                 </p>
-                <p className="text-xl sm:text-2xl font-black text-white mt-1">
+                <p className="text-2xl sm:text-3xl font-black text-white mt-1.5">
                   {metrics.totalOrders}
                 </p>
-                <p className="text-[11px] text-gray-400 mt-0.5">Lifetime in registry</p>
+                <p className="text-xs text-gray-400 mt-1">Lifetime in registry</p>
               </div>
             </div>
 
             {/* Filter and Search Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 bg-[#121417] p-3.5 rounded-3xl border border-white/10">
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-lg">
               
               {/* Search */}
-              <div className="relative flex-1 min-w-[240px]">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <div className="relative flex-1 min-w-[260px]">
+                <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search by Order ID, Customer, Phone..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#1A1C20] border border-white/10 rounded-2xl pl-10 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E53945]"
+                  className="w-full bg-[#1A1C20] border border-white/10 rounded-2xl pl-11 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#E53945]"
                 />
               </div>
 
               {/* Filter Tabs */}
-              <div className="flex items-center gap-1.5 bg-[#1A1C20] p-1 rounded-2xl border border-white/5">
+              <div className="flex items-center gap-2 bg-[#1A1C20] p-1.5 rounded-2xl border border-white/5">
                 {(['all', 'active', 'delivery', 'pickup', 'delivered'] as const).map(tab => (
                   <button
                     key={tab}
                     onClick={() => setFilterType(tab)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition ${
+                    className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold capitalize transition ${
                       filterType === tab 
-                        ? 'bg-[#E53945] text-white shadow-sm' 
+                        ? 'bg-[#E53945] text-white shadow-md' 
                         : 'text-gray-400 hover:text-white'
                     }`}
                   >
@@ -811,85 +817,85 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Orders Table */}
-            <div className="bg-[#121417] rounded-3xl border border-white/10 overflow-hidden shadow-xl">
+            <div className="bg-[#121417] rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#16181C] text-gray-400 uppercase font-bold text-[10px] border-b border-white/10 tracking-wider">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-[#17191D] text-gray-400 uppercase font-bold text-xs border-b border-white/10 tracking-wider">
                     <tr>
-                      <th className="py-3 px-4">Order ID</th>
-                      <th className="py-3 px-4">Customer</th>
-                      <th className="py-3 px-4">Type & Area</th>
-                      <th className="py-3 px-4">Items</th>
-                      <th className="py-3 px-4">Payment</th>
-                      <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4 text-right">Actions</th>
+                      <th className="py-4 px-5">Order ID</th>
+                      <th className="py-4 px-5">Customer</th>
+                      <th className="py-4 px-5">Type & Area</th>
+                      <th className="py-4 px-5">Items</th>
+                      <th className="py-4 px-5">Payment</th>
+                      <th className="py-4 px-5">Status</th>
+                      <th className="py-4 px-5 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {filteredOrders.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="py-12 text-center text-gray-500">
+                        <td colSpan={7} className="py-16 text-center text-gray-500 text-base font-bold">
                           No matching orders found.
                         </td>
                       </tr>
                     ) : (
                       filteredOrders.map(order => (
-                        <tr key={order.orderId} className="hover:bg-white/[0.02] transition">
+                        <tr key={order.orderId} className="hover:bg-white/[0.03] transition">
                           
                           {/* Order ID */}
-                          <td className="py-3.5 px-4">
-                            <span className="font-mono font-bold text-white bg-black/40 px-2 py-0.5 rounded border border-white/10">
+                          <td className="py-4 px-5">
+                            <span className="font-mono font-black text-sm text-white bg-black/40 px-2.5 py-1 rounded-xl border border-white/10">
                               {order.orderId}
                             </span>
-                            <p className="text-[10px] text-gray-400 mt-1">
+                            <p className="text-xs text-gray-400 mt-1.5">
                               {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                           </td>
 
                           {/* Customer */}
-                          <td className="py-3.5 px-4">
-                            <p className="font-bold text-white">{order.customerName}</p>
-                            <a href={`tel:${order.customerPhone}`} className="text-gray-400 hover:text-[#E53945] text-[11px] font-mono">
+                          <td className="py-4 px-5">
+                            <p className="font-bold text-white text-base">{order.customerName}</p>
+                            <a href={`tel:${order.customerPhone}`} className="text-gray-400 hover:text-[#E53945] text-xs font-mono">
                               {order.customerPhone}
                             </a>
                           </td>
 
                           {/* Type & Area */}
-                          <td className="py-3.5 px-4">
-                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                          <td className="py-4 px-5">
+                            <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-black uppercase ${
                               order.orderType === 'delivery' 
                                 ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
                                 : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                             }`}>
                               {order.orderType}
                             </span>
-                            <p className="text-gray-300 text-[11px] truncate max-w-[150px] mt-0.5">
+                            <p className="text-gray-300 text-xs truncate max-w-[170px] mt-1 font-medium">
                               {order.area}
                             </p>
                           </td>
 
                           {/* Items Summary */}
-                          <td className="py-3.5 px-4">
-                            <p className="text-white font-bold">{order.items.length} items</p>
-                            <p className="text-gray-400 text-[11px] truncate max-w-[180px]">
+                          <td className="py-4 px-5">
+                            <p className="text-white font-black text-sm">{order.items.length} items</p>
+                            <p className="text-gray-400 text-xs truncate max-w-[200px] mt-0.5">
                               {order.items.map(i => `${i.quantity}x ${i.productName}`).join(', ')}
                             </p>
                           </td>
 
                           {/* Payment */}
-                          <td className="py-3.5 px-4">
-                            <p className="font-black text-white">MVR {order.total}</p>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] text-gray-400 uppercase font-mono">
+                          <td className="py-4 px-5">
+                            <p className="font-black text-white text-base">MVR {order.total}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs text-gray-400 uppercase font-mono">
                                 {order.paymentMethod.replace('_', ' ')}
                               </span>
                               {order.transferSlip && (
                                 <button
                                   type="button"
                                   onClick={() => setViewingSlipUrl(order.transferSlip || null)}
-                                  className="text-[10px] text-[#E53945] underline font-bold flex items-center gap-0.5"
+                                  className="text-xs text-[#E53945] underline font-bold flex items-center gap-1"
                                 >
-                                  <Eye className="w-3 h-3" />
+                                  <Eye className="w-3.5 h-3.5" />
                                   <span>Slip</span>
                                 </button>
                               )}
@@ -897,11 +903,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </td>
 
                           {/* Status Dropdown */}
-                          <td className="py-3.5 px-4">
+                          <td className="py-4 px-5">
                             <select
                               value={order.status}
                               onChange={(e) => handleUpdateStatus(order.orderId, e.target.value as OrderDetails['status'])}
-                              className={`text-xs font-bold px-2.5 py-1 rounded-xl border bg-[#1A1C20] focus:outline-none ${
+                              className={`text-xs sm:text-sm font-bold px-3 py-1.5 rounded-xl border bg-[#1A1C20] focus:outline-none ${
                                 order.status === 'received' 
                                   ? 'text-[#E53945] border-[#E53945]/40' 
                                   : order.status === 'preparing'
@@ -919,8 +925,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </td>
 
                           {/* Action Buttons */}
-                          <td className="py-3.5 px-4 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
+                          <td className="py-4 px-5 text-right">
+                            <div className="flex items-center justify-end gap-2">
                               {order.orderType === 'delivery' && (
                                 <button
                                   type="button"
@@ -928,7 +934,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     setSelectedFleetOrderId(order.orderId);
                                     setActiveTab('fleet');
                                   }}
-                                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-emerald-400 transition"
+                                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-emerald-400 transition"
                                   title="View on Fleet Map"
                                 >
                                   <Bike className="w-4 h-4" />
@@ -938,7 +944,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => onOpenCustomerTracking(order)}
-                                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#F2E2C7] transition"
+                                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#F2E2C7] transition"
                                   title="Customer tracking view"
                                 >
                                   <ChevronRight className="w-4 h-4" />
@@ -967,17 +973,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           onClick={() => setViewingSlipUrl(null)}
         >
           <div 
-            className="bg-[#141619] border border-white/20 rounded-3xl p-5 max-w-md w-full relative shadow-2xl"
+            className="bg-[#141619] border border-white/20 rounded-3xl p-6 max-w-md w-full relative shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h4 className="font-black text-sm text-white flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
+              <h4 className="font-black text-base text-white flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 <span>BML Transfer Slip Verification</span>
               </h4>
               <button
                 onClick={() => setViewingSlipUrl(null)}
-                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -991,10 +997,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               />
             </div>
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-5 flex justify-end">
               <button
                 onClick={() => setViewingSlipUrl(null)}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition"
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold transition"
               >
                 Close
               </button>
@@ -1008,7 +1014,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 // =========================================================================
-// SUBCOMPONENT: KDS TICKET CARD
+// SUBCOMPONENT: KDS TICKET CARD (Clean, large typography for kitchen staff)
 // =========================================================================
 interface KdsCardProps {
   order: OrderDetails;
@@ -1033,20 +1039,20 @@ const KdsCard: React.FC<KdsCardProps> = ({
   const isWarning = elapsedMinutes > 8;
 
   return (
-    <div className={`rounded-2xl border p-4 bg-[#181B1E] transition shadow-md ${
+    <div className={`rounded-3xl border p-5 bg-[#171A1E] transition shadow-lg ${
       isLate 
-        ? 'border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)]' 
+        ? 'border-red-500/80 shadow-[0_0_20px_rgba(239,68,68,0.25)]' 
         : isWarning 
         ? 'border-amber-500/60' 
         : 'border-white/10 hover:border-white/20'
     }`}>
       {/* Top Bar: Order ID, Type & Timer */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="font-mono font-black text-xs px-2 py-0.5 rounded bg-black/50 text-[#F2E2C7] border border-white/10">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="font-mono font-black text-sm px-2.5 py-1 rounded-xl bg-black/60 text-[#F2E2C7] border border-white/10">
             {order.orderId}
           </span>
-          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+          <span className={`text-xs font-black uppercase px-2.5 py-1 rounded-xl ${
             order.orderType === 'delivery' 
               ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
               : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
@@ -1056,43 +1062,43 @@ const KdsCard: React.FC<KdsCardProps> = ({
         </div>
 
         {/* Elapsed Timer */}
-        <span className={`text-xs font-mono font-black px-2 py-0.5 rounded flex items-center gap-1 ${
+        <span className={`text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-xl flex items-center gap-1.5 ${
           isLate ? 'bg-red-500/20 text-red-400' : isWarning ? 'bg-amber-500/20 text-amber-400' : 'bg-white/5 text-gray-300'
         }`}>
-          <Clock className="w-3 h-3" />
+          <Clock className="w-3.5 h-3.5" />
           <span>{elapsedMinutes}m</span>
         </span>
       </div>
 
       {/* Customer Info */}
-      <div className="mt-2 text-xs">
-        <p className="font-bold text-white">{order.customerName}</p>
-        <p className="text-[11px] text-gray-400 truncate">{order.area}</p>
+      <div className="mt-3">
+        <p className="font-black text-base text-white">{order.customerName}</p>
+        <p className="text-xs sm:text-sm text-gray-300 truncate mt-0.5 font-medium">{order.area}</p>
       </div>
 
-      {/* Items List */}
-      <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+      {/* Items List (Clear & Large) */}
+      <div className="mt-4 pt-3.5 border-t border-white/10 space-y-3">
         {order.items.map((item, idx) => (
-          <div key={idx} className="text-xs">
-            <div className="flex items-start justify-between font-black text-white">
+          <div key={idx} className="space-y-1">
+            <div className="flex items-start justify-between font-black text-sm sm:text-base text-white">
               <span>{item.quantity}x {item.productName}</span>
             </div>
             {/* Options */}
             {item.selectedOptions && item.selectedOptions.length > 0 && (
-              <p className="text-[11px] text-gray-400 pl-4">
-                {item.selectedOptions.map(o => o.choiceName).join(', ')}
+              <p className="text-xs sm:text-sm text-gray-300 pl-4 font-medium">
+                • {item.selectedOptions.map(o => o.choiceName).join(', ')}
               </p>
             )}
             {/* Extras */}
             {item.selectedExtras && item.selectedExtras.length > 0 && (
-              <p className="text-[11px] text-[#F2E2C7]/80 pl-4">
+              <p className="text-xs sm:text-sm text-[#F2E2C7] pl-4 font-bold">
                 + {item.selectedExtras.map(e => e.name).join(', ')}
               </p>
             )}
             {/* Special Instructions */}
             {item.specialInstructions && (
-              <div className="mt-1 ml-3 px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[10.5px] text-amber-300 flex items-start gap-1">
-                <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5 text-amber-400" />
+              <div className="mt-1.5 ml-2 p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs sm:text-sm text-amber-300 font-bold flex items-start gap-1.5">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
                 <span>Note: {item.specialInstructions}</span>
               </div>
             )}
@@ -1102,33 +1108,33 @@ const KdsCard: React.FC<KdsCardProps> = ({
 
       {/* Delivery Notes */}
       {order.deliveryNotes && (
-        <div className="mt-2.5 p-2 rounded-xl bg-white/5 text-[11px] text-gray-300 border border-white/5">
-          <span className="font-bold text-white">Delivery Note: </span>
+        <div className="mt-3.5 p-2.5 rounded-2xl bg-white/5 text-xs text-gray-300 border border-white/5 font-medium">
+          <span className="font-black text-white">Delivery Note: </span>
           {order.deliveryNotes}
         </div>
       )}
 
-      {/* Action Footer */}
-      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+      {/* Action Footer (Big, easy-to-tap buttons) */}
+      <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
         {onRollback ? (
           <button
             type="button"
             onClick={onRollback}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition"
+            className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition active:scale-90"
             title="Step back to previous stage"
           >
-            <Undo2 className="w-3.5 h-3.5" />
+            <Undo2 className="w-4 h-4" />
           </button>
         ) : <div />}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {onFleetMap && (
             <button
               type="button"
               onClick={onFleetMap}
-              className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-[#F2E2C7] text-xs font-bold transition flex items-center gap-1"
+              className="px-3.5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-[#F2E2C7] text-xs sm:text-sm font-bold transition flex items-center gap-1.5 active:scale-95"
             >
-              <Bike className="w-3.5 h-3.5 text-emerald-400" />
+              <Bike className="w-4 h-4 text-emerald-400" />
               <span>Map</span>
             </button>
           )}
@@ -1136,10 +1142,10 @@ const KdsCard: React.FC<KdsCardProps> = ({
           <button
             type="button"
             onClick={onAdvance}
-            className={`px-4 py-2 rounded-xl bg-gradient-to-r ${advanceColor} text-white text-xs font-black shadow-md hover:brightness-110 active:scale-95 transition flex items-center gap-1.5`}
+            className={`px-5 py-3 rounded-2xl bg-gradient-to-r ${advanceColor} text-white text-xs sm:text-sm font-black shadow-lg hover:brightness-110 active:scale-95 transition flex items-center gap-2`}
           >
             <span>{advanceLabel}</span>
-            <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
+            <ChevronRight className="w-4 h-4 stroke-[3]" />
           </button>
         </div>
       </div>
