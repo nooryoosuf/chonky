@@ -8,7 +8,8 @@ import {
   ChevronDown,
   Sparkles,
   User,
-  X
+  X,
+  ChefHat
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -16,13 +17,15 @@ interface HeaderProps {
   setSearchQuery: (query: string) => void;
   activeSection: string;
   setActiveSection: (sec: string) => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   searchQuery,
   setSearchQuery,
   activeSection: _activeSection,
-  setActiveSection: _setActiveSection
+  setActiveSection: _setActiveSection,
+  onOpenAdmin
 }) => {
   const { 
     selectedLocation, 
@@ -219,6 +222,17 @@ export const Header: React.FC<HeaderProps> = ({
                   <span className="font-mono text-[11px]">{(completedOrder || activeOrder)?.orderId}</span>
                 </button>
               )}
+
+              {/* Kitchen & Fleet HQ Admin Button */}
+              <button
+                onClick={onOpenAdmin || (() => { window.location.hash = '#admin'; })}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-gradient-to-r from-[#700808] to-[#990D0D] hover:from-[#880A0A] hover:to-[#B51010] text-[#F2E2C7] border border-[#E53945]/50 text-xs font-black shadow-sm transition active:scale-95"
+                title="Kitchen KDS & Fleet Management"
+                aria-label="Kitchen KDS & Fleet Management"
+              >
+                <ChefHat className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden xs:inline text-[11px] font-black uppercase tracking-tight">HQ</span>
+              </button>
 
               {/* Profile Account Icon Button */}
               <button

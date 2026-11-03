@@ -10,6 +10,7 @@ import {
   PaymentMethod 
 } from '../types';
 import { DELIVERY_LOCATIONS, PRODUCTS } from '../data/menuData';
+import { orderStoreService } from '../services/orderStoreService';
 
 interface CartContextType {
   items: CartItem[];
@@ -135,6 +136,28 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [activeOrder]);
 
+  // Synchronize orders in real-time from Kitchen / Admin actions
+  useEffect(() => {
+    const unsubscribe = orderStoreService.subscribe((orders) => {
+      setActiveOrder(prev => {
+        if (!prev) return null;
+        const matching = orders.find(o => o.orderId === prev.orderId);
+        return matching ? matching : prev;
+      });
+      setTrackingOrder(prev => {
+        if (!prev) return null;
+        const matching = orders.find(o => o.orderId === prev.orderId);
+        return matching ? matching : prev;
+      });
+      setCompletedOrder(prev => {
+        if (!prev) return null;
+        const matching = orders.find(o => o.orderId === prev.orderId);
+        return matching ? matching : prev;
+      });
+    });
+    return unsubscribe;
+  }, []);
+
   const openTracking = (orderToTrack?: OrderDetails) => {
     const target = orderToTrack || completedOrder || activeOrder;
     if (target) {
@@ -148,6 +171,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateOrderStatus = (orderId: string, newStatus: OrderDetails['status']) => {
+    orderStoreService.updateOrderStatus(orderId, newStatus);
     setActiveOrder(prev => (prev && prev.orderId === orderId ? { ...prev, status: newStatus } : prev));
     setCompletedOrder(prev => (prev && prev.orderId === orderId ? { ...prev, status: newStatus } : prev));
     setTrackingOrder(prev => (prev && prev.orderId === orderId ? { ...prev, status: newStatus } : prev));
@@ -368,6 +392,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCompletedOrder(newOrder);
     setActiveOrder(newOrder);
     setTrackingOrder(newOrder);
+    orderStoreService.addOrder(newOrder);
     clearCart();
     return newOrder;
   };

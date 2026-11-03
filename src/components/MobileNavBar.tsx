@@ -5,9 +5,10 @@ import { Utensils, Tag, ShoppingBag, User } from 'lucide-react';
 
 interface MobileNavBarProps {
   activeTab?: 'menu' | 'deals' | 'cart' | 'profile';
+  onOpenAdmin?: () => void;
 }
 
-export const MobileNavBar: React.FC<MobileNavBarProps> = () => {
+export const MobileNavBar: React.FC<MobileNavBarProps> = ({ onOpenAdmin: _onOpenAdmin }) => {
   const { itemCount, subtotal, openCart, isCheckoutOpen, customizingProduct } = useCart();
   const { openProfile, closeProfile, isProfileOpen, profile } = useProfile();
 

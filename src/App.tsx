@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CartProvider, useCart } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ProfileProvider, useProfile } from './context/ProfileContext';
@@ -17,6 +17,7 @@ import { ProfilePage } from './components/ProfilePage';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
+import { AdminDashboard } from './components/AdminDashboard';
 import { PRODUCTS } from './data/menuData';
 import { CategoryId } from './types';
 
@@ -24,13 +25,58 @@ export function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('menu');
+  const [isAdminOpen, setIsAdminOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash === '#admin' || window.location.search.includes('admin');
+    }
+    return false;
+  });
+
   const { isProfileOpen, closeProfile } = useProfile();
-  const { isTrackingOpen, trackingOrder, closeTracking, updateOrderStatus } = useCart();
+  const { isTrackingOpen, trackingOrder, closeTracking, updateOrderStatus, openTracking } = useCart();
+
+  useEffect(() => {
+    const handleHash = () => {
+      setIsAdminOpen(window.location.hash === '#admin');
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
+  const openAdmin = () => {
+    window.location.hash = '#admin';
+    setIsAdminOpen(true);
+  };
+
+  const closeAdmin = () => {
+    window.location.hash = '';
+    setIsAdminOpen(false);
+  };
 
   const handleCategorySelect = (categoryId: CategoryId) => {
     setSelectedCategory(categoryId);
     setSearchQuery(''); // reset search when explicitly choosing category
   };
+
+  // If in Kitchen / Fleet Admin mode, show the full Admin Dashboard
+  if (isAdminOpen) {
+    return (
+      <div className="relative min-h-screen bg-[#0A0B0D]">
+        <AdminDashboard
+          onBackToStorefront={closeAdmin}
+          onOpenCustomerTracking={(order) => openTracking(order)}
+        />
+        {/* Customer Tracking Modal for admin preview */}
+        <OrderTrackingModal
+          order={trackingOrder}
+          isOpen={isTrackingOpen}
+          onClose={closeTracking}
+          onUpdateStatus={updateOrderStatus}
+          onOrderMore={closeTracking}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen flex flex-col bg-chonky-bg dark:bg-[#050303] text-chonky-text dark:text-[#F7F3EE] transition-colors duration-500 selection:bg-chonky-peach selection:text-chonky-red">
@@ -63,6 +109,7 @@ export function AppContent() {
           setSearchQuery={setSearchQuery}
           activeSection={activeSection}
           setActiveSection={setActiveSection}
+          onOpenAdmin={openAdmin}
         />
 
         {/* Conditional View: Dedicated Profile Page vs Home Storefront */}
@@ -79,6 +126,7 @@ export function AppContent() {
                 }
               }, 50);
             }}
+            onOpenAdmin={openAdmin}
           />
         ) : (
           <>
@@ -102,7 +150,7 @@ export function AppContent() {
             </main>
 
             {/* 6. Footer */}
-            <Footer />
+            <Footer onOpenAdmin={openAdmin} />
           </>
         )}
 
@@ -111,7 +159,7 @@ export function AppContent() {
         <CartDrawer />
         <CartBar />
         <ActiveOrderPill />
-        <MobileNavBar />
+        <MobileNavBar onOpenAdmin={openAdmin} />
         <CheckoutModal />
         <LocationSelectorModal />
         <OrderTrackingModal

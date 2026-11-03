@@ -1,7 +1,11 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Heart, Clock, ShieldCheck } from 'lucide-react';
+import { Phone, Mail, MapPin, Heart, Clock, ShieldCheck, ChefHat } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenAdmin?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
   const base = import.meta.env.BASE_URL;
 
   return (
@@ -143,7 +147,17 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Copyright & Love Note */}
         <div className="pt-8 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-chonky-peach/70 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} Chonky Burgers & Subs Co. Maldives.</p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <p>© {new Date().getFullYear()} Chonky Burgers & Subs Co. Maldives.</p>
+            <span className="hidden sm:inline opacity-40">·</span>
+            <button
+              onClick={onOpenAdmin || (() => { window.location.hash = '#admin'; })}
+              className="hover:text-white transition flex items-center gap-1.5 text-xs text-chonky-peach/80 underline underline-offset-4"
+            >
+              <ChefHat className="w-3.5 h-3.5 text-amber-300" />
+              <span>Kitchen KDS & Fleet HQ</span>
+            </button>
+          </div>
           <p className="flex items-center justify-center gap-1.5 font-medium">
             <span>Crafted with</span>
             <Heart className="w-3.5 h-3.5 text-chonky-peach fill-chonky-peach animate-pulse" />

@@ -32,15 +32,17 @@ import {
   Cookie, 
   CupSoda, 
   Tag, 
-  Bike 
+  Bike,
+  ChefHat 
 } from 'lucide-react';
 
 interface ProfilePageProps {
   onBackToHome: () => void;
   onSelectCategory: (catId: CategoryId) => void;
+  onOpenAdmin?: () => void;
 }
 
-export const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToHome, onSelectCategory }) => {
+export const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToHome, onSelectCategory, onOpenAdmin }) => {
   const { openTracking } = useCart();
   const { 
     profile, 
@@ -939,6 +941,28 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBackToHome, onSelect
                   <div className="w-5.5 h-5.5 rounded-full bg-white shadow-xs" />
                 </button>
               </div>
+            </div>
+
+            {/* Staff & Kitchen Portal Card */}
+            <div className="p-6 rounded-[2rem] bg-gradient-to-br from-[#1E1111] to-[#120808] border border-[#E53945]/40 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#700808] to-[#E53945] text-white flex items-center justify-center shadow-md">
+                  <ChefHat className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <h4 className="text-base font-black text-white">Chonky HQ Operations</h4>
+                  <p className="text-xs text-[#F2E2C7]/80">Kitchen Display System (KDS), Ride Fleet Dispatch & Order Registry</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onOpenAdmin || (() => { window.location.hash = '#admin'; })}
+                className="w-full mt-2 py-3 px-5 rounded-2xl bg-gradient-to-r from-[#700808] to-[#990D0D] hover:from-[#8A0A0A] hover:to-[#B51010] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 border border-[#E53945]/50 shadow-md transition active:scale-95"
+              >
+                <ChefHat className="w-4 h-4 text-amber-400" />
+                <span>Open Kitchen & Fleet Dashboard</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
 
             {/* Logout Container */}
