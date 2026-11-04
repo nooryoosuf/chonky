@@ -79,6 +79,13 @@ export interface DeliveryLocation {
   estTime: string;
 }
 
+export interface AssignedDriver {
+  id: string;
+  name: string;
+  phone: string;
+  vehiclePlate: string;
+}
+
 export interface OrderDetails {
   orderId: string;
   orderType: OrderType;
@@ -97,4 +104,8 @@ export interface OrderDetails {
   total: number;
   createdAt: string;
   status: 'received' | 'preparing' | 'on_the_way' | 'delivered';
+  deliveryPin?: string;
+  assignedDriver?: AssignedDriver;
+  pickedUpAt?: string;
+  deliveredAt?: string;
 }

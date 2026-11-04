@@ -9,7 +9,8 @@ import {
   Sparkles,
   User,
   X,
-  ChefHat
+  ChefHat,
+  Bike
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -18,6 +19,7 @@ interface HeaderProps {
   activeSection: string;
   setActiveSection: (sec: string) => void;
   onOpenAdmin?: () => void;
+  onOpenDriver?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,7 +27,8 @@ export const Header: React.FC<HeaderProps> = ({
   setSearchQuery,
   activeSection: _activeSection,
   setActiveSection: _setActiveSection,
-  onOpenAdmin
+  onOpenAdmin,
+  onOpenDriver
 }) => {
   const { 
     selectedLocation, 
@@ -232,6 +235,17 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <ChefHat className="w-3.5 h-3.5 text-amber-400" />
                 <span className="hidden xs:inline text-[11px] font-black uppercase tracking-tight">HQ</span>
+              </button>
+
+              {/* Rider Delivery App Button */}
+              <button
+                onClick={onOpenDriver || (() => { window.location.hash = '#driver'; })}
+                className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white border border-blue-400/40 text-xs font-black shadow-sm transition active:scale-95"
+                title="Chonky Rider Delivery App"
+                aria-label="Chonky Rider Delivery App"
+              >
+                <Bike className="w-3.5 h-3.5 text-cyan-300" />
+                <span className="text-[11px] font-black uppercase tracking-tight">Rider</span>
               </button>
 
               {/* Profile Account Icon Button */}

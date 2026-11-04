@@ -43,13 +43,15 @@ import {
 interface AdminDashboardProps {
   onBackToStorefront: () => void;
   onOpenCustomerTracking?: (order: OrderDetails) => void;
+  onOpenDriverPortal?: () => void;
 }
 
 type AdminTab = 'kds' | 'fleet' | 'orders';
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
   onBackToStorefront,
-  onOpenCustomerTracking
+  onOpenCustomerTracking,
+  onOpenDriverPortal
 }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('kds');
   const [orders, setOrders] = useState<OrderDetails[]>(() => orderStoreService.getOrders());
@@ -355,6 +357,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           >
             {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
+
+          {/* Switch to Rider Delivery App */}
+          {onOpenDriverPortal && (
+            <button
+              onClick={onOpenDriverPortal}
+              className="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black shadow-lg shadow-blue-600/30 transition active:scale-95"
+              title="Open Chonky Rider Delivery App"
+            >
+              <Bike className="w-4 h-4" />
+              <span className="hidden sm:inline">Rider App</span>
+            </button>
+          )}
 
           {/* Quick Simulate Order */}
           <button

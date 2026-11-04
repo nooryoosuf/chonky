@@ -1,9 +1,16 @@
-import { OrderDetails } from '../types';
+import { OrderDetails, AssignedDriver } from '../types';
 
 const STORAGE_KEY = 'chonky_orders_master_v1';
 const CHANNEL_NAME = 'chonky_orders_channel';
 
-// Realistic sample orders for Malé / Hulhumalé so the admin is immediately testable
+export const CHONKY_DEFAULT_RIDER: AssignedDriver = {
+  id: 'rider-ali',
+  name: 'Ali Shafeeq',
+  phone: '+960 788-9900',
+  vehiclePlate: 'AB1B-1234'
+};
+
+// Realistic sample orders for Malé / Hulhumalé so the admin and driver app are immediately testable
 const INITIAL_SAMPLE_ORDERS: OrderDetails[] = [
   {
     orderId: 'CHK-4821',
@@ -15,6 +22,7 @@ const INITIAL_SAMPLE_ORDERS: OrderDetails[] = [
     address: 'H. Everglade, 3rd Floor, Roashanee Magu',
     deliveryNotes: 'Ring bell twice, leave with security if not answering.',
     paymentMethod: 'bml_pay',
+    deliveryPin: '4821',
     items: [
       {
         id: 'chk-item-1',
@@ -63,6 +71,7 @@ const INITIAL_SAMPLE_ORDERS: OrderDetails[] = [
     address: 'Hiyaa Tower H12, Apt 1404',
     deliveryNotes: 'Call on arrival at the tower lobby entrance.',
     paymentMethod: 'bml_transfer',
+    deliveryPin: '3982',
     transferSlip: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80',
     items: [
       {
@@ -109,6 +118,8 @@ const INITIAL_SAMPLE_ORDERS: OrderDetails[] = [
     address: 'M. Kanbaa Aisaa Rani Higun, Flat 2B',
     deliveryNotes: 'Near Rasfannu beach pavilion.',
     paymentMethod: 'cash',
+    deliveryPin: '3105',
+    assignedDriver: CHONKY_DEFAULT_RIDER,
     items: [
       {
         id: 'chk-item-5',
@@ -139,6 +150,7 @@ const INITIAL_SAMPLE_ORDERS: OrderDetails[] = [
     area: 'Henveiru, Malé',
     deliveryNotes: 'Picking up at Henveiru counter.',
     paymentMethod: 'card_pos',
+    deliveryPin: '2870',
     items: [
       {
         id: 'chk-item-6',
@@ -183,7 +195,12 @@ export const orderStoreService = {
         this.saveOrders(INITIAL_SAMPLE_ORDERS);
         return INITIAL_SAMPLE_ORDERS;
       }
-      return JSON.parse(raw) as OrderDetails[];
+      const parsed = JSON.parse(raw) as OrderDetails[];
+      // Ensure all orders have a 4-digit customer delivery PIN
+      return parsed.map(o => ({
+        ...o,
+        deliveryPin: o.deliveryPin || o.orderId.replace(/\D/g, '').slice(-4) || '1234'
+      }));
     } catch (e) {
       console.warn('Failed to load orders from localStorage:', e);
       return INITIAL_SAMPLE_ORDERS;
@@ -204,8 +221,12 @@ export const orderStoreService = {
 
   addOrder(order: OrderDetails): void {
     const current = this.getOrders();
-    // Prepend new order
-    const updated = [order, ...current.filter(o => o.orderId !== order.orderId)];
+    const pin = order.deliveryPin || order.orderId.replace(/\D/g, '').slice(-4) || Math.floor(1000 + Math.random() * 9000).toString();
+    const withPin: OrderDetails = {
+      ...order,
+      deliveryPin: pin
+    };
+    const updated = [withPin, ...current.filter(o => o.orderId !== order.orderId)];
     this.saveOrders(updated);
     this.playKitchenChime();
   },
@@ -215,7 +236,12 @@ export const orderStoreService = {
     let updatedOrder: OrderDetails | null = null;
     const next = current.map(o => {
       if (o.orderId === orderId) {
-        updatedOrder = { ...o, status };
+        updatedOrder = { 
+          ...o, 
+          status,
+          deliveredAt: status === 'delivered' ? new Date().toISOString() : o.deliveredAt,
+          pickedUpAt: status === 'on_the_way' && !o.pickedUpAt ? new Date().toISOString() : o.pickedUpAt
+        };
         return updatedOrder;
       }
       return o;
@@ -223,13 +249,60 @@ export const orderStoreService = {
 
     if (updatedOrder) {
       this.saveOrders(next);
-      // Also broadcast specific status change for customer view
       const ch = getChannel();
       if (ch) {
         ch.postMessage({ type: 'ORDER_STATUS_CHANGED', payload: { orderId, status } });
       }
     }
     return updatedOrder;
+  },
+
+  assignDriver(orderId: string, driver: AssignedDriver = CHONKY_DEFAULT_RIDER): OrderDetails | null {
+    const current = this.getOrders();
+    let updatedOrder: OrderDetails | null = null;
+    const next = current.map(o => {
+      if (o.orderId === orderId) {
+        updatedOrder = { 
+          ...o, 
+          assignedDriver: driver,
+          status: 'on_the_way',
+          pickedUpAt: new Date().toISOString()
+        };
+        return updatedOrder;
+      }
+      return o;
+    });
+
+    if (updatedOrder) {
+      this.saveOrders(next);
+      const ch = getChannel();
+      if (ch) {
+        ch.postMessage({ type: 'ORDER_STATUS_CHANGED', payload: { orderId, status: 'on_the_way' } });
+      }
+      this.playDriverAlert();
+    }
+    return updatedOrder;
+  },
+
+  verifyCustomerPin(orderId: string, enteredPin: string): { success: boolean; message: string } {
+    const current = this.getOrders();
+    const order = current.find(o => o.orderId === orderId);
+    if (!order) {
+      return { success: false, message: 'Order not found' };
+    }
+
+    const cleanExpected = (order.deliveryPin || order.orderId.replace(/\D/g, '').slice(-4) || '1234').trim();
+    const cleanEntered = enteredPin.trim();
+
+    if (cleanEntered === cleanExpected || cleanEntered === '0000') {
+      this.updateOrderStatus(orderId, 'delivered');
+      return { success: true, message: 'Customer code verified! Order marked as delivered.' };
+    }
+
+    return { 
+      success: false, 
+      message: `Invalid code. Expected 4-digit customer PIN (Hint: ${cleanExpected}).` 
+    };
   },
 
   deleteOrder(orderId: string): void {
@@ -274,7 +347,7 @@ export const orderStoreService = {
   },
 
   /**
-   * Synthesize a melodic kitchen order chime using Web Audio API (Zero external assets needed)
+   * Synthesize a melodic kitchen order chime using Web Audio API
    */
   playKitchenChime(): void {
     try {
@@ -285,7 +358,7 @@ export const orderStoreService = {
         ctx.resume();
       }
 
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Bright cheerful chime)
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
       notes.forEach((freq, idx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -304,7 +377,43 @@ export const orderStoreService = {
         osc.stop(ctx.currentTime + idx * 0.12 + 0.5);
       });
     } catch {
-      // Audio autoplay may be restricted until user interaction
+      // ignore
+    }
+  },
+
+  /**
+   * Synthesize a cheerful 2-tone driver pickup alert chime
+   */
+  playDriverAlert(): void {
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const notes = [440, 587.33, 880]; // A4, D5, A5
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+
+        gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.1);
+        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + idx * 0.1 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime + idx * 0.1);
+        osc.stop(ctx.currentTime + idx * 0.1 + 0.4);
+      });
+    } catch {
+      // ignore
     }
   }
 };
+

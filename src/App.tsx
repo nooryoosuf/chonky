@@ -18,6 +18,7 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { AdminDashboard } from './components/AdminDashboard';
+import { DriverPortal } from './components/DriverPortal';
 import { PRODUCTS } from './data/menuData';
 import { CategoryId } from './types';
 
@@ -25,11 +26,19 @@ export function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('menu');
-  const [isAdminOpen, setIsAdminOpen] = useState(() => {
+  
+  const [portalMode, setPortalMode] = useState<'customer' | 'admin' | 'driver'>(() => {
     if (typeof window !== 'undefined') {
-      return window.location.hash === '#admin' || window.location.search.includes('admin');
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (hash === '#driver' || hash === '#rider' || search.includes('driver')) {
+        return 'driver';
+      }
+      if (hash === '#admin' || search.includes('admin')) {
+        return 'admin';
+      }
     }
-    return false;
+    return 'customer';
   });
 
   const { isProfileOpen, closeProfile } = useProfile();
@@ -37,7 +46,14 @@ export function AppContent() {
 
   useEffect(() => {
     const handleHash = () => {
-      setIsAdminOpen(window.location.hash === '#admin');
+      const hash = window.location.hash;
+      if (hash === '#driver' || hash === '#rider') {
+        setPortalMode('driver');
+      } else if (hash === '#admin') {
+        setPortalMode('admin');
+      } else {
+        setPortalMode('customer');
+      }
     };
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
@@ -45,12 +61,17 @@ export function AppContent() {
 
   const openAdmin = () => {
     window.location.hash = '#admin';
-    setIsAdminOpen(true);
+    setPortalMode('admin');
   };
 
-  const closeAdmin = () => {
+  const openDriver = () => {
+    window.location.hash = '#driver';
+    setPortalMode('driver');
+  };
+
+  const closeToStorefront = () => {
     window.location.hash = '';
-    setIsAdminOpen(false);
+    setPortalMode('customer');
   };
 
   const handleCategorySelect = (categoryId: CategoryId) => {
@@ -58,13 +79,34 @@ export function AppContent() {
     setSearchQuery(''); // reset search when explicitly choosing category
   };
 
+  // If in Driver Portal mode, show dedicated Rider Delivery App
+  if (portalMode === 'driver') {
+    return (
+      <div className="relative min-h-screen bg-[#07080A]">
+        <DriverPortal
+          onBackToStorefront={closeToStorefront}
+          onOpenAdminHQ={openAdmin}
+          onOpenCustomerTracking={(order) => openTracking(order)}
+        />
+        <OrderTrackingModal
+          order={trackingOrder}
+          isOpen={isTrackingOpen}
+          onClose={closeTracking}
+          onUpdateStatus={updateOrderStatus}
+          onOrderMore={closeTracking}
+        />
+      </div>
+    );
+  }
+
   // If in Kitchen / Fleet Admin mode, show the full Admin Dashboard
-  if (isAdminOpen) {
+  if (portalMode === 'admin') {
     return (
       <div className="relative min-h-screen bg-[#0A0B0D]">
         <AdminDashboard
-          onBackToStorefront={closeAdmin}
+          onBackToStorefront={closeToStorefront}
           onOpenCustomerTracking={(order) => openTracking(order)}
+          onOpenDriverPortal={openDriver}
         />
         {/* Customer Tracking Modal for admin preview */}
         <OrderTrackingModal
@@ -110,6 +152,7 @@ export function AppContent() {
           activeSection={activeSection}
           setActiveSection={setActiveSection}
           onOpenAdmin={openAdmin}
+          onOpenDriver={openDriver}
         />
 
         {/* Conditional View: Dedicated Profile Page vs Home Storefront */}
@@ -127,6 +170,7 @@ export function AppContent() {
               }, 50);
             }}
             onOpenAdmin={openAdmin}
+            onOpenDriver={openDriver}
           />
         ) : (
           <>
@@ -150,7 +194,7 @@ export function AppContent() {
             </main>
 
             {/* 6. Footer */}
-            <Footer onOpenAdmin={openAdmin} />
+            <Footer onOpenAdmin={openAdmin} onOpenDriver={openDriver} />
           </>
         )}
 

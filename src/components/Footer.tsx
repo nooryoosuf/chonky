@@ -1,11 +1,12 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Heart, Clock, ShieldCheck, ChefHat } from 'lucide-react';
+import { Phone, Mail, MapPin, Heart, Clock, ShieldCheck, ChefHat, Bike } from 'lucide-react';
 
 interface FooterProps {
   onOpenAdmin?: () => void;
+  onOpenDriver?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenDriver }) => {
   const base = import.meta.env.BASE_URL;
 
   return (
@@ -156,6 +157,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
             >
               <ChefHat className="w-3.5 h-3.5 text-amber-300" />
               <span>Kitchen KDS & Fleet HQ</span>
+            </button>
+            <span className="hidden sm:inline opacity-40">·</span>
+            <button
+              onClick={onOpenDriver || (() => { window.location.hash = '#driver'; })}
+              className="hover:text-white transition flex items-center gap-1.5 text-xs text-chonky-peach/80 underline underline-offset-4"
+            >
+              <Bike className="w-3.5 h-3.5 text-blue-300" />
+              <span>Rider Portal</span>
             </button>
           </div>
           <p className="flex items-center justify-center gap-1.5 font-medium">
