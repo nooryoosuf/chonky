@@ -348,21 +348,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               setSoundEnabled(!soundEnabled);
               if (!soundEnabled) orderStoreService.playKitchenChime();
             }}
-            className={`p-2.5 rounded-2xl border transition ${
+            className={`h-10 w-10 rounded-2xl border transition flex items-center justify-center shrink-0 ${
               soundEnabled 
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20' 
                 : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
             }`}
             title={soundEnabled ? 'Kitchen chime active' : 'Kitchen chime muted'}
           >
-            {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
 
           {/* Switch to Rider Delivery App */}
           {onOpenDriverPortal && (
             <button
               onClick={onOpenDriverPortal}
-              className="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black shadow-lg shadow-blue-600/30 transition active:scale-95"
+              className="h-10 flex items-center justify-center gap-2 px-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black shadow-lg shadow-blue-600/30 transition active:scale-95 shrink-0"
               title="Open Chonky Rider Delivery App"
             >
               <Bike className="w-4 h-4" />
@@ -373,7 +373,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* Quick Simulate Order */}
           <button
             onClick={handleCreateTestOrder}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#E53945] to-[#B81F2B] text-white text-xs sm:text-sm font-black shadow-lg shadow-[#E53945]/30 hover:brightness-110 active:scale-95 transition"
+            className="h-10 flex items-center justify-center gap-2 px-4 rounded-2xl bg-gradient-to-r from-[#E53945] to-[#B81F2B] text-white text-xs sm:text-sm font-black shadow-lg shadow-[#E53945]/30 hover:brightness-110 active:scale-95 transition shrink-0"
             title="Create a sample incoming customer order"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
@@ -388,7 +388,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 setOrders(orderStoreService.getOrders());
               }
             }}
-            className="p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition"
+            className="h-10 w-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition flex items-center justify-center shrink-0"
             title="Reset to default demo orders"
           >
             <RefreshCw className="w-4 h-4" />
@@ -679,64 +679,64 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {/* Collapsible Action Buttons Area */}
                     {!isConsoleCollapsed && (
                       <div className="pt-2 border-t border-white/10 space-y-2.5 animate-in fade-in duration-200">
-                        {/* GPS Telemetry Buttons */}
+                        {/* GPS Telemetry Buttons - Consistent h-11 height */}
                         <div className="grid grid-cols-2 gap-2.5">
                           {/* Live Simulation Button */}
                           <button
                             type="button"
                             onClick={() => toggleGpsSimulation(selectedFleetOrder.orderId)}
-                            className={`py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition ${
+                            className={`h-11 px-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition ${
                               isSimulatingGps[selectedFleetOrder.orderId] 
                                 ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' 
                                 : 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
                             }`}
                           >
                             <Navigation className="w-4 h-4" />
-                            <span>{isSimulatingGps[selectedFleetOrder.orderId] ? 'Simulating GPS...' : 'Simulate GPS'}</span>
+                            <span className="truncate">{isSimulatingGps[selectedFleetOrder.orderId] ? 'Simulating GPS...' : 'Simulate GPS'}</span>
                           </button>
 
                           {/* Real Phone GPS Button */}
                           <button
                             type="button"
                             onClick={() => toggleRealGps(selectedFleetOrder.orderId)}
-                            className={`py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition ${
+                            className={`h-11 px-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition ${
                               isRealGpsActive === selectedFleetOrder.orderId 
                                 ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' 
                                 : 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
                             }`}
                           >
                             <Radio className="w-4 h-4" />
-                            <span>{isRealGpsActive === selectedFleetOrder.orderId ? 'Phone GPS Active' : 'Use Phone GPS'}</span>
+                            <span className="truncate">{isRealGpsActive === selectedFleetOrder.orderId ? 'Phone GPS Active' : 'Use Phone GPS'}</span>
                           </button>
                         </div>
 
-                        {/* Primary Status Advancement Bar */}
-                        <div className="flex items-center gap-2.5">
+                        {/* Primary Status Advancement Bar - Consistent h-11 height, follows card boundaries */}
+                        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
                           {selectedFleetOrder.status !== 'on_the_way' && (
                             <button
                               type="button"
                               onClick={() => handleUpdateStatus(selectedFleetOrder.orderId, 'on_the_way')}
-                              className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95"
+                              className="flex-1 h-11 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95"
                             >
                               <Bike className="w-4 h-4" />
-                              <span>Dispatch Rider 🛵</span>
+                              <span className="truncate">Dispatch Rider 🛵</span>
                             </button>
                           )}
                           {selectedFleetOrder.status === 'on_the_way' && (
                             <button
                               type="button"
                               onClick={() => handleUpdateStatus(selectedFleetOrder.orderId, 'delivered')}
-                              className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95"
+                              className="flex-1 h-11 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95"
                             >
                               <CheckCircle className="w-4 h-4" />
-                              <span>Complete Delivery ✓</span>
+                              <span className="truncate">Complete Delivery ✓</span>
                             </button>
                           )}
                           {onOpenCustomerTracking && (
                             <button
                               type="button"
                               onClick={() => onOpenCustomerTracking(selectedFleetOrder)}
-                              className="px-3.5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#F2E2C7] text-xs sm:text-sm font-bold transition flex items-center gap-1.5"
+                              className="h-11 px-4 rounded-2xl bg-white/10 hover:bg-white/20 text-[#F2E2C7] text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 shrink-0"
                               title="Open customer tracking view"
                             >
                               <span>Customer View</span>
@@ -1145,43 +1145,47 @@ const KdsCard: React.FC<KdsCardProps> = ({
         </div>
       )}
 
-      {/* Action Footer (Consistent h-11 heights, no broken wrapping) */}
-      <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-2.5">
+      {/* Action Footer - Strictly follows card boundaries with uniform h-11 button heights */}
+      <div className="mt-5 pt-4 border-t border-white/10 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5">
         {/* Left Secondary Action Buttons: Rollback & Fleet Map */}
-        <div className="flex items-center gap-2 shrink-0">
-          {onRollback && (
-            <button
-              type="button"
-              onClick={onRollback}
-              className="h-11 w-11 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition active:scale-90 flex items-center justify-center shrink-0"
-              title="Step back to previous stage"
-              aria-label="Step back to previous stage"
-            >
-              <Undo2 className="w-4 h-4" />
-            </button>
-          )}
+        {(onRollback || onFleetMap) && (
+          <div className="flex items-center gap-2 shrink-0">
+            {onRollback && (
+              <button
+                type="button"
+                onClick={onRollback}
+                className="h-11 w-11 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition active:scale-90 flex items-center justify-center shrink-0"
+                title="Step back to previous stage"
+                aria-label="Step back to previous stage"
+              >
+                <Undo2 className="w-4 h-4" />
+              </button>
+            )}
 
-          {onFleetMap && (
-            <button
-              type="button"
-              onClick={onFleetMap}
-              className="h-11 px-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-emerald-400 hover:text-white text-xs sm:text-sm font-bold transition flex items-center gap-1.5 active:scale-95 shrink-0"
-              title="Open in Fleet Map"
-            >
-              <Bike className="w-4 h-4" />
-              <span>Map</span>
-            </button>
-          )}
-        </div>
+            {onFleetMap && (
+              <button
+                type="button"
+                onClick={onFleetMap}
+                className="h-11 px-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-emerald-400 hover:text-white text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 active:scale-95 shrink-0"
+                title="Open in Fleet Map"
+              >
+                <Bike className="w-4 h-4" />
+                <span>Map</span>
+              </button>
+            )}
+          </div>
+        )}
 
-        {/* Right Primary Action Button: Uniform h-11 height, whitespace-nowrap */}
+        {/* Right Primary Action Button: Uniform h-11 height, stays strictly within card boundaries */}
         <button
           type="button"
           onClick={onAdvance}
-          className={`h-11 px-5 rounded-2xl bg-gradient-to-r ${advanceColor} text-white text-xs sm:text-sm font-black shadow-md hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2 whitespace-nowrap ml-auto shrink-0`}
+          className={`h-11 px-4 rounded-2xl bg-gradient-to-r ${advanceColor} text-white text-xs sm:text-sm font-black shadow-md hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2 min-w-0 max-w-full ${
+            (onRollback || onFleetMap) ? 'flex-1 sm:flex-initial sm:ml-auto' : 'w-full'
+          }`}
         >
-          <span>{advanceLabel}</span>
-          <ChevronRight className="w-4 h-4 stroke-[3]" />
+          <span className="truncate">{advanceLabel}</span>
+          <ChevronRight className="w-4 h-4 stroke-[3] shrink-0" />
         </button>
       </div>
     </div>

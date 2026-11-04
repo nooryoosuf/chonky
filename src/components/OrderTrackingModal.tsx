@@ -300,8 +300,8 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
       {/* 2.5 Customer Delivery PIN / Handoff Code (Uber Eats / Grab style) */}
       {isDelivery && currentStatus !== 'delivered' && (
-        <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#700808]/15 via-[#E53945]/10 to-transparent border-2 border-[#E53945]/40 flex items-center justify-between gap-4 shadow-sm">
-          <div className="space-y-0.5">
+        <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#700808]/15 via-[#E53945]/10 to-transparent border-2 border-[#E53945]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 shadow-sm">
+          <div className="space-y-0.5 min-w-0">
             <span className="text-[11px] font-black uppercase tracking-wider text-[#E53945] flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4" />
               <span>Customer Delivery PIN</span>
@@ -310,7 +310,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
               Share this 4-digit code with your rider when receiving your food
             </p>
           </div>
-          <div className="px-4 py-2 rounded-2xl bg-gradient-to-r from-[#700808] to-[#E53945] text-white font-mono font-black text-xl sm:text-2xl tracking-[0.25em] shadow-md border border-white/20">
+          <div className="px-4 py-2 rounded-2xl bg-gradient-to-r from-[#700808] to-[#E53945] text-white font-mono font-black text-xl sm:text-2xl tracking-[0.25em] shadow-md border border-white/20 shrink-0">
             {order.deliveryPin || order.orderId.replace(/\D/g, '').slice(-4) || '1234'}
           </div>
         </div>

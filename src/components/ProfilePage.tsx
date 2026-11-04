@@ -960,24 +960,24 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   <p className="text-xs text-[#F2E2C7]/80">Kitchen Display System (KDS), Ride Fleet Dispatch & Order Registry</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-2">
                 <button
                   type="button"
                   onClick={onOpenAdmin || (() => { window.location.hash = '#admin'; })}
-                  className="py-3 px-4 rounded-2xl bg-gradient-to-r from-[#700808] to-[#990D0D] hover:from-[#8A0A0A] hover:to-[#B51010] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 border border-[#E53945]/50 shadow-md transition active:scale-95"
+                  className="h-12 px-4 rounded-2xl bg-gradient-to-r from-[#700808] to-[#990D0D] hover:from-[#8A0A0A] hover:to-[#B51010] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 border border-[#E53945]/50 shadow-md transition active:scale-95"
                 >
                   <ChefHat className="w-4 h-4 text-amber-400 shrink-0" />
                   <span className="truncate">Kitchen & Fleet KDS</span>
-                  <ChevronRight className="w-3.5 h-3.5 opacity-60 ml-auto" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60 ml-auto shrink-0" />
                 </button>
                 <button
                   type="button"
                   onClick={onOpenDriver || (() => { window.location.hash = '#driver'; })}
-                  className="py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-900/80 to-blue-800/80 hover:from-blue-800 hover:to-blue-700 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 border border-blue-500/40 shadow-md transition active:scale-95"
+                  className="h-12 px-4 rounded-2xl bg-gradient-to-r from-blue-900/80 to-blue-800/80 hover:from-blue-800 hover:to-blue-700 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 border border-blue-500/40 shadow-md transition active:scale-95"
                 >
                   <Bike className="w-4 h-4 text-blue-300 shrink-0" />
                   <span className="truncate">Chonky Rider App</span>
-                  <ChevronRight className="w-3.5 h-3.5 opacity-60 ml-auto" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60 ml-auto shrink-0" />
                 </button>
               </div>
             </div>

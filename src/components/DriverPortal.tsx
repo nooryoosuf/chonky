@@ -249,7 +249,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
         <div className="flex items-center gap-3 sm:gap-5">
           <button
             onClick={onBackToStorefront}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-bold text-[#F2E2C7] transition active:scale-95"
+            className="h-10 flex items-center justify-center gap-2 px-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-bold text-[#F2E2C7] transition active:scale-95 shrink-0"
             title="Return to Customer Storefront"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -257,7 +257,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1D4ED8] to-[#2563EB] text-white flex items-center justify-center shadow-lg shadow-blue-600/30">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1D4ED8] to-[#2563EB] text-white flex items-center justify-center shadow-lg shadow-blue-600/30 shrink-0">
               <Bike className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -276,10 +276,10 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
         </div>
 
         {/* Center: Shift Primary Tabs */}
-        <div className="flex items-center bg-[#16181C] p-1.5 rounded-2xl border border-white/10 shadow-inner">
+        <div className="flex items-center bg-[#16181C] p-1.5 rounded-2xl border border-white/10 shadow-inner overflow-x-auto max-w-full scrollbar-none">
           <button
             onClick={() => setActiveTab('active')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition whitespace-nowrap ${
               activeTab === 'active'
                 ? 'bg-gradient-to-r from-[#1D4ED8] to-[#2563EB] text-white shadow-lg'
                 : 'text-gray-400 hover:text-white'
@@ -296,7 +296,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
 
           <button
             onClick={() => setActiveTab('available')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition whitespace-nowrap ${
               activeTab === 'available'
                 ? 'bg-gradient-to-r from-[#1D4ED8] to-[#2563EB] text-white shadow-lg'
                 : 'text-gray-400 hover:text-white'
@@ -313,7 +313,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition whitespace-nowrap ${
               activeTab === 'history'
                 ? 'bg-gradient-to-r from-[#1D4ED8] to-[#2563EB] text-white shadow-lg'
                 : 'text-gray-400 hover:text-white'
@@ -329,7 +329,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
           {/* Duty Online / Offline */}
           <button
             onClick={() => setIsOnline(!isOnline)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-black border transition ${
+            className={`h-10 flex items-center justify-center gap-1.5 px-3.5 rounded-2xl text-xs font-black border transition shrink-0 ${
               isOnline 
                 ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/25' 
                 : 'bg-rose-500/15 border-rose-500/40 text-rose-400 hover:bg-rose-500/25'
@@ -346,7 +346,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
               setSoundEnabled(!soundEnabled);
               if (!soundEnabled) orderStoreService.playDriverAlert();
             }}
-            className={`p-2.5 rounded-2xl border transition ${
+            className={`h-10 w-10 rounded-2xl border transition flex items-center justify-center shrink-0 ${
               soundEnabled 
                 ? 'bg-white/10 border-white/20 text-white' 
                 : 'bg-white/5 border-white/10 text-gray-400'
@@ -360,7 +360,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
           {onOpenAdminHQ && (
             <button
               onClick={onOpenAdminHQ}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-[#F2E2C7] transition"
+              className="hidden lg:flex h-10 items-center justify-center gap-1.5 px-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-[#F2E2C7] transition shrink-0"
               title="Open Kitchen KDS & Admin HQ"
             >
               <ChefHat className="w-4 h-4 text-amber-400" />
@@ -388,33 +388,33 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                 <div className="lg:col-span-7 flex flex-col space-y-4">
                   
                   {/* Delivery Progress Step Pill */}
-                  <div className="bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-lg flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-blue-500/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shrink-0">
+                  <div className="bg-[#121417] p-4 sm:p-5 rounded-3xl border border-white/10 shadow-lg flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-blue-500/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shrink-0">
                         <Bike className="w-5 h-5 stroke-[2.5] animate-pulse" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-sm font-black px-2.5 py-0.5 rounded-lg bg-black/50 text-[#F2E2C7] border border-white/10">
+                          <span className="font-mono text-sm font-black px-2.5 py-0.5 rounded-lg bg-black/50 text-[#F2E2C7] border border-white/10 shrink-0">
                             {currentOrder.orderId}
                           </span>
-                          <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                            {currentOrder.status === 'on_the_way' ? 'En Route to Customer' : 'Ready at Kitchen'}
+                          <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 truncate">
+                            {currentOrder.status === 'on_the_way' ? 'En Route' : 'Ready at Kitchen'}
                           </span>
                         </div>
-                        <h3 className="text-base font-black text-white mt-1">
+                        <h3 className="text-base font-black text-white mt-1 truncate">
                           Delivery to {currentOrder.customerName}
                         </h3>
                       </div>
                     </div>
 
-                    {/* Action Buttons: Pick Up Counter, Customer Preview & External Navigation */}
-                    <div className="flex items-center gap-2">
+                    {/* Action Buttons: Consistent h-11 heights, fully contained in card boundaries */}
+                    <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
                       {currentOrder.status !== 'on_the_way' && (
                         <button
                           type="button"
                           onClick={() => handleMarkPickedUp(currentOrder.orderId)}
-                          className="px-3.5 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-black text-xs sm:text-sm font-black shadow-md flex items-center gap-1.5 transition active:scale-95 shrink-0"
+                          className="h-11 px-4 rounded-2xl bg-amber-400 hover:bg-amber-300 text-black text-xs sm:text-sm font-black shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 shrink-0"
                           title="Confirm order picked up from kitchen counter and rider is departing"
                         >
                           <CheckCircle className="w-4 h-4" />
@@ -426,17 +426,17 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                         <button
                           type="button"
                           onClick={() => onOpenCustomerTracking(currentOrder)}
-                          className="hidden sm:inline-flex px-3 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-xs text-gray-200 font-bold items-center gap-1.5 transition border border-white/10"
+                          className="h-11 px-3.5 rounded-2xl bg-white/10 hover:bg-white/15 text-xs text-gray-200 font-bold flex items-center justify-center gap-1.5 transition border border-white/10 shrink-0"
                           title="Preview Customer Live Tracking View"
                         >
                           <ExternalLink className="w-3.5 h-3.5 text-chonky-peach" />
-                          <span>Tracking View</span>
+                          <span className="hidden sm:inline">Tracking View</span>
                         </button>
                       )}
 
                       <button
                         onClick={() => openExternalNavigation(currentOrder.area, currentOrder.address)}
-                        className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black shadow-md flex items-center gap-2 transition active:scale-95 shrink-0"
+                        className="h-11 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black shadow-md flex items-center justify-center gap-2 transition active:scale-95 shrink-0"
                         title="Open in Google Maps Navigation"
                       >
                         <Navigation className="w-4 h-4" />
@@ -470,8 +470,8 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                     </div>
                   </div>
 
-                  {/* Telemetry Live GPS Controls */}
-                  <div className="bg-[#121417] p-4 rounded-3xl border border-white/10 shadow-lg flex flex-wrap items-center justify-between gap-3">
+                  {/* Telemetry Live GPS Controls - Consistent h-11 button heights */}
+                  <div className="bg-[#121417] p-4 sm:p-5 rounded-3xl border border-white/10 shadow-lg flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 text-xs text-gray-300">
                       <Radio className={`w-4 h-4 ${isRealGpsActive || isSimulatingGps ? 'text-emerald-400 animate-pulse' : 'text-gray-500'}`} />
                       <span>Telemetry: <strong>{isRealGpsActive ? 'Broadcasting Device GPS' : isSimulatingGps ? 'Simulating Ride' : 'Idle'}</strong></span>
@@ -481,8 +481,8 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleGpsSimulation(currentOrder.orderId)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                          isSimulatingGps ? 'bg-amber-500 text-black font-black' : 'bg-white/10 text-white hover:bg-white/15'
+                        className={`h-11 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                          isSimulatingGps ? 'bg-amber-500 text-black font-black' : 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
                         }`}
                       >
                         <Compass className="w-3.5 h-3.5" />
@@ -492,8 +492,8 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleRealGps(currentOrder.orderId)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                          isRealGpsActive ? 'bg-emerald-500 text-black font-black' : 'bg-white/10 text-white hover:bg-white/15'
+                        className={`h-11 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                          isRealGpsActive ? 'bg-emerald-500 text-black font-black' : 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
                         }`}
                       >
                         <Radio className="w-3.5 h-3.5" />
@@ -518,11 +518,11 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                         <p className="text-xs text-gray-300 font-mono mt-0.5">{currentOrder.customerPhone}</p>
                       </div>
 
-                      {/* Direct Action Buttons: Call & WhatsApp */}
-                      <div className="flex items-center gap-2">
+                      {/* Direct Action Buttons: Call & WhatsApp - Consistent h-11 heights */}
+                      <div className="flex items-center gap-2 shrink-0">
                         <a
                           href={`tel:${currentOrder.customerPhone}`}
-                          className="w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90"
+                          className="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition active:scale-90 border border-white/10"
                           title="Call Customer"
                         >
                           <Phone className="w-4 h-4 text-emerald-400" />
@@ -530,7 +530,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                         <button
                           type="button"
                           onClick={() => openWhatsApp(currentOrder.customerPhone, currentOrder.orderId, currentOrder.customerName)}
-                          className="w-11 h-11 rounded-2xl bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 flex items-center justify-center transition active:scale-90"
+                          className="h-11 w-11 rounded-2xl bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 flex items-center justify-center transition active:scale-90"
                           title="WhatsApp Customer"
                         >
                           <MessageSquare className="w-4 h-4" />
@@ -591,7 +591,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                       </div>
                     </div>
 
-                    {/* COD Quick Change Calculator */}
+                    {/* COD Quick Change Calculator - Consistent h-11 buttons */}
                     {currentOrder.paymentMethod === 'cash' && (
                       <div className="pt-3 border-t border-white/10 space-y-2.5">
                         <p className="text-xs text-gray-300 font-bold">Quick Change Calculator:</p>
@@ -601,10 +601,10 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                               key={amt}
                               type="button"
                               onClick={() => setCashGiven(amt)}
-                              className={`py-2 px-2.5 rounded-xl text-xs font-bold border transition ${
+                              className={`h-11 px-2 rounded-2xl text-xs font-bold border transition flex items-center justify-center ${
                                 cashGiven === amt 
-                                  ? 'bg-amber-500 text-black border-amber-400 font-black' 
-                                  : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
+                                   ? 'bg-amber-500 text-black border-amber-400 font-black' 
+                                   : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
                               }`}
                             >
                               Gives MVR {amt}
@@ -627,7 +627,7 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                   {/* Card 3: CUSTOMER DELIVERY PIN VERIFICATION (Core Required Feature) */}
                   <div className="bg-gradient-to-br from-[#1C1214] via-[#151214] to-[#121417] p-5 sm:p-6 rounded-3xl border-2 border-[#E53945]/50 shadow-2xl space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#E53945]/20 border border-[#E53945]/40 text-[#E53945] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-2xl bg-[#E53945]/20 border border-[#E53945]/40 text-[#E53945] flex items-center justify-center shrink-0">
                         <KeyRound className="w-5 h-5 stroke-[2.5]" />
                       </div>
                       <div>
@@ -641,9 +641,9 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                       </div>
                     </div>
 
-                    {/* PIN Input Box */}
+                    {/* PIN Input Box - Fully follows card boundaries on mobile and desktop */}
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                         <input
                           type="text"
                           maxLength={4}
@@ -653,14 +653,15 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                             setEnteredPin(e.target.value.replace(/\D/g, ''));
                             setPinError(null);
                           }}
-                          className="flex-1 bg-black/60 border-2 border-white/20 focus:border-[#E53945] rounded-2xl px-4 py-3 text-center font-mono font-black text-2xl tracking-[0.4em] text-white placeholder-gray-600 focus:outline-none transition shadow-inner"
+                          className="h-12 flex-1 min-w-0 bg-black/60 border-2 border-white/20 focus:border-[#E53945] rounded-2xl px-4 text-center font-mono font-black text-2xl tracking-[0.4em] text-white placeholder-gray-600 focus:outline-none transition shadow-inner"
                         />
                         <button
                           type="button"
                           onClick={() => handleVerifyAndDeliver(currentOrder.orderId)}
-                          className="py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-black text-sm shadow-lg shadow-emerald-600/30 transition active:scale-95 whitespace-nowrap"
+                          className="h-12 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-black text-sm shadow-lg shadow-emerald-600/30 transition active:scale-95 flex items-center justify-center gap-2 shrink-0"
                         >
-                          Verify & Complete ✓
+                          <span>Verify & Complete</span>
+                          <CheckCircle className="w-4 h-4" />
                         </button>
                       </div>
 
@@ -710,9 +711,10 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                 </div>
                 <button
                   onClick={() => setActiveTab('available')}
-                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg transition active:scale-95"
+                  className="h-12 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg transition active:scale-95 inline-flex items-center justify-center gap-2"
                 >
-                  View Available Pickups ({availablePickupOrders.length})
+                  <Package className="w-4 h-4 text-amber-300" />
+                  <span>View Available Pickups ({availablePickupOrders.length})</span>
                 </button>
               </div>
             )}
@@ -791,11 +793,11 @@ export const DriverPortal: React.FC<DriverPortalProps> = ({
                       </div>
                     </div>
 
-                    {/* Accept Ride Button */}
+                    {/* Accept Ride Button - Uniform h-12 height, respects card boundaries */}
                     <button
                       type="button"
                       onClick={() => handleAcceptOrder(order.orderId)}
-                      className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition active:scale-95"
+                      className="w-full h-12 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition active:scale-95"
                     >
                       <Bike className="w-4 h-4" />
                       <span>Accept Ride & Start Delivery</span>
